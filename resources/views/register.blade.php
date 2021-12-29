@@ -18,7 +18,7 @@
 
             <div class="container">
                 <div class="signup-content">
-                    <form method="POST" id="signup-form" class="signup-form " action="{{ route('register') }}" enctype="multipart/form-data">
+                    <form method="POST" id="signup-form" class="signup-form " action="{{ route('register') }}">
                         @csrf
                         
                         <h2 class="form-title">Daftar Akun</h2>
@@ -31,34 +31,6 @@
                             @enderror
 						</div>
                         <div class="form-group">
-                            <input type="text" class="form-input @error('name') is-invalid @enderror" name="name" id="name" placeholder="Nama" value="{{ old('name') }}">
-							@error('name')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                            @enderror
-						</div>
-                        <div class="form-group">
-                            <select class="form-input @error('jk') is-invalid @enderror" name="jk" id="jk">
-                                <option value="Laki-laki">Laki-laki</option>
-                                <option value="Perempuan">Perempuan</option>
-                            </select>
-							@error('jk')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                            @enderror
-                        </div>
-                        <diV class="form-group">
-                            <input class="form-input @error('tgl_lhr') is-invalid @enderror" type="date" name="tgl_lhr" id="tgl_lhr" value="{{ old('tgl_lhr') }}">
-                        </diV>
-                        <div class="form-group">
-                            <input class="form-input @error('nohp') is-invalid @enderror" type="text" name="nohp" id="nohp" placeholder="081234567899" value="{{ old('nohp') }}">
-                        </div>
-                        <div class="form-group">
-                            <input class="form-input @error('alamat') is-invalid @enderror" type="text" name="alamat" id="alamat" placeholder="Alamat" value="{{ old('alamat') }}">
-                        </div>
-                        <div class="form-group">
                             <input type="password" class="form-input @error('password') is-invalid @enderror" name="password" id="password" placeholder="Password"/>
                             <span toggle="#password" class="zmdi zmdi-eye field-icon toggle-password"></span>
 							@error('password')
@@ -67,9 +39,6 @@
                                     </span>
                             @enderror
                         </div>
-                        <!-- <div class="form-group">
-                            <input type="file" class="form-input" name="foto" id="foto">
-                        </div> -->
                         <div class="form-group">
                             <button type="submit" class="form-submit">Daftar</button>
                         </div>

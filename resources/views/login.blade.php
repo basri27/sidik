@@ -29,14 +29,8 @@
 								@csrf
 
 			      		        <div class="form-group mt-3">
-			      			        <input type="text" class="form-control @error('username') is-invalid @enderror" name="username" value="{{ old('username') }}" required>
+			      			        <input type="text" class="form-control" name="username" value="{{ old('username') }}" required>
 			      			        <label class="form-control-placeholder" for="username">Username</label>
-									
-									@error('username')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ 'Username atau password salah' }}</strong>
-                                    </span>
-                                	@enderror
 
 			      		        </div>
 		                        <div class="form-group">
@@ -64,10 +58,10 @@
 			</div>
 		</div>
 	</section>
-	<script src="{{ asset('/js/jquery.min.js') }}"></script>
-    <script src="{{ asset('/js/popper.js') }}"></script>
-    <script src="{{ asset('/js/bootstrap.min.js') }}"></script>
-    <script src="{{ asset('/js/login.js') }}"></script>
+	<script src="{{ asset('/js/login/jquery.min.js') }}"></script>
+    <script src="{{ asset('/js/login/popper.js') }}"></script>
+    <script src="{{ asset('/js/login/bootstrap.min.js') }}"></script>
+    <script src="{{ asset('/js/login/main.js') }}"></script>
 </body>
 </html>
 

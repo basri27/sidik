@@ -34,15 +34,18 @@
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarSupport">
-          <ul class="navbar-nav ml-auto">
-          @yield('navbar')
-            <li class="nav-item">
-              <a class="btn btn-primary ml-lg-3" href="/login">Login</a>
-            </li>
-            <li class="nav-item">
-              <a class="btn btn-primary ml-lg-3" href="{{ route('admin_profil') }}">Dashboard</a>
-            </li>
-          </ul>
+			<ul class="navbar-nav ml-auto">
+			@yield('navbar')
+			@if (Auth::guest())
+				<li class="nav-item">
+				  <a class="btn btn-primary ml-lg-3" href="/login">Login</a>
+				</li>
+			@else
+				<li class="nav-item">
+					<a class="btn btn-primary ml-lg-3" href="{{ route('admin_profil') }}">Dashboard</a>
+				</li>
+			@endif
+			</ul>
         </div>
       </div> <!-- .container -->
     </nav>

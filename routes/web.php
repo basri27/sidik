@@ -1,6 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\PasienController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -21,13 +24,7 @@ Route::get('jadwalpraktek', function() {
     return view('jadwal');
 })->name('jadwal');
 
-// Route::get('login', function() {
-//     return view('login');
-// })->name('login');
-
-// Route::get('register', function() {
-//     return view('signup');
-// })->name('register');
+Route::post('/add/bio', [PasienController::class, 'add_bio'])->name('add_bio');
 
 //Route Admin
 Route::get('admin/profil', function() {

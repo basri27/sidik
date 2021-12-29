@@ -15,12 +15,15 @@ class CreatePasiensTable extends Migration
     {
         Schema::create('pasiens', function (Blueprint $table) {
             $table->id();
-			$table->foreignId('user_id')->constrained();
-			$table->string('nama');
-			$table->string('jk');
-			$table->string('alamat');
-			$table->string('nohp');
-			$table->date('tgl_lhr');
+            $table->foreignId('user_id')->constrained();
+            $table->foreignId('fakulta_id')->constrained();
+            $table->foreignId('prodi_id')->constrained();
+            $table->foreignId('category_id')->constrained();
+            $table->string('nama');
+            $table->string('jk');
+            $table->date('tgl_lhr');
+            $table->string('no_hp');
+            $table->string('alamat');
             $table->timestamps();
         });
     }

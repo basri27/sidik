@@ -5,10 +5,13 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use App\Models\User;
-use App\Models\Pasien;
+use App\Models\Prodi;
+use App\Models\Fakulta;
+use App\Models\Category;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Http\Request;
 
 class RegisterController extends Controller
 {
@@ -30,7 +33,7 @@ class RegisterController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = RouteServiceProvider::HOME;
+    //protected $redirectTo = RouteServiceProvider::HOME;
 
     /**
      * Create a new controller instance.
@@ -53,11 +56,6 @@ class RegisterController extends Controller
         return Validator::make($data, [
             'username' => ['required', 'string', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8'],
-			'name' => ['required', 'string', 'max:255'],
-			'jk' => ['required', 'string', 'max:255'],
-			'nohp' => ['required', 'string', 'max:255'],
-			'alamat' => ['required', 'string', 'max:255'],
-			'tgl_lhr' => ['required', 'date'],
         ]);
     }
 
@@ -73,8 +71,5 @@ class RegisterController extends Controller
             'username' => $data['username'],
             'password' => Hash::make($data['password']),
         ]);
-		
-		$iduser = User::where('id', '3');
-		dd($iduser);
     }
 }
