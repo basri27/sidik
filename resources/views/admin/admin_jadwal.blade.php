@@ -12,13 +12,19 @@
 
 @section('menu')
 <li class="nav-item">
-    <a class="nav-link" href="{{ route('admin_profil') }}">
+    <a class="nav-link" href="{{ route('adm_dashboard') }}">
+        <i class="fas fa-tachometer-alt"></i>
+        <span>Dashboard</span>
+    </a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href="{{ route('adm_profil', Auth::user()->id) }}">
         <i class="fas fa-user"></i>
         <span>Profil</span>
     </a>
 </li>
 <li class="nav-item active">
-    <a class="nav-link" href="{{ route('admin_jadwal') }}">
+    <a class="nav-link" href="{{ route('adm_jadwal') }}">
         <i class="fas fa-calendar-alt"></i>
         <span>Jadwal Praktek</span>
     </a>
@@ -57,36 +63,28 @@
         <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-bordered" style="text-align: center; font-size: 70%; color: white;">
-                    <thead class="bg-dark">   
+                    <thead class="bg-dark">
                         <tr>
-                            <th scope="col sm-1">Senin</th>
-                            <th scope="col sm-1">Selasa</th>
-                            <th scope="col sm-1">Rabu</th>
-                            <th scope="col sm-1">Kamis</th>
-                            <th scope="col sm-1">Jum'at</th>
+                            @foreach ($jadwals as $jadwal)
+                            <th scope="col sm-1">{{ $jadwal->hari }}</th>
+                            @endforeach
                         </tr>
                         <tr>
-                            <th>(dr. Edyson, M.Kes) - (dr. Tara)</th>
-                            <th>(dr. Lena Rosida, M.Kes.PhD - (dr. Tara)</th>
-                            <th>(dr. Alfi Yasmina, M.Kes.PhD) - (dr. Tara)</th>
-                            <th>(dr. Husnul Khatimah, M.Sc.) - (dr. Tara)</th>
-                            <th>(dr. Farida Heriyani, M.PH.) - (dr. Tara)</th>
+                            @foreach ($jadwals as $jadwal)
+                            <th>({{ $jadwal->tenkes_id }}) - ({{ $jadwal->tenkes2_id }})</th>
+                            @endforeach
                         </tr>
                     </thead>
                     <tbody style="color: black">
                         <tr>
-                            <td>10.00 - 12.00</td>
-                            <td>10.00 - 12.00</td>
-                            <td>10.00 - 12.00</td>
-                            <td>10.00 - 12.00</td>
-                            <td>10.00 - 12.00</td>
+                            @foreach ($jadwals as $jadwal)
+                            <td>{{ $jadwal->pagi_s }} - {{ $jadwal->pagi_n }}</td>
+                            @endforeach
                         </tr>
                         <tr>
-                            <td>13.00 - 16.00</td>
-                            <td>13.00 - 16.00</td>
-                            <td>13.00 - 16.00</td>
-                            <td>13.00 - 16.00</td>
-                            <td>13.00 - 16.00</td>
+                            @foreach ($jadwals as $jadwal)
+                            <td>{{ $jadwal->siang_s }} - {{ $jadwal->siang_n }}</td>
+                            @endforeach
                         </tr>
                     </tbody>
                 </table>

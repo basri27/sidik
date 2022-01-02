@@ -43,6 +43,7 @@
                         </div>
                         <div class="form-group">
                             <select class="form-input" name="fakultas" id="fakultas">
+                                <option value="">Fakultas</option>
                                 @foreach ($fakultas as $fak)
                                 <option value="{{ $fak->id }}">{{ $fak->nama }}</option>
                                 @endforeach
@@ -50,16 +51,20 @@
                         </div>
                         <div class="form-group">
                             <select class="form-input" name="prodi" id="prodi">
+                                <option value="">Program Studi</option>
                                 @foreach ($prodi as $pro)
                                 <option value="{{ $pro->id }}">{{ $pro->nama }}</option>
                                 @endforeach
                             </select>
                         </div>
+                        <div class="form-group">
+                            <input class="form-input" type="text" name="tempat_lhr" id="tempat_lhr" placeholder="Tempat Lahir">
+                        </div>
                         <diV class="form-group">
                             <input class="form-input" type="date" name="tgl_lhr" id="tgl_lhr">
                         </diV>
                         <div class="form-group">
-                            <input class="form-input" type="text" name="nohp" id="nohp" placeholder="081234567899">
+                            <input class="form-input" type="text" name="nohp" id="nohp" placeholder="No. HP">
                         </div>
                         <div class="form-group">
                             <input class="form-input" type="text" name="alamat" id="alamat" placeholder="Alamat">

@@ -15,8 +15,10 @@ class CreateAdminsTable extends Migration
     {
         Schema::create('admins', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained();
             $table->string('nama');
             $table->string('jk');
+            $table->string('tempat_lhr');
             $table->date('tgl_lhr');
             $table->string('no_hp');
             $table->string('alamat');

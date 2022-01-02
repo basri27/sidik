@@ -38,7 +38,7 @@
         <ul class="navbar-nav bg-gradient-dark sidebar sidebar-dark accordion" id="accordionSidebar">
 
             <!-- Sidebar - Brand -->
-            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('admin_profil') }}">
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('adm_dashboard') }}">
                 <div class="sidebar-brand-icon">
                     <img src="{{ asset('img/klinik.png') }}" style="width: 3em;">
                 </div>
@@ -137,7 +137,7 @@
                         <li class="nav-item dropdown no-arrow">
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <span class="mr-2 d-none d-lg-inline text-white-600 small"><b>
-                                {{ Auth::user()->pasien->nama }}
+                                {{ Auth::user()->admin->nama }}
                                 </b></span>
                                 <img class="img-profile rounded-circle" src="{{ asset('img/klinik.png') }}">
                             </a>

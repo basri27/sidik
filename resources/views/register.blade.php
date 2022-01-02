@@ -23,6 +23,7 @@
                         
                         <h2 class="form-title">Daftar Akun</h2>
                         <div class="form-group">
+                            <input type="text" name="role_id" value="2" hidden>
                             <input type="text" class="form-input @error('username') is-invalid @enderror" name="username" id="username" placeholder="Username" value="{{ old('username') }}"/>
 							@error('username')
                                     <span class="invalid-feedback" role="alert">
@@ -33,11 +34,15 @@
                         <div class="form-group">
                             <input type="password" class="form-input @error('password') is-invalid @enderror" name="password" id="password" placeholder="Password"/>
                             <span toggle="#password" class="zmdi zmdi-eye field-icon toggle-password"></span>
-							@error('password')
+                            @error('password')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
                             @enderror
+                        </div>
+                        <div class="form-group">
+                            <input type="password" class="form-input" name="password_confirmation" id="password-confirmation" placeholder="Konfirmasi Password"/>
+                             <span toggle="#password-confirmation" class="zmdi zmdi-eye field-icon toggle-password"></span>
                         </div>
                         <div class="form-group">
                             <button type="submit" class="form-submit">Daftar</button>

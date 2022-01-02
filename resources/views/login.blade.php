@@ -25,20 +25,25 @@
 			          		    	<h3 class="mb-4">Login</h3>
 			      	        	</div>
 			      	        </div>
-							<form  method="POST" class="signin-form">
+							<form action="{{ route('login') }}" method="POST" class="signin-form">
 								@csrf
 
 			      		        <div class="form-group mt-3">
-			      			        <input type="text" class="form-control" name="username" value="{{ old('username') }}" required>
+			      			        <input type="text" class="form-control @error('not-found') is-invalid @enderror" name="username" value="{{ old('username') }}" required>
 			      			        <label class="form-control-placeholder" for="username">Username</label>
-
+									
+									@error('not-found')
+									<span class="invalid-feedback" role="alert">
+										<strong>{{ 'Username telah digunakan' }}</strong>
+									</span>
+									@enderror
 			      		        </div>
 		                        <div class="form-group">
-                                    <input id="password-field" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required>
+                                    <input id="password-field" type="password" class="form-control @error('wrong') is-invalid @enderror" name="password" required>
 		                            <label class="form-control-placeholder" for="password">Password</label>
 		                            <span toggle="#password-field" class="fa fa-fw fa-eye field-icon toggle-password"></span>
 									
-									@error('password')
+									@error('wrong')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ 'Username atau password salah' }}</strong>
                                     </span>
@@ -64,4 +69,3 @@
     <script src="{{ asset('/js/login/main.js') }}"></script>
 </body>
 </html>
-

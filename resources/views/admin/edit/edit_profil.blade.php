@@ -11,14 +11,20 @@
 @endsection
 
 @section('menu')
+<li class="nav-item">
+    <a class="nav-link" href="{{ route('adm_dashboard') }}">
+        <i class="fas fa-tachometer-alt"></i>
+        <span>Dashboard</span>
+    </a>
+</li>
 <li class="nav-item active">
-    <a class="nav-link" href="{{ route('admin_profil') }}">
+    <a class="nav-link" href={{ route('adm_profil', Auth::user()->id) }}>
         <i class="fas fa-user"></i>
         <span>Profil</span>
     </a>
 </li>
 <li class="nav-item">
-    <a class="nav-link" href="{{ route('admin_jadwal') }}">
+    <a class="nav-link" href="{{ route('adm_jadwal') }}">
         <i class="fas fa-calendar-alt"></i>
         <span>Jadwal Praktek</span>
     </a>
@@ -60,6 +66,9 @@
                     <hr><img src="{{ asset('/img/klinik.png') }}" alt=""><hr>
                 </div>
                 <div class="detail-col col-md-8">
+                    <form method="POST" enctype="multipart/form-data" action={{ route('adm_update_profil', $admins->user_id) }}>
+                    @method('PATCH')
+                    @csrf
                     <div class="row">
                         <div class="col-md-6 col-12">
                             <div class="info-list">
@@ -67,54 +76,61 @@
                                 <ul>
                                     <li>
                                         <label class="font-weight-bold text-primary" for="">Nama</label>
-                                        <input type="text" name="" class="form-control" value="Jhon Smith">
+                                        <input type="text" name="nama" class="form-control" value="{{ $admins->nama }}">
                                     </li>
                                     <li>
                                         <label class="font-weight-bold text-primary" for="">Tanggal lahir</label>
-                                        <input type="date" name="" class="form-control">
+                                        <input type="date" name="tgl_lhr" class="form-control" value="{{ $admins->tgl_lhr }}">
                                     </li>
                                     <li>
                                         <label class="font-weight-bold text-primary" for="">Tempat lahir</label>
-                                        <input type="text" name="" class="form-control" value="Banjarmasin">
+                                        <input type="text" name="tempat_lhr" class="form-control" value="{{ $admins->tempat_lhr }}">
                                     </li>
                                     <li>
                                         <label class="font-weight-bold text-primary" for="">Alamat</label>
-                                        <input type="text" name="" class="form-control" value="Jl. H. Hasan Basri">
+                                        <input type="text" name="alamat" class="form-control" value="{{ $admins->alamat }}">
                                     </li>
-                                </ul></div>
+                                </ul>
+                                </div>
                             </div>
                         </div>
                         <div class="col-md-6 col-12">
                             <div class="info-list">
+                                <div class="form-group">
                                 <ul>
                                     <li>
                                         <label class="font-weight-bold text-primary" for="">Umur</label>
-                                        <input type="text" name="" class="form-control" value="21" disabled>
+                                        <input type="text" class="form-control" value="{{ $age }}" disabled>
                                     </li>
                                     <li>
                                         <label class="font-weight-bold text-primary" for="">No. Hp</label>
-                                        <input type="text" name="" class="form-control" value="081234567890">
+                                        <input type="text" name="no_hp" class="form-control" value="{{ $admins->no_hp }}">
                                     </li>
                                     <li>
                                         <label class="font-weight-bold text-primary" for="">Jenis Kelamin</label>
-                                        <input type="dropdown" name="" class="form-control" value="Jl. H. Hasan Basri">
+                                        <select class="form-control" name="jk" id="jk">
+                                            <option value="Laki-laki">Laki-laki</option>
+                                            <option value="Perempuan">Perempuan</option>
+                                        </select>
                                     </li>
                                 </ul>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <a href="#" class="btn btn-success btn-icon-split btn-sm">
+                    <button type="submit" class="btn btn-success btn-icon-split btn-sm">
                         <span>
                             <i class="fas fa-check"></i>
                         </span>    
                         <span class="text">Simpan</span>
-                    </a>&nbsp;
-                    <a href="{{ route('admin_profil') }}" class="btn btn-secondary btn-icon-split btn-sm">
+                    </button>&nbsp;
+                    <a href={{ route('adm_profil', Auth::user()->id) }} class="btn btn-secondary btn-icon-split btn-sm">
                         <span>
                             <i class="fas fa-times"></i>
                         </span>    
                         <span class="text">Batal</span>
                     </a>
+                    </form>
                 </div>                    
             </div>
         </div>

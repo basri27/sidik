@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\PasienController;
+use App\Http\Controllers\AdminController;
 
 
 /*
@@ -16,9 +17,7 @@ use App\Http\Controllers\PasienController;
 |
 */
 
-Route::get('/', function () {
-    return view('home');
-})->name('home');
+Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 Route::get('jadwalpraktek', function() {
     return view('jadwal');
@@ -26,14 +25,22 @@ Route::get('jadwalpraktek', function() {
 
 Route::post('/add/bio', [PasienController::class, 'add_bio'])->name('add_bio');
 
-//Route Admin
-Route::get('admin/profil', function() {
-    return view('admin.admin');
-})->name('admin_profil');
+//-------------------------------Route Admin---------------------------------//
+Route::get('admin/dashboard/', [AdminController::class, 'adm_dashboard'])->name('adm_dashboard');
 
-Route::get('admin/jadwalpraktek', function() {
-    return view('admin.admin_jadwal');
-})->name('admin_jadwal');
+#Profil admin
+Route::get('admin/profil/{user_id}', [AdminController::class, 'adm_profil'])->name('adm_profil');
+
+#Edit profil admin
+Route::get('admin/edit/profil/{user_id}', [AdminController::class, 'adm_edit'])->name('admin_edit_profil');
+Route::patch('admin/update/profil/{user_id}', [AdminController::class, 'adm_update'])->name('adm_update_profil');
+
+#Edit username dan password
+Route::get('admin/edit/userpw/{user_id}', [AdminController::class, 'adm_edit_userpw'])->name('adm_edit_userpw');
+Route::patch('admin/update/userpw/{user_id}', [AdminController::class, 'adm_update_userpw'])->name('adm_update_userpw');
+
+#Manajemen jadwal
+Route::get('admin/jadwalpraktek', [AdminController::class, 'adm_jadwal'])->name('adm_jadwal');
 
 Route::get('admin/manajemendata/pasien', function() {
     return view('admin.manajemen.man_datapasien');
@@ -51,11 +58,6 @@ Route::get('admin/manajemendata/rekammedik', function() {
     return view('admin.manajemen.man_rekammedik');
 })->name('admin_man_datarekammedik');
 
-//Edit Admin
-Route::get('admin/edit/profil', function() {
-    return view('admin.edit.edit_profil');
-})->name('admin_edit_profil');
-
 Route::get('admin/edit/userpw', function() {
     return view('admin.edit.edit_userpw');
 })->name('admin_edit_userpw');
@@ -66,4 +68,4 @@ Route::get('admin/edit/jadwalpraktek', function() {
 
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+//Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

@@ -11,14 +11,20 @@
 @endsection
 
 @section('menu')
+<li class="nav-item">
+    <a class="nav-link" href="{{ route('adm_dashboard') }}">
+        <i class="fas fa-tachometer-alt"></i>
+        <span>Dashboard</span>
+    </a>
+</li>
 <li class="nav-item active">
-    <a class="nav-link" href="{{ route('admin_profil') }}">
+    <a class="nav-link" href={{ route('adm_profil', Auth::user()->id) }}>
         <i class="fas fa-user"></i>
         <span>Profil</span>
     </a>
 </li>
 <li class="nav-item">
-    <a class="nav-link" href="{{ route('admin_jadwal') }}">
+    <a class="nav-link" href="{{ route('adm_jadwal') }}">
         <i class="fas fa-calendar-alt"></i>
         <span>Jadwal Praktek</span>
     </a>
@@ -60,34 +66,34 @@
                     <img src="{{ asset('/img/klinik.png') }}" alt="">
                 </div>
                 <div class="detail-col col-md-8">
-                    <h2>John Smith</h2>
+                    <h2>{{ Auth::user()->admin->nama }}</h2>
                     <div class="row">
                         <div class="col-md-6 col-12">
                             <div class="info-list">
                                 <ul>
-                                    <li><span>Tanggal Lahir: </span>27/09/2000</li>
-                                    <li><span>Tempat Lahir: </span>Banjarmasin</li>
-                                    <li><span>Alamat: </span>Jl. H. Hasan Basri</li>
+                                    <li><span>Tanggal Lahir: </span>{{ Auth::user()->admin->tgl_lhr }}</li>
+                                    <li><span>Tempat Lahir: </span>{{ Auth::user()->admin->tempat_lhr }}</li>
+                                    <li><span>Alamat: </span>{{ Auth::user()->admin->alamat }}</li>
                                 </ul>
                             </div>
                         </div>
                         <div class="col-md-6 col-12">
                             <div class="info-list">
                                 <ul>
-                                    <li><span>Umur: </span>31 Tahun</li>
-                                    <li><span>Phone: </span>+01 454 548 4458</li>
-                                    <li><span>Jenis Kelamin: </span>Laki-laki</li>
+                                    <li><span>Umur: </span>{{ $age }}</li>
+                                    <li><span>Phone: </span>{{ Auth::user()->admin->no_hp}}</li>
+                                    <li><span>Jenis Kelamin: </span>{{ Auth::user()->admin->jk }}</li>
                                 </ul>
                             </div>
                         </div>
                     </div>
-                    <a href="{{ route('admin_edit_profil') }}" class="btn btn-primary btn-icon-split btn-sm">
+                    <a href="{{ route('admin_edit_profil', Auth::user()->id) }}" class="btn btn-primary btn-icon-split btn-sm">
                         <span>
                             <i class="fas fa-edit"></i>
                         </span>    
                         <span class="text">Ubah profil</span>
                     </a>&nbsp;
-                    <a href="{{ route('admin_edit_userpw') }}" class="btn btn-success btn-icon-split btn-sm">
+                    <a href="{{ route('adm_edit_userpw', Auth::user()->id) }}" class="btn btn-success btn-icon-split btn-sm">
                         <span>
                             <i class="fas fa-edit"></i>
                         </span>

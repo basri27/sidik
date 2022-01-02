@@ -16,6 +16,7 @@ class PasienController extends Controller
             'prodi' => 'required',
             'kategori' => 'required',
             'jk' => 'required',
+            'tempat_lhr' => 'required',
             'tgl_lhr' => 'required',
             'nohp' => 'required',
             'alamat' => 'required',
@@ -29,12 +30,13 @@ class PasienController extends Controller
                 'category_id' => $request->input('kategori'),
                 'nama' => $request->input('name'),
                 'jk' => $request->input('jk'),
+                'tempat_lhr' => $request->input('tempat_lhr'),
                 'tgl_lhr' => $request->input('tgl_lhr'),
                 'no_hp' => $request->input('nohp'),
                 'alamat' => $request->input('alamat'),
             ]);
         }
 
-        return redirect()->route('admin_profil');
+        return redirect()->route('home');
     }
 }

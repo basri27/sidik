@@ -21,6 +21,7 @@ class CreatePasiensTable extends Migration
             $table->foreignId('category_id')->constrained();
             $table->string('nama');
             $table->string('jk');
+            $table->string('tempat_lhr');
             $table->date('tgl_lhr');
             $table->string('no_hp');
             $table->string('alamat');

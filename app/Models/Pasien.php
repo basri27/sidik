@@ -16,6 +16,7 @@ class Pasien extends Model
         'category_id',
         'nama',
         'jk',
+        'tempat_lhr',
         'tgl_lhr',
         'no_hp',
         'alamat',

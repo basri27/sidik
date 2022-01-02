@@ -12,13 +12,19 @@
 
 @section('menu')
 <li class="nav-item">
-    <a class="nav-link" href="{{ route('admin_profil') }}">
+    <a class="nav-link" href="{{ route('adm_dashboard') }}">
+        <i class="fas fa-tachometer-alt"></i>
+        <span>Dashboard</span>
+    </a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href="{{ route('adm_profil', Auth::user()->id) }}">
         <i class="fas fa-user"></i>
         <span>Profil</span>
     </a>
 </li>
 <li class="nav-item active">
-    <a class="nav-link" href="{{ route('admin_jadwal') }}">
+    <a class="nav-link" href="{{ route('adm_jadwal') }}">
         <i class="fas fa-calendar-alt"></i>
         <span>Jadwal Praktek</span>
     </a>
@@ -238,7 +244,7 @@
                         </span>    
                         <span class="text">Simpan</span>
                     </a>&nbsp;
-            <a href="{{ route('admin_profil') }}" class="btn btn-secondary btn-icon-split btn-sm">
+            <a href="{{ route('adm_jadwal') }}" class="btn btn-secondary btn-icon-split btn-sm">
                 <span>
                     <i class="fas fa-times"></i>
                 </span>    

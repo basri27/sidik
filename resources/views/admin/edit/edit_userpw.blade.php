@@ -11,14 +11,20 @@
 @endsection
 
 @section('menu')
+<li class="nav-item">
+    <a class="nav-link" href="{{ route('adm_dashboard') }}">
+        <i class="fas fa-tachometer-alt"></i>
+        <span>Dashboard</span>
+    </a>
+</li>
 <li class="nav-item active">
-    <a class="nav-link" href="{{ route('admin_profil') }}">
+    <a class="nav-link" href="{{ route('adm_profil', Auth::user()->id) }}">
         <i class="fas fa-user"></i>
         <span>Profil</span>
     </a>
 </li>
 <li class="nav-item">
-    <a class="nav-link" href="{{ route('admin_jadwal') }}">
+    <a class="nav-link" href="{{ route('adm_jadwal') }}">
         <i class="fas fa-calendar-alt"></i>
         <span>Jadwal Praktek</span>
     </a>
@@ -56,15 +62,18 @@
     <div class="card shadow mb-4">
         <div class="card-body">
             <div class="about-row row">
-                <div class="detail-col col-md-8">
+                <div class="detail-col col-md-12">
+                    <form method="POST" action={{ route('adm_update_userpw', $admins->id) }}>
+                    @method('PATCH')
+                    @csrf
                     <div class="row">
                         <div class="col-md-6 col-12">
                             <div class="info-list">
                                 <div class="form-group">
                                     <ul>
                                         <li>
-                                            <label class="font-weight-bold text-primary" for="">Username:</label>
-                                            <input type="text" name="" class="form-control" value="smith27">
+                                            <label class="font-weight-bold text-primary">Username:</label>
+                                            <input type="text" name="username" class="form-control" value="{{ $admins->username }}">
                                         </li>
                                     </ul>
                                 </div>
@@ -74,28 +83,51 @@
                             <div class="info-list">
                                 <ul>
                                     <li>
-                                        <label class="font-weight-bold text-primary" for="">Password:</label>
-                                        <input type="password" name="" class="form-control" value="12345678">
+                                        <label class="font-weight-bold text-primary">Password Lama:</label>
+                                        <input id="password-lama" type="password" name="password" class="form-control">
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-12">
+                            <div class="info-list">
+                                <ul>
+                                    <li>
+                                        <label class="font-weight-bold text-primary">Password Baru:</label>
+                                        <input id="password-baru" type="password" name="password" class="form-control">
+                                        <input type="checkbox" class="form-control-input" onclick="showPassword()"> Tampilkan Password
                                     </li>
                                 </ul>
                             </div>
                         </div>
                     </div>
-                    <a href="#" class="btn btn-success btn-icon-split btn-sm">
+                    <button type="submit" class="btn btn-success btn-icon-split btn-sm">
                         <span>
                             <i class="fas fa-check"></i>
                         </span>    
                         <span class="text">Simpan</span>
-                    </a>&nbsp;
-                    <a href="{{ route('admin_profil') }}" class="btn btn-secondary btn-icon-split btn-sm">
+                    </button>&nbsp;
+                    <a href="{{ route('adm_profil', $admins->id) }}" class="btn btn-secondary btn-icon-split btn-sm">
                         <span>
                             <i class="fas fa-times"></i>
                         </span>    
                         <span class="text">Batal</span>
                     </a>
+                    </form>
                 </div>                    
             </div>
         </div>
     </div>
 </div>
+<script>
+    function showPassword() {
+        var x = document.getElementById('password-lama', 'password-baru');
+        if (x.type === "password") {
+            x.type = "text";
+        }
+        else {
+            x.type = "password";
+        }
+    }
+</script>
 @endsection
