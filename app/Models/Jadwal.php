@@ -10,7 +10,7 @@ class Jadwal extends Model
     use HasFactory;
 
     protected $fillable = [
-        'tenkes_id',
+        'tenkes1_id',
         'tenkes2_id',
         'hari',
         'pagi_s',
@@ -21,6 +21,6 @@ class Jadwal extends Model
 
     public function tenkesehatan()
     {
-        return $this->belongsTo(TenKesehatan::class);
+        return $this->hasMany(Tenkesehatan::class);
     }
 }

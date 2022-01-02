@@ -75,17 +75,35 @@ class AdminController extends Controller
 
     public function adm_jadwal()
     {
-        #$jadwals = Jadwal::join('tenkesehatans', function ($join) {
-        #    $join->on('tenkes_id', '=', 'tenkesehatans.id')->orOn('tenkes2_id', '=', 'tenkesehatans.id');
-        #})
-        #->get();
-        #$tenkes1 = TenKesehatan::join('jadwals', 'tenkes_id', '=', 'tenkesehatans.id')->get();
-        #$tenkes2 = TenKesehatan::join('jadwals', 'tenkes2_id', '=', 'tenkesehatans.id')->first();
-        #$jadwals = Jadwal::join('tenkesehatans', 'tenkesehatans.id', '=', 'tenkes_id')->get();
-        $jadwals = Jadwal::with('tenkesehatan')->get();
+        $jadwals = Jadwal::all();
+        $tenkes1 = Jadwal::join('tenkesehatans', 'tenkes1_id', 'tenkesehatans.id')->get();
+        $tenkes2 = Jadwal::join('tenkesehatans', 'tenkes2_id', 'tenkesehatans.id')->get();
+        
+        return view('admin.admin_jadwal', compact('jadwals', 'tenkes1', 'tenkes2'));
+    }
 
-        #dd($jadwals);
+    public function adm_jadwal_edit($id)
+    {
+        $jadwals = Jadwal::where('id', $id)->first();
+        $tenkes = Tenkesehatan::get();
 
-        return view('admin.admin_jadwal', compact('jadwals'));
+        return view('admin.edit.edit_jadwal', compact('jadwals', 'tenkes'));
+    }
+
+    public function adm_jadwal_update(Request $request, $id)
+    {
+        $jadwals = Jadwal::where('id', $id)->first();
+
+        $jadwals->update([
+            'tenkes1_id' => $request->input('tenkes1'),
+            'tenkes2_id' => $request->input('tenkes2'),
+            'pagi_s' => $request->input('pagi_s'),
+            'pagi_n' => $request->input('pagi_n'),
+            'siang_s' => $request->input('siang_s'),
+            'siang_n' => $request->input('siang_n'),
+        ]);
+
+        #dd($jadwals, $id);
+        return redirect()->route('adm_jadwal', $id);
     }
 }

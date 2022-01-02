@@ -70,8 +70,17 @@
                             @endforeach
                         </tr>
                         <tr>
-                            @foreach ($jadwals as $jadwal)
-                            <th>({{ $jadwal->tenkes_id }}) - ({{ $jadwal->tenkes2_id }})</th>
+                            @foreach ($tenkes1 as $tks1)
+                            <th>
+                                ({{ $tks1->nama }})
+                            </th>
+                            @endforeach
+                        </tr>
+                        <tr>
+                            @foreach ($tenkes2 as $tks2)
+                            <th>
+                                ({{ $tks2->nama }})
+                            </th>
                             @endforeach
                         </tr>
                     </thead>
@@ -86,15 +95,19 @@
                             <td>{{ $jadwal->siang_s }} - {{ $jadwal->siang_n }}</td>
                             @endforeach
                         </tr>
+                        <tr>
+                            @foreach ($jadwals as $jadwal)
+                            <td>
+                                <a href="{{ route('adm_jadwal_edit', $jadwal->id) }}" class="btn btn-primary btn-icon-split btn-sm">
+                                    <span><i class="fas fa-edit"></i></span>    
+                                    <span class="text">Edit</span>
+                                </a>
+                            </td>
+                            @endforeach
+                        </tr>
                     </tbody>
                 </table>
             </div>
-            <a href="{{ route('admin_edit_jadwal') }}" class="btn btn-primary btn-icon-split btn-sm">
-                <span>
-                    <i class="fas fa-edit"></i>
-                </span>    
-                <span class="text">Ubah jadwal praktek</span>
-            </a>
         </div>
     </div>
 </div>

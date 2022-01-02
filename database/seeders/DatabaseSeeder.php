@@ -67,7 +67,7 @@ class DatabaseSeeder extends Seeder
         foreach ($days as $day) {
             DB::table('jadwals')->insert([
                 'hari' => $day,
-                'tenkes_id' => random_int(1,6),
+                'tenkes1_id' => random_int(1,6),
                 'tenkes2_id' => random_int(1,6),
             ]);
         }

@@ -61,195 +61,67 @@
 <div class="container-fluid">
     <div class="card shadow mb-4">
         <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-bordered" style="text-align: center; font-size: 70%; color: white;" width="100%" cellspacing="0">
-                    <thead class="bg-dark">   
-                        <tr>
-                            <th scope="col sm-1">Senin</th>
-                        </tr>
-                        <tr>
-                            <th>
-                                <input type="checkbox" name="dokter1" id="dokter1" value="1">
-                                <label for="dokter1">dr. Edyson, M.Kes</label><br>
-                                <input type="checkbox" name="dokter2" id="dokter2" value="2">
-                                <label for="dokter1">dr. Lena Rosida, M.Kes.PhD</label><br>
-                                <input type="checkbox" name="dokter3" id="dokter3" value="3">
-                                <label for="dokter1">dr. Alfi Yasmina, M.Kes.PhD</label><br>
-                                <input type="checkbox" name="dokter4" id="dokter4" value="4">
-                                <label for="dokter1">dr. Husnul Khatimah, M.Sc</label><br>
-                                <input type="checkbox" name="dokter5" id="dokter5" value="5">
-                                <label for="dokter1">dr. Farida Heriyani, M.PH.</label><br>
-                                <input type="checkbox" name="dokter6" id="dokter6" value="6">
-                                <label for="dokter1">dr. Tara</label>
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>
-                                <input class="form-control-sm" type="time" name="time1" id="time1">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <input class="form-control-sm" type="time" name="time2" id="time2">
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-                <table class="table table-bordered" style="text-align: center; font-size: 70%; color: white;" width="100%" cellspacing="0">
-                    <thead class="bg-dark">   
-                        <tr>
-                            <th scope="col sm-1">Selasa</th>
-                        </tr>
-                        <tr>
-                            <th>
-                                <input type="checkbox" name="dokter1" id="dokter1" value="1">
-                                <label for="dokter1">dr. Edyson, M.Kes</label><br>
-                                <input type="checkbox" name="dokter2" id="dokter2" value="2">
-                                <label for="dokter1">dr. Lena Rosida, M.Kes.PhD</label><br>
-                                <input type="checkbox" name="dokter3" id="dokter3" value="3">
-                                <label for="dokter1">dr. Alfi Yasmina, M.Kes.PhD</label><br>
-                                <input type="checkbox" name="dokter4" id="dokter4" value="4">
-                                <label for="dokter1">dr. Husnul Khatimah, M.Sc</label><br>
-                                <input type="checkbox" name="dokter5" id="dokter5" value="5">
-                                <label for="dokter1">dr. Farida Heriyani, M.PH.</label><br>
-                                <input type="checkbox" name="dokter6" id="dokter6" value="6">
-                                <label for="dokter1">dr. Tara</label>
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>
-                                <input class="form-control-sm" type="time" name="time1" id="time1">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <input class="form-control-sm" type="time" name="time2" id="time2">
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-                <table class="table table-bordered" style="text-align: center; font-size: 70%; color: white;" width="100%" cellspacing="0">
-                    <thead class="bg-dark">   
-                        <tr>
-                            <th scope="col sm-1">Rabu</th>
-                        </tr>
-                        <tr>
-                            <th>
-                                <input type="checkbox" name="dokter1" id="dokter1" value="1">
-                                <label for="dokter1">dr. Edyson, M.Kes</label><br>
-                                <input type="checkbox" name="dokter2" id="dokter2" value="2">
-                                <label for="dokter1">dr. Lena Rosida, M.Kes.PhD</label><br>
-                                <input type="checkbox" name="dokter3" id="dokter3" value="3">
-                                <label for="dokter1">dr. Alfi Yasmina, M.Kes.PhD</label><br>
-                                <input type="checkbox" name="dokter4" id="dokter4" value="4">
-                                <label for="dokter1">dr. Husnul Khatimah, M.Sc</label><br>
-                                <input type="checkbox" name="dokter5" id="dokter5" value="5">
-                                <label for="dokter1">dr. Farida Heriyani, M.PH.</label><br>
-                                <input type="checkbox" name="dokter6" id="dokter6" value="6">
-                                <label for="dokter1">dr. Tara</label>
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>
-                                <input class="form-control-sm" type="time" name="time1" id="time1">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <input class="form-control-sm" type="time" name="time2" id="time2">
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-                <table class="table table-bordered" style="text-align: center; font-size: 70%; color: white;" width="100%" cellspacing="0">
-                    <thead class="bg-dark">   
-                        <tr>
-                            <th scope="col sm-1">Kamis</th>
-                        </tr>
-                        <tr>
-                            <th>
-                                <input type="checkbox" name="dokter1" id="dokter1" value="1">
-                                <label for="dokter1">dr. Edyson, M.Kes</label><br>
-                                <input type="checkbox" name="dokter2" id="dokter2" value="2">
-                                <label for="dokter1">dr. Lena Rosida, M.Kes.PhD</label><br>
-                                <input type="checkbox" name="dokter3" id="dokter3" value="3">
-                                <label for="dokter1">dr. Alfi Yasmina, M.Kes.PhD</label><br>
-                                <input type="checkbox" name="dokter4" id="dokter4" value="4">
-                                <label for="dokter1">dr. Husnul Khatimah, M.Sc</label><br>
-                                <input type="checkbox" name="dokter5" id="dokter5" value="5">
-                                <label for="dokter1">dr. Farida Heriyani, M.PH.</label><br>
-                                <input type="checkbox" name="dokter6" id="dokter6" value="6">
-                                <label for="dokter1">dr. Tara</label>
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>
-                                <input class="form-control-sm" type="time" name="time1" id="time1">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <input class="form-control-sm" type="time" name="time2" id="time2">
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-                <table class="table table-bordered" style="text-align: center; font-size: 70%; color: white;" width="100%" cellspacing="0">
-                    <thead class="bg-dark">   
-                        <tr>
-                            <th scope="col sm-1">Jum'at</th>
-                        </tr>
-                        <tr>
-                            <th>
-                                <input type="checkbox" name="dokter1" id="dokter1" value="1">
-                                <label for="dokter1">dr. Edyson, M.Kes</label><br>
-                                <input type="checkbox" name="dokter2" id="dokter2" value="2">
-                                <label for="dokter1">dr. Lena Rosida, M.Kes.PhD</label><br>
-                                <input type="checkbox" name="dokter3" id="dokter3" value="3">
-                                <label for="dokter1">dr. Alfi Yasmina, M.Kes.PhD</label><br>
-                                <input type="checkbox" name="dokter4" id="dokter4" value="4">
-                                <label for="dokter1">dr. Husnul Khatimah, M.Sc</label><br>
-                                <input type="checkbox" name="dokter5" id="dokter5" value="5">
-                                <label for="dokter1">dr. Farida Heriyani, M.PH.</label><br>
-                                <input type="checkbox" name="dokter6" id="dokter6" value="6">
-                                <label for="dokter1">dr. Tara</label>
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>
-                                <input class="form-control-sm" type="time" name="time1" id="time1">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <input class="form-control-sm" type="time" name="time2" id="time2">
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <a href="#" class="btn btn-success btn-icon-split btn-sm">
-                        <span>
-                            <i class="fas fa-check"></i>
-                        </span>    
-                        <span class="text">Simpan</span>
-                    </a>&nbsp;
-            <a href="{{ route('adm_jadwal') }}" class="btn btn-secondary btn-icon-split btn-sm">
-                <span>
-                    <i class="fas fa-times"></i>
-                </span>    
-                <span class="text">Batal</span>
-            </a>
+            <form action={{ route('adm_jadwal_update', $jadwals->id) }} method="POST">
+                @method('PATCH')
+                @csrf
+                <div class="table-responsive">
+                    <table class="table table-bordered col-12" style="text-align: center; font-size: 70%; color: white;" width="100%" cellspacing="0">
+                        <thead class="bg-dark">   
+                            <tr>
+                                <th scope="col sm-1">{{ $jadwals->hari}}</th>
+                            </tr>
+                            <tr>
+                                <th>
+                                    <label for="tenkes1">Pilih Dokter: </label>
+                                    <select name="tenkes1" class="form-control">
+                                        @foreach ($tenkes as $tks)
+                                        <option value="{{ $tks->id }}">{{ $tks->nama }}</option>
+                                        @endforeach
+                                    </select>
+                                </th>
+                            </tr>
+                            <tr>
+                                <th>
+                                    <label for="tenkes2">Pilih Dokter: </label>
+                                    <select name="tenkes2" class="form-control">
+                                        @foreach ($tenkes as $tks)
+                                        <option value="{{ $tks->id }}">{{ $tks->nama }}</option>
+                                        @endforeach
+                                    </select>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <label style="color: black"><b>Pagi:</b></label><br>
+                                    <input class="form-control-sm" type="time" name="pagi_s" value={{ $jadwals->pagi_s }}>
+                                    <input class="form-control-sm" type="time" name="pagi_n" value={{ $jadwals->pagi_n }}>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label style="color: black"><b>Siang:</b></label><br>
+                                    <input class="form-control-sm" type="time" name="siang_s" value={{ $jadwals->siang_s }}>
+                                    <input class="form-control-sm" type="time" name="siang_n" value={{ $jadwals->siang_n }}>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <button type="submit" class="btn btn-success btn-icon-split btn-sm">
+                    <span>
+                        <i class="fas fa-check"></i>
+                    </span>    
+                    <span class="text">Simpan</span>
+                </button>&nbsp;
+                <a href="{{ route('adm_jadwal') }}" class="btn btn-secondary btn-icon-split btn-sm">
+                    <span>
+                        <i class="fas fa-times"></i>
+                    </span>    
+                    <span class="text">Batal</span>
+                </a>
+            </form>
         </div>
     </div>
 </div>

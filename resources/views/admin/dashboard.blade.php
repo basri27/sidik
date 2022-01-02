@@ -1,6 +1,6 @@
 @extends('layouts.back')
 
-@section('title', 'Profil')
+@section('title', 'Dashboard')
 
 @section('css')
     <link rel="stylesheet" href="{{ asset('css/dashboard/sb-admin-2.min.css') }}">

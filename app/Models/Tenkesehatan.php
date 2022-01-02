@@ -30,8 +30,8 @@ class Tenkesehatan extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function jadwals()
+    public function jadwal()
     {
-        return $this->hasMany(Jadwal::class);
+        return $this->belongsTo(Jadwal::class);
     }
 }

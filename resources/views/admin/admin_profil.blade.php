@@ -87,7 +87,7 @@
                             </div>
                         </div>
                     </div>
-                    <a href="{{ route('admin_edit_profil', Auth::user()->id) }}" class="btn btn-primary btn-icon-split btn-sm">
+                    <a href="{{ route('adm_edit_profil', Auth::user()->id) }}" class="btn btn-primary btn-icon-split btn-sm">
                         <span>
                             <i class="fas fa-edit"></i>
                         </span>    

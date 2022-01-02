@@ -32,7 +32,7 @@ Route::get('admin/dashboard/', [AdminController::class, 'adm_dashboard'])->name(
 Route::get('admin/profil/{user_id}', [AdminController::class, 'adm_profil'])->name('adm_profil');
 
 #Edit profil admin
-Route::get('admin/edit/profil/{user_id}', [AdminController::class, 'adm_edit'])->name('admin_edit_profil');
+Route::get('admin/edit/profil/{user_id}', [AdminController::class, 'adm_edit'])->name('adm_edit_profil');
 Route::patch('admin/update/profil/{user_id}', [AdminController::class, 'adm_update'])->name('adm_update_profil');
 
 #Edit username dan password
@@ -41,6 +41,10 @@ Route::patch('admin/update/userpw/{user_id}', [AdminController::class, 'adm_upda
 
 #Manajemen jadwal
 Route::get('admin/jadwalpraktek', [AdminController::class, 'adm_jadwal'])->name('adm_jadwal');
+
+#Edit jadwal
+Route::get('admin/jadwalprakterk/edit/{id}', [AdminController::class, 'adm_jadwal_edit'])->name('adm_jadwal_edit');
+Route::patch('admin/jadwalpraktek/update/{id}', [AdminController::class, 'adm_jadwal_update'])->name('adm_jadwal_update');
 
 Route::get('admin/manajemendata/pasien', function() {
     return view('admin.manajemen.man_datapasien');
@@ -57,14 +61,6 @@ Route::get('admin/manajemendata/apoteker', function() {
 Route::get('admin/manajemendata/rekammedik', function() {
     return view('admin.manajemen.man_rekammedik');
 })->name('admin_man_datarekammedik');
-
-Route::get('admin/edit/userpw', function() {
-    return view('admin.edit.edit_userpw');
-})->name('admin_edit_userpw');
-
-Route::get('admin/edit/jadwalpraktek', function() {
-    return view('admin.edit.edit_jadwal');
-})->name('admin_edit_jadwal');
 
 Auth::routes();
 
