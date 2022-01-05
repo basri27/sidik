@@ -20,9 +20,9 @@ class Tenkesehatan extends Model
         'alamat',
     ];
 
-    public function kategoritenkes()
+    public function kategori_tenkesehatan()
     {
-        return $this->belongsTo(KategoriTenKes::class);
+        return $this->belongsTo(Kategori_tenkesehatan::class);
     }
 
     public function user()
@@ -32,6 +32,6 @@ class Tenkesehatan extends Model
 
     public function jadwal()
     {
-        return $this->belongsTo(Jadwal::class);
+        return $this->hasMany(Jadwal::class);
     }
 }

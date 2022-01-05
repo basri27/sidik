@@ -26,34 +26,31 @@
         <table class="table table-bordered" style="text-align: center; font-size: 80%; color: white;">
             <thead class="bg-dark">   
                 <tr>
-                    <th scope="col sm-1">Senin</th>
-                    <th scope="col sm-1">Selasa</th>
-                    <th scope="col sm-1">Rabu</th>
-                    <th scope="col sm-1">Kamis</th>
-                    <th scope="col sm-1">Jum'at</th>
+                    @foreach ($jadwals as $jadwal)
+                    <th scope="col sm-1">{{ $jadwal->hari }}</th>
+                    @endforeach
                 </tr>
                 <tr>
-                    <th>(dr. Edyson, M.Kes) - (dr. Tara)</th>
-                    <th>(dr. Lena Rosida, M.Kes.PhD - (dr. Tara)</th>
-                    <th>(dr. Alfi Yasmina, M.Kes.PhD) - (dr. Tara)</th>
-                    <th>(dr. Husnul Khatimah, M.Sc.) - (dr. Tara)</th>
-                    <th>(dr. Farida Heriyani, M.PH.) - (dr. Tara)</th>
+                    @foreach ($tenkes1 as $tks1)
+                    <th>{{ $tks1->nama }}</th>
+                    @endforeach
+                </tr>
+                <tr>
+                    @foreach ($tenkes2 as $tks2)
+                    <th>{{ $tks2->nama }}</th>
+                    @endforeach
                 </tr>
             </thead>
             <tbody style="color: black">
                 <tr>
-                    <td>10.00 - 12.00</td>
-                    <td>10.00 - 12.00</td>
-                    <td>10.00 - 12.00</td>
-                    <td>10.00 - 12.00</td>
-                    <td>10.00 - 12.00</td>
+                    @foreach ($jadwals as $jadwal)
+                    <td>{{ \Carbon\Carbon::parse($jadwal->pagi_s)->format('H:i') }} - {{ \Carbon\Carbon::parse($jadwal->pagi_n)->format('H:i') }}</td>
+                    @endforeach
                 </tr>
                 <tr>
-                    <td>13.00 - 16.00</td>
-                    <td>13.00 - 16.00</td>
-                    <td>13.00 - 16.00</td>
-                    <td>13.00 - 16.00</td>
-                    <td>13.00 - 16.00</td>
+                    @foreach ($jadwals as $jadwal)
+                    <td>{{ \Carbon\Carbon::parse($jadwal->siang_s)->format('H:i') }} - {{ \Carbon\Carbon::parse($jadwal->siang_n)->format('H:i') }}</td>
+                    @endforeach
                 </tr>
             </tbody>
         </table>

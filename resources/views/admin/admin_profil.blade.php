@@ -39,11 +39,11 @@
         data-parent="#accordionSidebar">
         <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Pilih:</h6>
-            <a class="collapse-item" href="{{ route('admin_man_datapasien') }}">Pasien</a>
-            <a class="collapse-item" href="{{ route('admin_man_dataapoteker') }}">Apoteker</a>
-            <a class="collapse-item" href="{{ route('admin_man_datanakes') }}">Tenaga Kesehatan</a>
+            <a class="collapse-item" href="{{ route('adm_man_datapasien') }}">Pasien</a>
+            <a class="collapse-item" href="{{ route('adm_man_dataapoteker') }}">Apoteker</a>
+            <a class="collapse-item" href="{{ route('adm_man_datanakes') }}">Tenaga Kesehatan</a>
             <a class="collapse-item" href="#">Dokumentasi Kegiatan</a>
-            <a class="collapse-item" href="{{ route('admin_man_datarekammedik') }}">Rekam Medik</a>
+            <a class="collapse-item" href="{{ route('adm_man_datarekammedik') }}">Rekam Medik</a>
         </div>
     </div>
 </li>
@@ -71,7 +71,7 @@
                         <div class="col-md-6 col-12">
                             <div class="info-list">
                                 <ul>
-                                    <li><span>Tanggal Lahir: </span>{{ Auth::user()->admin->tgl_lhr }}</li>
+                                    <li><span>Tanggal Lahir: </span>{{ \Carbon\Carbon::parse(Auth::user()->admin->tgl_lhr)->format('d F Y') }}</li>
                                     <li><span>Tempat Lahir: </span>{{ Auth::user()->admin->tempat_lhr }}</li>
                                     <li><span>Alamat: </span>{{ Auth::user()->admin->alamat }}</li>
                                 </ul>

@@ -39,11 +39,11 @@
         data-parent="#accordionSidebar">
         <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Pilih:</h6>
-            <a class="collapse-item" href="{{ route('admin_man_datapasien') }}">Pasien</a>
-            <a class="collapse-item" href="{{ route('admin_man_dataapoteker') }}">Apoteker</a>
-            <a class="collapse-item" href="{{ route('admin_man_datanakes') }}">Tenaga Kesehatan</a>
+            <a class="collapse-item" href="{{ route('adm_man_datapasien') }}">Pasien</a>
+            <a class="collapse-item" href="{{ route('adm_man_dataapoteker') }}">Apoteker</a>
+            <a class="collapse-item" href="{{ route('adm_man_datanakes') }}">Tenaga Kesehatan</a>
             <a class="collapse-item" href="#">Dokumentasi Kegiatan</a>
-            <a class="collapse-item" href="{{ route('admin_man_datarekammedik') }}">Rekam Medik</a>
+            <a class="collapse-item" href="{{ route('adm_man_datarekammedik') }}">Rekam Medik</a>
         </div>
     </div>
 </li>
@@ -87,12 +87,12 @@
                     <tbody style="color: black">
                         <tr>
                             @foreach ($jadwals as $jadwal)
-                            <td>{{ $jadwal->pagi_s }} - {{ $jadwal->pagi_n }}</td>
+                            <td>{{ \Carbon\Carbon::parse($jadwal->pagi_s)->format('H:i') }} - {{ \Carbon\Carbon::parse($jadwal->pagi_n)->format('H:i') }}</td>
                             @endforeach
                         </tr>
                         <tr>
                             @foreach ($jadwals as $jadwal)
-                            <td>{{ $jadwal->siang_s }} - {{ $jadwal->siang_n }}</td>
+                            <td>{{ \Carbon\Carbon::parse($jadwal->siang_s)->format('H:i') }} - {{ \Carbon\Carbon::parse($jadwal->siang_n)->format('H:i') }}</td>
                             @endforeach
                         </tr>
                         <tr>

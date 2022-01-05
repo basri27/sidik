@@ -58,16 +58,18 @@
     <h1 class="text-center mb-5 wow fadeInUp">Our Doctors</h1>
 
     <div class="owl-carousel wow fadeInUp" id="doctorSlideshow">
+        @foreach ($tenkes as $tks)
         <div class="item">
             <div class="card-doctor">
                 <img src=" {{ asset('/img/doctors/doctor_1.jpg') }} " alt="">
                 <div class="body">
-                    <p class="text-xl mb-0">dr. Edyson, M.Kes</p>
-                    <span class="text-sm text-grey">Dokter Umum</span>
+                    <p class="text-xl mb-0">{{ $tks->nama }}</p>
+                    <span class="text-sm text-grey">{{ $tks->kategori_tenkesehatan->nama }}</span>
                 </div>
             </div>
         </div>
-        <div class="item">
+        @endforeach
+        <!-- <div class="item">
             <div class="card-doctor">
                 <img src="{{ asset('/img/doctors/doctor_2.jpg') }}" alt="">
                 <div class="body">
@@ -165,7 +167,7 @@
                     <span class="text-sm text-grey">Perawat Gigi</span>
                 </div>
             </div>
-        </div>
+        </div> -->
     </div>
     </div>
 </div>

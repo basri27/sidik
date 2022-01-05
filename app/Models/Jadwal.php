@@ -21,6 +21,6 @@ class Jadwal extends Model
 
     public function tenkesehatan()
     {
-        return $this->hasMany(Tenkesehatan::class);
+        return $this->belongsTo(Tenkesehatan::class);
     }
 }

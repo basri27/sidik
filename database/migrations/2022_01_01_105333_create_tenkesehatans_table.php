@@ -16,7 +16,7 @@ class CreateTenkesehatansTable extends Migration
         Schema::create('tenkesehatans', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained();
-            $table->foreignId('kategori_tenkes_id')->references('id')->on('kategori_tenkesehatan');
+            $table->foreignId('kategori_tenkesehatan_id')->constrained();
             $table->string('nama')->nullable();
             $table->string('jk')->nullable();
             $table->string('tempat_lhr')->nullable();

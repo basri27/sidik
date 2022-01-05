@@ -8,9 +8,13 @@ use App\Models\Admin;
 use App\Models\User;
 use App\Models\Jadwal;
 use App\Models\TenKesehatan;
+use App\Models\Pasien;
+use App\Models\Fakulta;
+use App\Models\Prodi;
+use App\Models\Category;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
-
+use Illuminate\Support\Str;
 
 class AdminController extends Controller
 {
@@ -85,8 +89,8 @@ class AdminController extends Controller
     public function adm_jadwal_edit($id)
     {
         $jadwals = Jadwal::where('id', $id)->first();
-        $tenkes = Tenkesehatan::get();
-
+        $tenkes = Tenkesehatan::all();
+        #dd($jadwals);
         return view('admin.edit.edit_jadwal', compact('jadwals', 'tenkes'));
     }
 
@@ -105,5 +109,137 @@ class AdminController extends Controller
 
         #dd($jadwals, $id);
         return redirect()->route('adm_jadwal', $id);
+    }
+
+    public function show_jadwal()
+    {
+        $jadwals = Jadwal::all();
+        $tenkes1 = Jadwal::join('tenkesehatans', 'tenkes1_id', 'tenkesehatans.id')->get();
+        $tenkes2 = Jadwal::join('tenkesehatans', 'tenkes2_id', 'tenkesehatans.id')->get();
+        
+        return view('jadwal', compact('jadwals', 'tenkes1', 'tenkes2'));
+    }
+
+    public function adm_man_datapasien()
+    {
+        $pasiens = Pasien::all();
+
+        return view('admin.manajemen.man_datapasien', compact('pasiens'));
+    }
+
+    public function adm_man_datapasien_tambah()
+    {
+        $users = User::all()->last();
+        $fakultas = Fakulta::all();
+        $prodis = Prodi::all();
+        $category = Category::all();
+
+        return view('admin.manajemen.add.add_datapasien', compact('users', 'fakultas', 'prodis', 'category'));
+    }
+
+    public function adm_man_datapasien_add(Request $request)
+    {
+        $validated = $request->validate([
+            'nama' => 'required',
+            'tempat_lhr' => 'required',
+            'tgl_lhr' => 'required',
+            'no_hp' => 'required',
+            'alamat' => 'required',
+            'jk' => 'required',
+            'category_id' => 'required',
+        ]);
+
+        if($validated)
+        {
+            User::create([
+                'role_id' => '2',
+                'username' => Str::lower(Str::random(6)),
+                'password' => Hash::make(12345678),
+            ]);
+            if(Request()->fakulta_id <> ""){
+                Pasien::create([
+                    'user_id' => $request->input('user_id'),
+                    'fakulta_id' => $request->input('fakulta_id'),
+                    'prodi_id' => $request->input('prodi_id'),
+                    'category_id' => $request->input('category_id'),
+                    'nama' => $request->input('nama'),
+                    'jk' => $request->input('jk'),
+                    'tempat_lhr' => $request->input('tempat_lhr'),
+                    'tgl_lhr' => $request->input('tgl_lhr'),
+                    'no_hp' => $request->input('no_hp'),
+                    'alamat' => $request->input('alamat'),
+                ]);
+            }
+            else {
+                Pasien::create([
+                    'user_id' => $request->input('user_id'),
+                    'fakulta_id' => '1',
+                    'prodi_id' => '1',
+                    'category_id' => $request->input('category_id'),
+                    'nama' => $request->input('nama'),
+                    'jk' => $request->input('jk'),
+                    'tempat_lhr' => $request->input('tempat_lhr'),
+                    'tgl_lhr' => $request->input('tgl_lhr'),
+                    'no_hp' => $request->input('no_hp'),
+                    'alamat' => $request->input('alamat'),
+                ]);
+            }
+        }
+
+        return redirect()->route('adm_man_datapasien')->with(['success' => 'Data berhasil ditambahkan!']);
+    }
+
+    public function adm_man_datapasien_edit($id)
+    {
+        $pasiens = Pasien::where('id', $id)->first();
+        $fakultas = Fakulta::all();
+        $prodis = Prodi::all();
+        $category = Category::all();
+        
+        return view('admin.manajemen.edit.edit_datapasien', compact('pasiens', 'fakultas', 'prodis', 'category'));
+    }
+
+    public function adm_man_datapasien_update(Request $request, $id)
+    {
+        $pasiens = Pasien::where('id', $id);
+
+        if(Request()->fakulta_id <> ""){
+            $pasiens->update([
+                'category_id' => $request->input('category_id'),
+                'fakulta_id' => $request->input('fakulta_id'),
+                'prodi_id' => $request->input('prodi_id'),
+                'nama' => $request->input('nama'),
+                'tempat_lhr' => $request->input('tempat_lhr'),
+                'tgl_lhr' => $request->input('tgl_lhr'),
+                'no_hp' => $request->input('no_hp'),
+                'alamat' => $request->input('alamat'),
+                'jk' => $request->input('jk'),
+            ]);
+        }
+        else {
+            $pasiens->update([
+                'category_id' => $request->input('category_id'),
+                'fakulta_id' => '1',
+                'prodi_id' => '1',
+                'nama' => $request->input('nama'),
+                'tempat_lhr' => $request->input('tempat_lhr'),
+                'tgl_lhr' => $request->input('tgl_lhr'),
+                'no_hp' => $request->input('no_hp'),
+                'alamat' => $request->input('alamat'),
+                'jk' => $request->input('jk'),
+            ]);
+        }
+
+        return redirect()->route('adm_man_datapasien')->with(['success' => 'Data berhasil diubah!']);
+    }
+
+    public function delete_datapasien($id)
+    {
+        $pasiens = Pasien::where('id', $id)->first();
+        $users = User::where('id', $pasiens->user_id)->first();
+        $pasiens->delete();
+        $users->delete();
+
+        return redirect()->route('adm_man_datapasien')->with(['success' => 'Data berhasil dihapus!']);
     }
 }

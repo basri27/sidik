@@ -39,11 +39,11 @@
         data-parent="#accordionSidebar">
         <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Pilih:</h6>
-            <a class="collapse-item" href="{{ route('admin_man_datapasien') }}">Pasien</a>
-            <a class="collapse-item" href="{{ route('admin_man_dataapoteker') }}">Apoteker</a>
-            <a class="collapse-item" href="{{ route('admin_man_datanakes') }}">Tenaga Kesehatan</a>
+            <a class="collapse-item" href="{{ route('adm_man_datapasien') }}">Pasien</a>
+            <a class="collapse-item" href="{{ route('adm_man_dataapoteker') }}">Apoteker</a>
+            <a class="collapse-item" href="{{ route('adm_man_datanakes') }}">Tenaga Kesehatan</a>
             <a class="collapse-item" href="#">Dokumentasi Kegiatan</a>
-            <a class="collapse-item" href="{{ route('admin_man_datarekammedik') }}">Rekam Medik</a>
+            <a class="collapse-item" href="{{ route('adm_man_datarekammedik') }}">Rekam Medik</a>
         </div>
     </div>
 </li>

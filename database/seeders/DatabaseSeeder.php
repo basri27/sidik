@@ -53,13 +53,13 @@ class DatabaseSeeder extends Seeder
         $kategori_tenkes = ['Dokter Umum', 'Bidan', 'Dokter Gigi'];
         $nakes = ['dr. Edyson, M.Kes', 'dr. Lena Rosida, M.Kes.PhD', 'dr. Alfi Yasmina, M.Kes.PhD', 'dr. Khusnul Khatimah, M.Sc', 'dr. Farida Heriyani, M.PH', 'dr. Tara'];
         foreach ($kategori_tenkes as $ktk) {
-            DB::table('kategori_tenkesehatan')->insert(['nama' => $ktk]);
+            DB::table('kategori_tenkesehatans')->insert(['nama' => $ktk]);
         }
         foreach ($nakes as $nakes) {
             DB::table('tenkesehatans')->insert([
                 'nama' => $nakes,
                 'user_id' => '1',
-                'kategori_tenkes_id' => '1',
+                'kategori_tenkesehatan_id' => random_int(1,3),
             ]);
         }
 
@@ -78,6 +78,7 @@ class DatabaseSeeder extends Seeder
         }
 
         $fakultas = [
+            'Tidak ada',
             'Teknik',
             'Matematika dan Ilmu Pengetahuan', 
             'Keguruan dan Ilmu Pengetahuan', 
@@ -90,6 +91,7 @@ class DatabaseSeeder extends Seeder
         }
 
         $prodi = [
+            'Tidak ada',
             'Teknologi Informasi',
             'Teknik Sipil',
             'Teknik Kimia',

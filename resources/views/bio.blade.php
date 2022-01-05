@@ -23,7 +23,7 @@
                         
                         <h2 class="form-title">Isi Biodata</h2>
                         <div class="form-group">
-                            <input type="text" class="form-input" name="id_pasien" id="id_pasien" value="{{ $id_pasien->id }}">
+                            <input type="text" class="form-input" name="id_pasien" id="id_pasien" value="{{ $id_pasien->id }}" disabled>
                         </div>
                         <div class="form-group">
                             <input type="text" class="form-input @error('name') is-invalid @enderror" name="name" id="name" placeholder="Nama">
