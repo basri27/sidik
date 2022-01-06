@@ -12,13 +12,19 @@
 
 @section('menu')
 <li class="nav-item">
-    <a class="nav-link" href="{{ route('admin_profil') }}">
+    <a class="nav-link" href="{{ route('adm_dashboard') }}">
+        <i class="fas fa-tachometer-alt"></i>
+        <span>Dashboard</span>
+    </a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href="{{ route('adm_profil', Auth::user()->id) }}">
         <i class="fas fa-user"></i>
         <span>Profil</span>
     </a>
 </li>
 <li class="nav-item">
-    <a class="nav-link" href="{{ route('admin_jadwal') }}">
+    <a class="nav-link" href="{{ route('adm_jadwal') }}">
         <i class="fas fa-calendar-alt"></i>
         <span>Jadwal Praktek</span>
     </a>
@@ -33,11 +39,11 @@
         data-parent="#accordionSidebar">
         <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Pilih:</h6>
-            <a class="collapse-item" href="{{ route('admin_man_datapasien') }}">Pasien</a>
-            <a class="collapse-item active" href="{{ route('admin_man_dataapoteker') }}">Apoteker</a>
-            <a class="collapse-item" href="{{ route('admin_man_datanakes') }}">Tenaga Kesehatan</a>
+            <a class="collapse-item" href="{{ route('adm_man_datapasien') }}">Pasien</a>
+            <a class="collapse-item active" href="{{ route('adm_man_dataapoteker') }}">Apoteker</a>
+            <a class="collapse-item" href="{{ route('adm_man_datanakes') }}">Tenaga Kesehatan</a>
             <a class="collapse-item" href="#">Dokumentasi Kegiatan</a>
-            <a class="collapse-item" href="{{ route('admin_man_datarekammedik') }}">Rekam Medik</a>
+            <a class="collapse-item" href="{{ route('adm_man_datarekammedik') }}">Rekam Medik</a>
         </div>
     </div>
 </li>
@@ -70,7 +76,6 @@
                             <th>Nama</th>
                             <th>Tempat & Tanggal Lahir</th>
                             <th>Alamat</th>
-                            <th>Umur</th>
                             <th>Jenis Kelamin</th>
                             <th>Aksi</th>
                         </tr>
@@ -81,7 +86,6 @@
                             <th>Nama</th>
                             <th>Tempat & Tanggal Lahir</th>
                             <th>Alamat</th>
-                            <th>Umur</th>
                             <th>Jenis Kelamin</th>
                             <th>Aksi</th>
                         </tr>
@@ -92,7 +96,6 @@
                             <td>M. Basri</td>
                             <td>Banjarmasin, 27 September 2000</td>
                             <td>Jl. Kayutangi</td>
-                            <td>21</td>
                             <td>Laki-laki</td>
                             <td>
                                 <center>

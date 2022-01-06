@@ -220,6 +220,7 @@
             p.value = '1';
         }
         else if (select.value == '2') {
+            f.disabled = false;
             p.disabled = true;
             p.value = '1';
         }

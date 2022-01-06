@@ -17,14 +17,17 @@ use App\Http\Controllers\AdminController;
 |
 */
 
+Auth::routes(); //Route bawaan laravel ui bootstrap --auth
+
+//---------------------------Route Tampilan depan-----------------------------//
+#Home
 Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-#Tampil jadwal
+#Jadwal
 Route::get('jadwalpraktek', [AdminController::class, 'show_jadwal'])->name('jadwal');
 
-Route::post('/add/bio', [PasienController::class, 'add_bio'])->name('add_bio');
-
 //-------------------------------Route Admin---------------------------------//
+#Dahsboard admin
 Route::get('admin/dashboard/', [AdminController::class, 'adm_dashboard'])->name('adm_dashboard');
 
 #Profil admin
@@ -47,6 +50,9 @@ Route::patch('admin/jadwalpraktek/update/{id}', [AdminController::class, 'adm_ja
 
 #Manajemen data 
 Route::get('admin/manajemendata/pasien', [AdminController::class, 'adm_man_datapasien'])->name('adm_man_datapasien');
+Route::get('admin/manajemendata/apoteker', [AdminController::class, 'adm_man_dataapoteker'])->name('adm_man_dataapoteker');
+Route::get('admin/manajemendata/nakes', [AdminController::class, 'adm_man_datanakes'])->name('adm_man_datanakes');
+Route::get('admin/manajemendata/rekammedik', [AdminController::class, 'adm_man_datamrekammedik'])->name('adm_man_datarekammedik');
 
 #Tambah data 
 Route::get('admin/tambahdata/pasien', [AdminController::class, 'adm_man_datapasien_tambah'])->name('adm_man_datapasien_tambah');
@@ -59,18 +65,8 @@ Route::patch('admin/updatedata/pasien/{id}', [AdminController::class, 'adm_man_d
 #Delete data 
 Route::delete('admin/deletedata/pasien/{id}', [AdminController::class, 'delete_datapasien'])->name('delete_datapasien');
 
-Route::get('admin/manajemendata/nakes', function() {
-    return view('admin.manajemen.man_datanakes');
-})->name('adm_man_datanakes');
-
-Route::get('admin/manajemendata/apoteker', function() {
-    return view('admin.manajemen.man_dataapoteker');
-})->name('adm_man_dataapoteker');
-
-Route::get('admin/manajemendata/rekammedik', function() {
-    return view('admin.manajemen.man_rekammedik');
-})->name('adm_man_datarekammedik');
-
-Auth::routes();
-
 //Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+//----------------------------------Route Pasien----------------------------//
+#Pasien isi bio ketika regist
+Route::post('/add/bio', [PasienController::class, 'add_bio'])->name('add_bio');

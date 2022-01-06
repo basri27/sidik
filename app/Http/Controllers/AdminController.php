@@ -156,32 +156,49 @@ class AdminController extends Controller
                 'username' => Str::lower(Str::random(6)),
                 'password' => Hash::make(12345678),
             ]);
+            
             if(Request()->fakulta_id <> ""){
-                Pasien::create([
-                    'user_id' => $request->input('user_id'),
-                    'fakulta_id' => $request->input('fakulta_id'),
-                    'prodi_id' => $request->input('prodi_id'),
-                    'category_id' => $request->input('category_id'),
-                    'nama' => $request->input('nama'),
-                    'jk' => $request->input('jk'),
-                    'tempat_lhr' => $request->input('tempat_lhr'),
-                    'tgl_lhr' => $request->input('tgl_lhr'),
-                    'no_hp' => $request->input('no_hp'),
-                    'alamat' => $request->input('alamat'),
-                ]);
+                if(Request()->prodi_id <> ""){
+                    Pasien::create([
+                        'user_id' => $request->input('user_id'),
+                        'category_id' => $request->input('category_id'),
+                        'fakulta_id' => $request->input('fakulta_id'),
+                        'prodi_id' => $request->input('prodi_id'),
+                        'nama' => $request->input('nama'),
+                        'tempat_lhr' => $request->input('tempat_lhr'),
+                        'tgl_lhr' => $request->input('tgl_lhr'),
+                        'no_hp' => $request->input('no_hp'),
+                        'alamat' => $request->input('alamat'),
+                        'jk' => $request->input('jk'),
+                    ]);
+                }
+                else {
+                    Pasien::create([
+                        'user_id' => $request->input('user_id'),
+                        'category_id' => $request->input('category_id'),
+                        'fakulta_id' => $request->input('fakulta_id'),
+                        'prodi_id' => '1',
+                        'nama' => $request->input('nama'),
+                        'tempat_lhr' => $request->input('tempat_lhr'),
+                        'tgl_lhr' => $request->input('tgl_lhr'),
+                        'no_hp' => $request->input('no_hp'),
+                        'alamat' => $request->input('alamat'),
+                        'jk' => $request->input('jk'),
+                    ]);
+                }
             }
             else {
                 Pasien::create([
                     'user_id' => $request->input('user_id'),
+                    'category_id' => $request->input('category_id'),
                     'fakulta_id' => '1',
                     'prodi_id' => '1',
-                    'category_id' => $request->input('category_id'),
                     'nama' => $request->input('nama'),
-                    'jk' => $request->input('jk'),
                     'tempat_lhr' => $request->input('tempat_lhr'),
                     'tgl_lhr' => $request->input('tgl_lhr'),
                     'no_hp' => $request->input('no_hp'),
                     'alamat' => $request->input('alamat'),
+                    'jk' => $request->input('jk'),
                 ]);
             }
         }
@@ -204,32 +221,46 @@ class AdminController extends Controller
         $pasiens = Pasien::where('id', $id);
 
         if(Request()->fakulta_id <> ""){
-            $pasiens->update([
-                'category_id' => $request->input('category_id'),
-                'fakulta_id' => $request->input('fakulta_id'),
-                'prodi_id' => $request->input('prodi_id'),
-                'nama' => $request->input('nama'),
-                'tempat_lhr' => $request->input('tempat_lhr'),
-                'tgl_lhr' => $request->input('tgl_lhr'),
-                'no_hp' => $request->input('no_hp'),
-                'alamat' => $request->input('alamat'),
-                'jk' => $request->input('jk'),
-            ]);
+            if(Request()->prodi_id <> ""){
+                $pasiens->update([
+                    'category_id' => $request->input('category_id'),
+                    'fakulta_id' => $request->input('fakulta_id'),
+                    'prodi_id' => $request->input('prodi_id'),
+                    'nama' => $request->input('nama'),
+                    'tempat_lhr' => $request->input('tempat_lhr'),
+                    'tgl_lhr' => $request->input('tgl_lhr'),
+                    'no_hp' => $request->input('no_hp'),
+                    'alamat' => $request->input('alamat'),
+                    'jk' => $request->input('jk'),
+                ]);
+            }
+            else {
+                $pasiens->update([
+                    'category_id' => $request->input('category_id'),
+                    'fakulta_id' => $request->input('fakulta_id'),
+                    'prodi_id' => '1',
+                    'nama' => $request->input('nama'),
+                    'tempat_lhr' => $request->input('tempat_lhr'),
+                    'tgl_lhr' => $request->input('tgl_lhr'),
+                    'no_hp' => $request->input('no_hp'),
+                    'alamat' => $request->input('alamat'),
+                    'jk' => $request->input('jk'),
+                ]);
+            }
         }
         else {
             $pasiens->update([
-                'category_id' => $request->input('category_id'),
-                'fakulta_id' => '1',
-                'prodi_id' => '1',
-                'nama' => $request->input('nama'),
-                'tempat_lhr' => $request->input('tempat_lhr'),
-                'tgl_lhr' => $request->input('tgl_lhr'),
-                'no_hp' => $request->input('no_hp'),
-                'alamat' => $request->input('alamat'),
-                'jk' => $request->input('jk'),
-            ]);
+                    'category_id' => $request->input('category_id'),
+                    'fakulta_id' => '1',
+                    'prodi_id' => '1',
+                    'nama' => $request->input('nama'),
+                    'tempat_lhr' => $request->input('tempat_lhr'),
+                    'tgl_lhr' => $request->input('tgl_lhr'),
+                    'no_hp' => $request->input('no_hp'),
+                    'alamat' => $request->input('alamat'),
+                    'jk' => $request->input('jk'),
+                ]);
         }
-
         return redirect()->route('adm_man_datapasien')->with(['success' => 'Data berhasil diubah!']);
     }
 
@@ -241,5 +272,10 @@ class AdminController extends Controller
         $users->delete();
 
         return redirect()->route('adm_man_datapasien')->with(['success' => 'Data berhasil dihapus!']);
+    }
+
+    public function adm_man_dataapoteker()
+    {
+        return view('admin.manajemen.man_dataapoteker');
     }
 }
