@@ -12,13 +12,19 @@
 
 @section('menu')
 <li class="nav-item">
-    <a class="nav-link" href="{{ route('admin_profil') }}">
+    <a class="nav-link" href="{{ route('adm_dashboard') }}">
+        <i class="fas fa-tachometer-alt"></i>
+        <span>Dashboard</span>
+    </a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href="{{ route('adm_profil', Auth::user()->id) }}">
         <i class="fas fa-user"></i>
         <span>Profil</span>
     </a>
 </li>
 <li class="nav-item">
-    <a class="nav-link" href="{{ route('admin_jadwal') }}">
+    <a class="nav-link" href="{{ route('adm_jadwal') }}">
         <i class="fas fa-calendar-alt"></i>
         <span>Jadwal Praktek</span>
     </a>
@@ -33,11 +39,11 @@
         data-parent="#accordionSidebar">
         <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Pilih:</h6>
-            <a class="collapse-item" href="{{ route('admin_man_datapasien') }}">Pasien</a>
-            <a class="collapse-item" href="{{ route('admin_man_dataapoteker') }}">Apoteker</a>
-            <a class="collapse-item" href="{{ route('admin_man_datanakes') }}">Tenaga Kesehatan</a>
+            <a class="collapse-item" href="{{ route('adm_man_datapasien') }}">Pasien</a>
+            <a class="collapse-item" href="{{ route('adm_man_dataapoteker') }}">Apoteker</a>
+            <a class="collapse-item" href="{{ route('adm_man_datanakes') }}">Tenaga Kesehatan</a>
             <a class="collapse-item" href="#">Dokumentasi Kegiatan</a>
-            <a class="collapse-item active" href="{{ route('admin_man_datarekammedik') }}">Rekam Medik</a>
+            <a class="collapse-item active" href="{{ route('adm_man_datarekammedik') }}">Rekam Medik</a>
         </div>
     </div>
 </li>
@@ -58,19 +64,24 @@
     <div class="card shadow mb-4">
         <div class="card-header py-3">
             <h4 class="m-0 font-weight-bold text-primary">Data Rekam Medik
-            <input style="float: right" class="btn btn-primary" type="button" value="Tambah"></h4>
             <hr>
         </div>
         <div class="card-body">
+            @if ($message = Session::get('success'))
+                <div class="alert alert-success alert-block">
+                    <button type="button" class="close" data-dismiss="alert">×</button>    
+                    <strong>{{ $message }}</strong>
+                </div>
+            @endif
             <div class="table-responsive">
                 <table id="dataTable" class="table table-bordered" width="100%" cellspacing="0">
                     <thead id="dataTable">
                         <tr>
                             <th>Index</th>
                             <th>Nama</th>
-                            <th>Tempat & Tanggal Lahir</th>
                             <th>Alamat</th>
                             <th>Umur</th>
+                            <th>Kategori</th>
                             <th>Jenis Kelamin</th>
                             <th>Aksi</th>
                         </tr>
@@ -79,28 +90,30 @@
                         <tr>
                             <th>Index</th>
                             <th>Nama</th>
-                            <th>Tempat & Tanggal Lahir</th>
                             <th>Alamat</th>
                             <th>Umur</th>
+                            <th>Kategori</th>
                             <th>Jenis Kelamin</th>
                             <th>Aksi</th>
                         </tr>
                     </tfoot>
                     <tbody>
+                        @foreach ($pasiens as $p)
                         <tr>
-                            <td>1</td>
-                            <td>M. Basri</td>
-                            <td>Banjarmasin, 27 September 2000</td>
-                            <td>Jl. Kayutangi</td>
-                            <td>21</td>
-                            <td>Laki-laki</td>
+                            <td>{{ $p->id }}</td>
+                            <td>{{ $p->nama }}</td>
+                            <td>{{ $p->alamat }}</td>
+                            <td>{{ \Carbon\Carbon::parse($p->tgl_lhr)->diff(\Carbon\Carbon::now())->y}}</td>
+                            <td>{{ $p->category->nama }}</td>
+                            <td>{{ $p->jk }}</td>
                             <td>
                                 <center>
-                                    <a href=""><i class="fas fa-edit"></i></a>&nbsp;&nbsp;
-                                    <a href=""><i class="fas fa-trash"></i></a>
+                                    <a class="btn btn-success btn-sm" href="{{ route('detail_datarekammedik', $p->id) }}"><i class="fas fa-info-circle"></i></a> 
+                                    <a class="btn btn-primary btn-sm" href="{{ route('edit_datarekammedik', $p->id) }}"><i class="fas fa-edit"></i></a>
                                 </center>
                             </td>
                         </tr>
+                        @endforeach
                     </tbody>
                 </table>
             </div>

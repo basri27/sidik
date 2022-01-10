@@ -42,7 +42,7 @@ class AdminController extends Controller
         $admins = Admin::where('user_id', '=', $user_id)->first();
         $age = Carbon::parse($admins->tgl_lhr)->diff(Carbon::now())->y;
 
-        return view('admin.edit.edit_profil', compact('admins', 'age'));
+        return view('admin.manajemen.edit.edit_profil', compact('admins', 'age'));
     }
 
     public function adm_update(Request $request, $user_id)
@@ -65,7 +65,7 @@ class AdminController extends Controller
     {
         $admins = User::where('id', '=', $user_id)->first();
 
-        return view('admin.edit.edit_userpw', compact('admins'));
+        return view('admin.manajemen.edit.edit_userpw', compact('admins'));
     }
 
     public function adm_update_userpw(Request $request, $user_id)
@@ -92,7 +92,7 @@ class AdminController extends Controller
         $jadwals = Jadwal::where('id', $id)->first();
         $tenkes = Tenkesehatan::all();
         
-        return view('admin.edit.edit_jadwal', compact('jadwals', 'tenkes'));
+        return view('admin.manajemen.edit.edit_jadwal', compact('jadwals', 'tenkes'));
     }
 
     public function adm_jadwal_update(Request $request, $id)
@@ -176,6 +176,12 @@ class AdminController extends Controller
         
         return view('admin.manajemen.man_datanakes', compact('tenkes'));
     }
+    public function adm_man_datarekammedik()
+    {
+        $pasiens = Pasien::get();
+
+        return view('admin.manajemen.man_rekammedik', compact('pasiens'));
+    }
 
     //------------Tambah data------------//
     #Tambah data pasien
@@ -252,10 +258,13 @@ class AdminController extends Controller
                     'jk' => $request->input('jk'),
                 ]);
             }
+            $pasien = Pasien::all()->last();
+            DB::table('rekam_mediks')->insert(['pasien_id' => $pasien->id]);
         }
 
         return redirect()->route('adm_man_datapasien')->with(['success' => 'Data berhasil ditambahkan!']);
     }
+
     #Tambah data apoteker
     public function adm_man_dataapoteker_tambah()
     {

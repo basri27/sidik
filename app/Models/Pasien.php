@@ -37,4 +37,9 @@ class Pasien extends Model
     public function prodi() {
         return $this->belongsTo(Prodi::class);
     }
+
+    public function tenkesehatan()
+    {
+        return $this->belongsToMany(Tenkesehatan::class, 'rekam_mediks', 'pasien_id', 'tenkesehatan_id');
+    }
 }

@@ -34,4 +34,9 @@ class Tenkesehatan extends Model
     {
         return $this->belongsToMany(Jadwal::class, 'jadwal_tenkesehatan', 'jadwal_id', 'tenkesehatan_id');
     }
+
+    public function pasien()
+    {
+        return $this->belongsToMany(Pasien::class, 'rekam_mediks', 'pasien_id', 'tenkesehatan_id');
+    }
 }

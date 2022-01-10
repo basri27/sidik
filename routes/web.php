@@ -52,7 +52,12 @@ Route::patch('admin/jadwalpraktek/update/{id}', [AdminController::class, 'adm_ja
 Route::get('admin/manajemendata/pasien', [AdminController::class, 'adm_man_datapasien'])->name('adm_man_datapasien');
 Route::get('admin/manajemendata/apoteker', [AdminController::class, 'adm_man_dataapoteker'])->name('adm_man_dataapoteker');
 Route::get('admin/manajemendata/nakes', [AdminController::class, 'adm_man_datanakes'])->name('adm_man_datanakes');
-Route::get('admin/manajemendata/rekammedik', [AdminController::class, 'adm_man_datamrekammedik'])->name('adm_man_datarekammedik');
+Route::get('admin/manajemendata/rekammedik', [AdminController::class, 'adm_man_datarekammedik'])->name('adm_man_datarekammedik');
+
+#Manajemen rekam medik
+Route::post('admin/data/rekammedik/kirim/{id}', [AdminController::class, 'kirim_datarekammedik'])->name('kirim_datarekammedik');
+Route::get('admin/detail/rekammedik/{id}', [AdminController::class, 'detail_datarekammedik'])->name('detail_datarekammedik');
+Route::get('admin/editdata/rekammedik/{id}', [AdminController::class, 'edit_datarekammedik'])->name('edit_datarekammedik');
 
 #Tambah data 
 Route::get('admin/tambahdata/pasien', [AdminController::class, 'adm_man_datapasien_tambah'])->name('adm_man_datapasien_tambah');
@@ -61,6 +66,7 @@ Route::get('admin/tambahdata/apoteker', [AdminController::class, 'adm_man_dataap
 Route::post('admin/adddata/apoteker', [AdminController::class, 'adm_man_dataapoteker_add'])->name('adm_man_dataapoteker_add');
 Route::get('admin/tambahdata/nakes', [AdminController::class, 'adm_man_datanakes_tambah'])->name('adm_man_datanakes_tambah');
 Route::post('admin/adddata/nakes', [AdminController::class, 'adm_man_datanakes_add'])->name('adm_man_datanakes_add');
+//Route::get('admin/tambahdata/rekammedik', [AdminController::class, 'adm_man_datarekammedik_tambah'])->name('adm_man_datarekammedik_tambah');
 
 #Edit data 
 Route::get('admin/editdata/pasien/{id}', [AdminController::class, 'adm_man_datapasien_edit'])->name('adm_man_datapasien_edit');
@@ -69,11 +75,13 @@ Route::get('admin/editdata/apoteker/{id}', [AdminController::class, 'adm_man_dat
 Route::patch('admin/updatedata/apoteker/{id}', [AdminController::class, 'adm_man_dataapoteker_update'])->name('adm_man_dataapoteker_update');
 Route::get('admin/editdata/nakes/{id}', [AdminController::class, 'adm_man_datanakes_edit'])->name('adm_man_datanakes_edit');
 Route::patch('admin/updatedata/nakes/{id}', [AdminController::class, 'adm_man_datanakes_update'])->name('adm_man_datanakes_update');
+//Route::get('admin/editdata/rekammedik/{id}', [AdminController::class, 'adm_man_datarekammedik_edit'])->name('adm_man_datarekammedik_edit');
 
 #Delete data 
 Route::delete('admin/deletedata/pasien/{id}', [AdminController::class, 'delete_datapasien'])->name('delete_datapasien');
 Route::delete('admin/deletedata/apoteker/{id}', [AdminController::class, 'delete_dataapoteker'])->name('delete_dataapoteker');
 Route::delete('admin/deletedata/nakes/{id}', [AdminController::class, 'delete_datanakes'])->name('delete_datanakes');
+//Route::delete('admin/deletedata/rekammedik/{id}', [AdminController::class, 'delete_datarekammedik'])->name('delete_datarekammedik');
 //Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 //----------------------------------Route Pasien----------------------------//
