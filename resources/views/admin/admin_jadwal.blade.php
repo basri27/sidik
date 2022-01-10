@@ -70,17 +70,12 @@
                             @endforeach
                         </tr>
                         <tr>
-                            @foreach ($tenkes1 as $tks1)
-                            <th>
-                                ({{ $tks1->nama }})
-                            </th>
-                            @endforeach
-                        </tr>
-                        <tr>
-                            @foreach ($tenkes2 as $tks2)
-                            <th>
-                                ({{ $tks2->nama }})
-                            </th>
+                            @foreach ($jadwals as $j)
+                                <th>
+                                @foreach ($j->tenkesehatan as $t)
+                                    ({{ $t->nama }}) <br>
+                                @endforeach
+                                </th>
                             @endforeach
                         </tr>
                     </thead>

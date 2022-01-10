@@ -14,6 +14,6 @@ class Kategori_tenkesehatan extends Model
     ];
 
     public function tenkesehatan() {
-		return $this->hasOne(TenKesehatan::class);
+		    return $this->hasMany(Tenkesehatan::class);
     }
 }

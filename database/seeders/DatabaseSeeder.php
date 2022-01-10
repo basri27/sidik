@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class DatabaseSeeder extends Seeder
 {
@@ -15,7 +16,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        $roles = ['Admin', 'Pasien', 'Nakes'];
+        $roles = ['Admin', 'Pasien', 'Nakes', 'Apoteker'];
         foreach ($roles as $role) {
             DB::table('roles')->insert(['nama' => $role]);
         }
@@ -50,15 +51,25 @@ class DatabaseSeeder extends Seeder
             'alamat' => 'Jl. S. Parman No. 20',
         ]);
 
+        for($i = 3; $i < 9; $i++) {
+            DB::table('users')->insert([
+                'role_id' => '3',
+                'username' => Str::lower(Str::random(5)),
+                'password' => Hash::make(12345678),
+            ]);
+        }
+
         $kategori_tenkes = ['Dokter Umum', 'Bidan', 'Dokter Gigi'];
         $nakes = ['dr. Edyson, M.Kes', 'dr. Lena Rosida, M.Kes.PhD', 'dr. Alfi Yasmina, M.Kes.PhD', 'dr. Khusnul Khatimah, M.Sc', 'dr. Farida Heriyani, M.PH', 'dr. Tara'];
+        $i = 2;
         foreach ($kategori_tenkes as $ktk) {
             DB::table('kategori_tenkesehatans')->insert(['nama' => $ktk]);
         }
         foreach ($nakes as $nakes) {
+            $i = $i+1;
             DB::table('tenkesehatans')->insert([
                 'nama' => $nakes,
-                'user_id' => '1',
+                'user_id' => $i,
                 'kategori_tenkesehatan_id' => random_int(1,3),
             ]);
         }
@@ -67,8 +78,10 @@ class DatabaseSeeder extends Seeder
         foreach ($days as $day) {
             DB::table('jadwals')->insert([
                 'hari' => $day,
-                'tenkes1_id' => random_int(1,6),
-                'tenkes2_id' => random_int(1,6),
+                'pagi_s' => '10:00',
+                'pagi_n' => '12:00',
+                'siang_s' => '13:00',
+                'siang_n' => '16:00',
             ]);
         }
 
@@ -105,5 +118,14 @@ class DatabaseSeeder extends Seeder
         foreach ($prodi as $pro) {
             DB::table('prodis')->insert(['nama' => $pro]);
         } 
+
+        for ($k = 0; $k < 2; $k++) {
+            for ($t = 1; $t < 6; $t++) {
+                DB::table('jadwal_tenkesehatan')->insert([
+                    'jadwal_id' => $t,
+                    'tenkesehatan_id' => $t,
+                ]);
+            }
+        }
     }
 }

@@ -54,7 +54,11 @@ class User extends Authenticatable
         return $this->hasOne(Admin::class);
     }
 
-    public function tenkes() {
-        return $this->hasOne(TenKes::class);
+    public function tenkesehatan() {
+        return $this->hasOne(Tenkesehatan::class);
+    }
+
+    public function apoteker() {
+        return $this->hasOne(Apoteker::class);
     }
 }

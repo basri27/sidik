@@ -15,8 +15,8 @@ class CreateJadwalsTable extends Migration
     {
         Schema::create('jadwals', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('tenkes1_id')->references('id')->on('tenkesehatans');
-            $table->foreignId('tenkes2_id')->references('id')->on('tenkesehatans');
+#            $table->foreignId('tenkes1_id')->nullable()->references('id')->on('tenkesehatans');
+#           $table->foreignId('tenkes2_id')->nullable()->references('id')->on('tenkesehatans');
             $table->string('hari')->nullable();
             $table->time('pagi_s')->nullable();
             $table->time('pagi_n')->nullable();

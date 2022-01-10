@@ -57,14 +57,23 @@ Route::get('admin/manajemendata/rekammedik', [AdminController::class, 'adm_man_d
 #Tambah data 
 Route::get('admin/tambahdata/pasien', [AdminController::class, 'adm_man_datapasien_tambah'])->name('adm_man_datapasien_tambah');
 Route::post('admin/adddata/pasien', [AdminController::class, 'adm_man_datapasien_add'])->name('adm_man_datapasien_add');
+Route::get('admin/tambahdata/apoteker', [AdminController::class, 'adm_man_dataapoteker_tambah'])->name('adm_man_dataapoteker_tambah');
+Route::post('admin/adddata/apoteker', [AdminController::class, 'adm_man_dataapoteker_add'])->name('adm_man_dataapoteker_add');
+Route::get('admin/tambahdata/nakes', [AdminController::class, 'adm_man_datanakes_tambah'])->name('adm_man_datanakes_tambah');
+Route::post('admin/adddata/nakes', [AdminController::class, 'adm_man_datanakes_add'])->name('adm_man_datanakes_add');
 
 #Edit data 
 Route::get('admin/editdata/pasien/{id}', [AdminController::class, 'adm_man_datapasien_edit'])->name('adm_man_datapasien_edit');
 Route::patch('admin/updatedata/pasien/{id}', [AdminController::class, 'adm_man_datapasien_update'])->name('adm_man_datapasien_update');
+Route::get('admin/editdata/apoteker/{id}', [AdminController::class, 'adm_man_dataapoteker_edit'])->name('adm_man_dataapoteker_edit');
+Route::patch('admin/updatedata/apoteker/{id}', [AdminController::class, 'adm_man_dataapoteker_update'])->name('adm_man_dataapoteker_update');
+Route::get('admin/editdata/nakes/{id}', [AdminController::class, 'adm_man_datanakes_edit'])->name('adm_man_datanakes_edit');
+Route::patch('admin/updatedata/nakes/{id}', [AdminController::class, 'adm_man_datanakes_update'])->name('adm_man_datanakes_update');
 
 #Delete data 
 Route::delete('admin/deletedata/pasien/{id}', [AdminController::class, 'delete_datapasien'])->name('delete_datapasien');
-
+Route::delete('admin/deletedata/apoteker/{id}', [AdminController::class, 'delete_dataapoteker'])->name('delete_dataapoteker');
+Route::delete('admin/deletedata/nakes/{id}', [AdminController::class, 'delete_datanakes'])->name('delete_datanakes');
 //Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 //----------------------------------Route Pasien----------------------------//

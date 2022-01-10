@@ -74,6 +74,7 @@
                                 <th>
                                     <label for="tenkes1">Pilih Dokter: </label>
                                     <select name="tenkes1" class="form-control">
+                                        <option value="">Kosong</option>
                                         @foreach ($tenkes as $tks)
                                         <option value="{{ $tks->id }}">{{ $tks->nama }}</option>
                                         @endforeach
@@ -82,8 +83,9 @@
                             </tr>
                             <tr>
                                 <th>
-                                    <label for="tenkes2">Pilih Dokter: </label>
+                                    <label for="tenkes2">Pilih Tenaga Kesehatan: </label>
                                     <select name="tenkes2" class="form-control">
+                                        <option value="">Kosong</option>
                                         @foreach ($tenkes as $tks)
                                         <option value="{{ $tks->id }}">{{ $tks->nama }}</option>
                                         @endforeach

@@ -12,6 +12,8 @@ use App\Models\Pasien;
 use App\Models\Fakulta;
 use App\Models\Prodi;
 use App\Models\Category;
+use App\Models\Apoteker;
+use App\Models\Kategori_tenkesehatan;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -22,8 +24,9 @@ class AdminController extends Controller
     {
         $pasiens = DB::table('pasiens')->count();
         $nakes = DB::table('tenkesehatans')->count();
+        $apoteker = DB::table('apotekers')->count();
 
-        return view('admin.dashboard', compact('pasiens', 'nakes'));
+        return view('admin.dashboard', compact('pasiens', 'nakes', 'apoteker'));
     }
 
     public function adm_profil($user_id)
@@ -79,28 +82,64 @@ class AdminController extends Controller
 
     public function adm_jadwal()
     {
-        $jadwals = Jadwal::all();
-        $tenkes1 = Jadwal::join('tenkesehatans', 'tenkes1_id', 'tenkesehatans.id')->get();
-        $tenkes2 = Jadwal::join('tenkesehatans', 'tenkes2_id', 'tenkesehatans.id')->get();
+        $jadwals = Jadwal::get();
         
-        return view('admin.admin_jadwal', compact('jadwals', 'tenkes1', 'tenkes2'));
+        return view('admin.admin_jadwal', compact('jadwals'));
     }
 
     public function adm_jadwal_edit($id)
     {
         $jadwals = Jadwal::where('id', $id)->first();
         $tenkes = Tenkesehatan::all();
-        #dd($jadwals);
+        
         return view('admin.edit.edit_jadwal', compact('jadwals', 'tenkes'));
     }
 
     public function adm_jadwal_update(Request $request, $id)
     {
-        $jadwals = Jadwal::where('id', $id)->first();
+        $jadwals = Jadwal::find($id);
+        $tenkes = DB::table('jadwal_tenkesehatan')->where('jadwal_id', $id)->get();
+        
+        if(Request()->tenkes1) {
+            if(Request()->tenkes2) {
+                $tenkes1 = Request()->tenkes1;
+                $tenkes2 = Request()->tenkes2;
+                
+                foreach ($tenkes as $t) {
+                    $jadwals->tenkesehatan()->detach($t);
+                }
+                $jadwals->tenkesehatan()->attach([$tenkes1, $tenkes2]);
+            }
+            else {
+                $tenkes1 = Request()->tenkes1;
+                $tenkes2 = null;
+                foreach ($tenkes as $t) {
+                    $jadwals->tenkesehatan()->detach($t);
+                }
+                $jadwals->tenkesehatan()->attach([$tenkes1, $tenkes2]);
+            }
+        }
+        else {
+            if(Request()->tenkes2) {
+                $tenkes1 = null;
+                $tenkes2 = Request()->tenkes2;
+                foreach ($tenkes as $t) {
+                    $jadwals->tenkesehatan()->detach($t);
+                }
+                $jadwals->tenkesehatan()->attach([$tenkes1, $tenkes2]);
+            }
+            else {
+                $tenkes1 = null;
+                $tenkes2 = null;
+                foreach ($tenkes as $t) {
+                    $jadwals->tenkesehatan()->detach($t);
+                }
+                $jadwals->tenkesehatan()->attach([$tenkes1, $tenkes2]);
+            }
+        }
 
-        $jadwals->update([
-            'tenkes1_id' => $request->input('tenkes1'),
-            'tenkes2_id' => $request->input('tenkes2'),
+        $jadwal = Jadwal::where('id', $id)->first();
+        $jadwal->update([
             'pagi_s' => $request->input('pagi_s'),
             'pagi_n' => $request->input('pagi_n'),
             'siang_s' => $request->input('siang_s'),
@@ -113,20 +152,33 @@ class AdminController extends Controller
 
     public function show_jadwal()
     {
-        $jadwals = Jadwal::all();
-        $tenkes1 = Jadwal::join('tenkesehatans', 'tenkes1_id', 'tenkesehatans.id')->get();
-        $tenkes2 = Jadwal::join('tenkesehatans', 'tenkes2_id', 'tenkesehatans.id')->get();
+        $jadwals = Jadwal::get();
         
-        return view('jadwal', compact('jadwals', 'tenkes1', 'tenkes2'));
+        return view('jadwal', compact('jadwals'));
     }
 
+    //-----------function manajemen----------//
     public function adm_man_datapasien()
     {
         $pasiens = Pasien::all();
-
+        
         return view('admin.manajemen.man_datapasien', compact('pasiens'));
     }
+    public function adm_man_dataapoteker()
+    {
+        $apotekers = Apoteker::all();
 
+        return view('admin.manajemen.man_dataapoteker', compact('apotekers'));
+    }
+    public function adm_man_datanakes()
+    {
+        $tenkes = Tenkesehatan::all();
+        
+        return view('admin.manajemen.man_datanakes', compact('tenkes'));
+    }
+
+    //------------Tambah data------------//
+    #Tambah data pasien
     public function adm_man_datapasien_tambah()
     {
         $users = User::all()->last();
@@ -136,7 +188,6 @@ class AdminController extends Controller
 
         return view('admin.manajemen.add.add_datapasien', compact('users', 'fakultas', 'prodis', 'category'));
     }
-
     public function adm_man_datapasien_add(Request $request)
     {
         $validated = $request->validate([
@@ -205,7 +256,86 @@ class AdminController extends Controller
 
         return redirect()->route('adm_man_datapasien')->with(['success' => 'Data berhasil ditambahkan!']);
     }
+    #Tambah data apoteker
+    public function adm_man_dataapoteker_tambah()
+    {
+        $users = User::all()->last();
 
+        return view('admin.manajemen.add.add_dataapoteker', compact('users'));
+    }
+    public function adm_man_dataapoteker_add(Request $request)
+    {
+        $validated = $request->validate([
+            'nama' => 'required',
+            'tempat_lhr' => 'required',
+            'tgl_lhr' => 'required',
+            'no_hp' => 'required',
+            'alamat' => 'required',
+            'jk' => 'required',
+        ]);
+
+        if($validated)
+        {
+            User::create([
+                'role_id' => '4',
+                'username' => Str::lower(Str::random(6)),
+                'password' => Hash::make(12345678),
+            ]);
+            Apoteker::create([
+                'user_id' => $request->input('user_id'),
+                'nama' => $request->input('nama'),
+                'tempat_lhr' => $request->input('tempat_lhr'),
+                'tgl_lhr' => $request->input('tgl_lhr'),
+                'nohp' => $request->input('no_hp'),
+                'alamat' => $request->input('alamat'),
+                'jk' => $request->input('jk'),
+            ]);
+        }
+
+        return redirect()->route('adm_man_dataapoteker')->with(['success' => 'Data berhasil ditambahkan!']);
+    }
+
+    #Tambah data nakes
+    public function adm_man_datanakes_tambah()
+    {
+        $users = User::all()->last();
+
+        return view('admin.manajemen.add.add_datanakes', compact('users'));
+    }
+    public function adm_man_datanakes_add(Request $request)
+    {
+        $validated = $request->validate([
+            'nama' => 'required',
+            'tempat_lhr' => 'required',
+            'tgl_lhr' => 'required',
+            'no_hp' => 'required',
+            'alamat' => 'required',
+            'jk' => 'required',
+        ]);
+
+        if($validated)
+        {
+            User::create([
+                'role_id' => '3',
+                'username' => Str::lower(Str::random(6)),
+                'password' => Hash::make(12345678),
+            ]);
+            Tenkesehatan::create([
+                'user_id' => $request->input('user_id'),
+                'nama' => $request->input('nama'),
+                'tempat_lhr' => $request->input('tempat_lhr'),
+                'tgl_lhr' => $request->input('tgl_lhr'),
+                'nohp' => $request->input('no_hp'),
+                'alamat' => $request->input('alamat'),
+                'jk' => $request->input('jk'),
+            ]);
+        }
+
+        return redirect()->route('adm_man_datanakes')->with(['success' => 'Data berhasil ditambahkan!']);
+    }
+
+    //--------------Edit data-------------//
+    #Edit data pasien
     public function adm_man_datapasien_edit($id)
     {
         $pasiens = Pasien::where('id', $id)->first();
@@ -215,7 +345,6 @@ class AdminController extends Controller
         
         return view('admin.manajemen.edit.edit_datapasien', compact('pasiens', 'fakultas', 'prodis', 'category'));
     }
-
     public function adm_man_datapasien_update(Request $request, $id)
     {
         $pasiens = Pasien::where('id', $id);
@@ -264,6 +393,55 @@ class AdminController extends Controller
         return redirect()->route('adm_man_datapasien')->with(['success' => 'Data berhasil diubah!']);
     }
 
+    #Edit data apoteker
+    public function adm_man_dataapoteker_edit($id)
+    {
+        $apoteker = Apoteker::where('id', $id)->first();
+
+        return view('admin.manajemen.edit.edit_dataapoteker', compact('apoteker'));
+    }
+    public function adm_man_dataapoteker_update(Request $request, $id)
+    {
+        $apoteker = Apoteker::where('id', $id);
+
+        $apoteker->update([
+            'nama' => $request->input('nama'),
+            'tempat_lhr' => $request->input('tempat_lhr'),
+            'tgl_lhr' => $request->input('tgl_lhr'),
+            'nohp' => $request->input('no_hp'),
+            'alamat' => $request->input('alamat'),
+            'jk' => $request->input('jk'),
+        ]);
+
+        return redirect()->route('adm_man_dataapoteker')->with(['success' => 'Data berhasil diubah!']);
+    }
+
+    #Edit data nakes
+    public function adm_man_datanakes_edit($id)
+    {
+        $tenkes = Tenkesehatan::where('id', $id)->first();
+        $katenkes = Kategori_tenkesehatan::all();
+
+        return view('admin.manajemen.edit.edit_datanakes', compact('tenkes', 'katenkes'));
+    }
+    public function adm_man_datanakes_update(Request $request, $id)
+    {
+        $tenkes = Tenkesehatan::where('id', $id)->first();
+        // dd($tenkes, $request);
+        $tenkes->update([
+            'nama' => $request->input('nama'),
+            'kategori_tenkesehatan_id' => $request->input('kts'),
+            'tempat_lhr' => $request->input('tempat_lhr'),
+            'tgl_lhr' => $request->input('tgl_lhr'),
+            'nohp' => $request->input('no_hp'),
+            'alamat' => $request->input('alamat'),
+            'jk' => $request->input('jk'),
+        ]);
+
+        return redirect()->route('adm_man_datanakes')->with(['success' => 'Data berhasil diubah!']);
+    }
+
+    //---------------Delete data---------//
     public function delete_datapasien($id)
     {
         $pasiens = Pasien::where('id', $id)->first();
@@ -273,9 +451,25 @@ class AdminController extends Controller
 
         return redirect()->route('adm_man_datapasien')->with(['success' => 'Data berhasil dihapus!']);
     }
-
-    public function adm_man_dataapoteker()
+    public function delete_dataapoteker($id)
     {
-        return view('admin.manajemen.man_dataapoteker');
+        $apoteker = Apoteker::where('id', $id)->first();
+        $users = User::where('id', $apoteker->user_id)->first();
+        $apoteker->delete();
+        $users->delete();
+
+        return redirect()->route('adm_man_dataapoteker')->with(['success' => 'Data berhasil dihapus!']);
+    }
+    public function delete_datanakes($id)
+    {
+        // $jadwal = Jadwal::where('tenkesehatan_id', $id)->get();
+        $jadwal = DB::table('jadwal_tenkesehatan')->where('tenkesehatan_id', $id)->update(['tenkesehatan_id' => null]);
+        $tenkes = Tenkesehatan::where('id', $id)->first();
+        $users = User::where('id', $tenkes->user_id)->first();
+
+        $tenkes->delete();
+        $users->delete();
+
+        return redirect()->route('adm_man_datanakes')->with(['success' => 'Data berhasil dihapus!']);
     }
 }
