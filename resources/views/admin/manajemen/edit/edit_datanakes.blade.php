@@ -118,7 +118,7 @@
                                     <li>
                                         <label class="font-weight-bold text-primary">Kategori</label>
                                         <select class="form-control" name="kts" id="kts">
-                                            <option value="{{ $tenkes->kategori_tenkes_id }}" selected>{{ $tenkes->kategori_tenkesehatan->nama }}</option>
+                                            <option value="{{ $tenkes->kategori_tenkesehatan->id }}" selected>{{ $tenkes->kategori_tenkesehatan->nama }}</option>
                                             @foreach($katenkes as $kts)
                                             <option value="{{ $kts->id }}">{{ $kts->nama }}</option>
                                             @endforeach
