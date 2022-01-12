@@ -84,6 +84,7 @@
                             <th>Tempat & Tanggal Lahir</th>
                             <th>Kategori</th>
                             <th>Alamat</th>
+                            <th>No. HP</th>
                             <th>Jenis Kelamin</th>
                             <th>Aksi</th>
                         </tr>
@@ -95,6 +96,7 @@
                             <th>Tempat & Tanggal Lahir</th>
                             <th>Kategori</th>
                             <th>Alamat</th>
+                            <th>No. HP</th>
                             <th>Jenis Kelamin</th>
                             <th>Aksi</th>
                         </tr>
@@ -107,13 +109,14 @@
                             <td>{{ $pasien->tempat_lhr }}, {{ \Carbon\Carbon::parse($pasien->tgl_lhr)->format('d F Y') }}</td>
                             <td>{{ $pasien->category->nama }}</td>
                             <td>{{ $pasien->alamat }}</td>
+                            <td>{{ $pasien->no_hp }}</td>
                             <td>{{ $pasien->jk }}</td>
                             <td>
                                 <center>
                                     <form action="{{ route('delete_datapasien', $pasien->id) }}" method="post">
                                         @method('DELETE')
                                         @csrf
-                                        <a class="btn btn-success btn-sm" href="{{ route('adm_man_datapasien_edit', $pasien->id) }}"><i class="fas fa-edit"></i></a> 
+                                        <a class="btn btn-success btn-sm" href="{{ route('adm_man_datapasien_edit', $pasien->id) }}"><i class="fas fa-edit"></i></a>
                                         <button type="submit" class="btn btn-danger btn-sm" onClick="return confirm('Apakah Anda yakin akan menghapus data ini?')"><i class="fas fa-trash"></i></button>
                                     </form>
                                 </center>

@@ -450,6 +450,15 @@ class AdminController extends Controller
         return redirect()->route('adm_man_datanakes')->with(['success' => 'Data berhasil diubah!']);
     }
 
+    #Edit data rekam medik
+    public function edit_datarekammedik($id)
+    {
+        $pasien = Pasien::find($id);
+        $rekammedik = DB::table('rekam_mediks')->where('pasien_id', $pasien->id);
+
+        return view('admin.manajemen.edit.edit_datarekammedik', compact('pasien', 'rekammedik'));
+    }
+
     //---------------Delete data---------//
     public function delete_datapasien($id)
     {
