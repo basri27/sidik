@@ -20,13 +20,25 @@
 
     <!-- Custom styles for this template-->
     @yield('css')
-    <!-- <link rel="stylesheet" href="{{ asset('css/dashboard/sb-admin-2.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/dashboard/all.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/dashboard/animate.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/dashboard/dashboard.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/bootstrap.css') }}">
-    <link rel="stylesheet" href="{{ asset('vendor/dashboard/datatables/dataTables.bootstrap4.css') }}"> -->
+    
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="//js.pusher.com/3.1/pusher.min.js"></script>
 
+    <!-- <script>
+
+    // Enable pusher logging - don't include this in production
+    Pusher.logToConsole = true;
+
+    var pusher = new Pusher('c42b033cec5adc3b394c', {
+        cluster: 'ap1'
+    });
+
+    var channel = pusher.subscribe('my-channel');
+    channel.bind('my-event', function(data) {
+        alert(JSON.stringify(data));
+    });
+    </script> -->
+    
 </head>
 
 <body id="page-top">
@@ -38,12 +50,12 @@
         <ul class="navbar-nav bg-gradient-dark sidebar sidebar-dark accordion" id="accordionSidebar">
 
             <!-- Sidebar - Brand -->
-            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('adm_dashboard') }}">
+            <div class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('adm_dashboard') }}">
                 <div class="sidebar-brand-icon">
                     <img src="{{ asset('img/klinik.png') }}" style="width: 3em;">
                 </div>
                 <div class="sidebar-brand-text mx-3">SIDIK</div>
-            </a>
+            </div>
 
             <!-- Divider -->
 
@@ -91,27 +103,49 @@
                     <!-- Topbar Search -->
                     <div class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100">
                         <div class="input-group">
-                        <h4 style="color: white"><b>@yield('subhead')</b></h4>
+                            <h4 style="color: white"><b>@yield('subhead')</b></h4>
                         </div>
                     </div>
 
                     <!-- Topbar Navbar -->
                     <ul class="navbar-nav ml-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('home') }}">
+                            <i class="fas fa-reply"></i>&nbsp; Ke Beranda</a>
+                        </li>
 
                         <!-- Nav Item - Alerts -->
-                        <!-- <li class="nav-item dropdown no-arrow mx-1">
-                            <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="fas fa-bell fa-fw"></i>
-                                Counter - Alerts
-                                <span class="badge badge-danger badge-counter">3+</span>
+                        @if(Auth::user()->role_id == 3)
+    
+                        <li class="nav-item dropdown no-arrow mx-1" id="list-notif">
+                            <a class="nav-link dropdown-toggle" id="alertsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i data-count="0" class="fas fa-bell fa-fw"></i>
+                                <!-- Counter - Alerts -->
+                                <span class="badge badge-danger badge-counter">0</span>
                             </a>
-                            Dropdown - Alerts
-                            <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
-                                aria-labelledby="alertsDropdown">
+                            <!-- Dropdown - Alerts -->
+                            <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="alertsDropdown">
                                 <h6 class="dropdown-header">
-                                    Alerts Center
+                                    Notifikasi
                                 </h6>
+                                
+                            </div>
+                        </li>
+                        @endif
+                        <script type="text/javascript">
+                            var pusher = new Pusher('c42b033cec5adc3b394c', {
+                                cluster: 'ap1'
+                            });
+                            var notificationWrap = $('#list-notif');
+                            var notificationToggle = notificationWrap.find('a[data-toggle]');
+                            var notificationCountElem = notificationToggle.find('i[data-count]');
+                            var notificationCount = parseInt(notificationCountElem.data('count'));
+                            var notification = notificationWrap.find('div.dropdown-list');
+
+                            var channel = pusher.subscribe('medical-record-sent');
+                            channel.bind('App\\Events\\MedicalRecordSent', function(data) {
+                                var existingNotif = notification.html();
+                                var newNotif = `
                                 <a class="dropdown-item d-flex align-items-center" href="#">
                                     <div class="mr-3">
                                         <div class="icon-circle bg-primary">
@@ -119,17 +153,18 @@
                                         </div>
                                     </div>
                                     <div>
-                                        <div class="small text-gray-500">December 12, 2019</div>
-                                        <span class="font-weight-bold">A new monthly report is ready to download!</span>
+                                        <div class="small text-gray-500">{{ \Carbon\Carbon::now() }}</div>
+                                        <span class="font-weight-bold">`+data.message+`</span>
                                     </div>
                                 </a>
-                                <a class="dropdown-item text-center small text-gray-500" href="#">Show All Alerts</a>
-                            </div>
-                        </li> -->
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('home') }}">
-                            <i class="fas fa-reply"></i>&nbsp; Ke Beranda</a>
-                        </li>
+                                `;
+                                notification.html(existingNotif + newNotif);
+                                notificationCount += 1;
+                                notificationCountElem.attr('data-count', notificationCount);
+                                notificationWrap.find('.badge-counter').text(notificationCount);
+                            });
+                        </script>
+                        
 
                         <div class="topbar-divider d-none d-sm-block"></div>
 
@@ -137,7 +172,13 @@
                         <li class="nav-item dropdown no-arrow">
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <span class="mr-2 d-none d-lg-inline text-white-600 small"><b>
-                                {{ Auth::user()->admin->nama }}
+                                @if (Auth::user()->role_id == 1)
+                                    {{ Auth::user()->admin->nama }}
+                                @elseif (Auth::user()->role_id == 2)
+                                    {{ Auth::user()->pasien->nama }}
+                                @elseif (Auth::user()->role_id == 3)
+                                    {{ Auth::user()->tenkesehatan->nama }}
+                                @endif
                                 </b></span>
                                 <img class="img-profile rounded-circle" src="{{ asset('img/klinik.png') }}">
                             </a>
@@ -151,6 +192,10 @@
                                         Logout
                                     </button>
                                 </form>
+                                <!-- <a class="dropdown-item" href={{ route('home')}}>
+                                    <i class="fas fa-reply fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    Ke Beranda
+                                </a> -->
                             </div>
                         </li>
 
@@ -183,7 +228,7 @@
     <a class="scroll-to-top rounded" href="#page-top">
         <i class="fas fa-angle-up"></i>
     </a>
-
+        
     <!-- Bootstrap core JavaScript-->
     <script src="{{ asset('vendor/dashboard/jquery.min.js') }}"></script>
     <script src="{{ asset('vendor/dashboard/bootstrap.bundle.min.js') }}"></script>
@@ -207,6 +252,8 @@
 
     <!-- Page level custom scripts -->
     <script src="{{ asset('js/demo/datatables-demo.js') }}"></script>
+
+    <!-- JavaScript for Notif -->
 
 </body>
 

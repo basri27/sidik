@@ -1,6 +1,6 @@
 @extends('layouts.back')
 
-@section('title', 'Edit Data Rekam Medik')
+@section('title', 'Data Rekam Medik')
 
 @section('css')
     <link rel="stylesheet" href="{{ asset('css/dashboard/sb-admin-2.min.css') }}">
@@ -55,7 +55,7 @@
 </li>
 @endsection
 
-@section('subhead', 'Edit Data Rekam Medik')
+@section('subhead', 'Data Rekam Medik')
 
 @section('content')
 <div class="container-fluid">
@@ -64,8 +64,26 @@
             <div class="about-row row">
                 <div class="detail-col col-md-12">
                     <form method="POST" enctype="multipart/form-data" action="{{ route('kirim_datarekammedik', $pasien->id) }}">
-                    @method('PATCH')
                     @csrf
+                    <div class="row">
+                        <div class="col-md-4 col-12">
+                            <div class="info-list">
+                                <div class="form-group">
+                                    <label class="font-weight-bold text-primary">Tanggal</label> 
+                                    <input type="text" class="form-control" value="{{ \Carbon\Carbon::now()->format('d F Y') }}" disabled>                                   
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-12">
+                            <div class="info-list">
+                                <div class="form-group">
+                                    <label class="font-weight-bold text-primary">Waktu</label>
+                                    <input type="text" class="form-control" value="{{ \Carbon\Carbon::now()->toTimeString() }}" disabled>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
                     <div class="row">
                         <div class="col-md-4 col-12">
                             <div class="info-list">
@@ -73,6 +91,7 @@
                                 <ul>
                                     <li>
                                         <label class="font-weight-bold text-primary">Nama</label>
+                                        <input type="text" name="pasien_id" value="{{ $pasien->id }}" hidden>
                                         <input type="text" name="nama" class="form-control" value="{{ $pasien->nama }}" disabled>
                                     </li>
                                     <li>
@@ -135,9 +154,9 @@
                             </div>
                         </div>
                     </div>
-                    <hr>
+                    <hr>                                    
                     <div class="row">
-                        <div class="col-md-6 col-12">
+                        <div class="col-md-4 col-12">
                             <div class="info-list">
                                 <div class="form-group">
                                     <ul>
@@ -149,13 +168,30 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-6 col-12">
+                        <div class="col-md-4 col-12">
                             <div class="info-list">
                                 <div class="form-group">
                                     <ul>
                                         <li>
                                             <label class="font-weight-bold text-primary" id="label_f">Tensi</label>
                                             <input type="text" name="tensi" class="form-control">
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-12">
+                            <div class="info-list">
+                                <div class="form-group">
+                                    <ul>
+                                        <li>
+                                            <label class="font-weight-bold text-primary" id="label_f">Tenaga Kesehatan</label>
+                                            <select name="nakes_id" class="form-control">
+                                                <option value="">Pilih Tenaga Kesehatan</option>
+                                                @foreach($nakes as $n)
+                                                <option value="{{ $n->id }}">{{ $n->nama }}</option>
+                                                @endforeach
+                                            </select>
                                         </li>
                                     </ul>
                                 </div>

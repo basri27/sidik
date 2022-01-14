@@ -40,23 +40,18 @@
 				<li class="nav-item">
 				  <a class="btn btn-primary ml-lg-3" href="/login">Login</a>
 				</li>
-			@elseif (Auth::user()->role_id == 1)
-				<li class="nav-item">
-					<a class="btn btn-primary ml-lg-3" href="{{ route('adm_dashboard') }}">Dashboard</a>
-				</li>
+			@else
+        <li class="nav-item">
+        @if (Auth::user()->role_id == 1)
+					<a class="btn btn-primary ml-sm-3" href={{ route('adm_dashboard') }}>Dashboard</a>
+        @elseif (Auth::user()->role_id == 3)
+          <a class="btn btn-primary ml-sm-3" href={{ route('nakes_dashboard') }}>Dashboard</a>
+        @endif
+        </li>
         <li>
         <form action="{{ route('logout') }}" method="POST">
         @csrf
-          <button class="btn btn-primary ml-lg-3" type="submit">
-              Logout
-          </button>
-        </form>
-        </li>
-      @else
-      <li>
-        <form action="{{ route('logout') }}" method="POST">
-        @csrf
-          <button class="btn btn-primary ml-lg-3" type="submit">
+          <button class="btn btn-primary ml-sm-1" type="submit">
               Logout
           </button>
         </form>

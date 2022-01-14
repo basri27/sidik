@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\PasienController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\NakesController;
 
 
 /*
@@ -87,3 +88,11 @@ Route::delete('admin/deletedata/nakes/{id}', [AdminController::class, 'delete_da
 //----------------------------------Route Pasien----------------------------//
 #Pasien isi bio ketika regist
 Route::post('/add/bio', [PasienController::class, 'add_bio'])->name('add_bio');
+
+//----------------------------------Route Nakes------------------------------//
+Route::get('test', function() {
+    event(new App\Events\MedicalRecordSent('Someone'));
+    return "Medical Record has been sent!";
+});
+
+Route::get('nakes/dashboard/', [NakesController::class, 'nakes_dashboard'])->name('nakes_dashboard');

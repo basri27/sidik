@@ -17,6 +17,7 @@ use App\Models\Kategori_tenkesehatan;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use App\Events\MedicalRecordSent;
 
 class AdminController extends Controller
 {
@@ -24,9 +25,10 @@ class AdminController extends Controller
     {
         $pasiens = DB::table('pasiens')->count();
         $nakes = DB::table('tenkesehatans')->count();
+        $rekammedik = DB::table('rekam_mediks')->count();
         $apoteker = DB::table('apotekers')->count();
 
-        return view('admin.dashboard', compact('pasiens', 'nakes', 'apoteker'));
+        return view('admin.dashboard', compact('pasiens', 'nakes', 'rekammedik', 'apoteker'));
     }
 
     public function adm_profil($user_id)
@@ -258,8 +260,6 @@ class AdminController extends Controller
                     'jk' => $request->input('jk'),
                 ]);
             }
-            $pasien = Pasien::all()->last();
-            DB::table('rekam_mediks')->insert(['pasien_id' => $pasien->id]);
         }
 
         return redirect()->route('adm_man_datapasien')->with(['success' => 'Data berhasil ditambahkan!']);
@@ -454,9 +454,31 @@ class AdminController extends Controller
     public function edit_datarekammedik($id)
     {
         $pasien = Pasien::find($id);
+        $nakes = Tenkesehatan::all();
         $rekammedik = DB::table('rekam_mediks')->where('pasien_id', $pasien->id);
 
-        return view('admin.manajemen.edit.edit_datarekammedik', compact('pasien', 'rekammedik'));
+        return view('admin.manajemen.edit.edit_datarekammedik', compact('pasien', 'nakes', 'rekammedik'));
+    }
+    public function kirim_datarekammedik(Request $request, $id)
+    {
+        $validated = $request->validate([
+            'nakes_id' => 'required',
+            'suhu' => 'required',
+            'tensi' => 'required',
+        ]);
+
+        if($validated) {
+            $rekammedik = DB::table('rekam_mediks')->insert([
+                'pasien_id' => Request()->pasien_id,
+                'tenkesehatan_id' => Request()->nakes_id,
+                'suhu' => Request()->suhu,
+                'tensi' => Request()->tensi,
+            ]);
+
+            MedicalRecordSent::dispatch($rekammedik);
+        }
+
+        return redirect()->route('adm_man_datarekammedik')->with(['succes' => 'Data berhasil dikirim!']);
     }
 
     //---------------Delete data---------//
