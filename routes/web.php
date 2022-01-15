@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\PasienController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\NakesController;
+use App\Events\MedicalRecordSent;
 
 
 /*
@@ -29,7 +30,7 @@ Route::get('jadwalpraktek', [AdminController::class, 'show_jadwal'])->name('jadw
 
 //-------------------------------Route Admin---------------------------------//
 #Dahsboard admin
-Route::get('admin/dashboard/', [AdminController::class, 'adm_dashboard'])->name('adm_dashboard');
+Route::get('admin/dashboard/{id}', [AdminController::class, 'adm_dashboard'])->name('adm_dashboard');
 
 #Profil admin
 Route::get('admin/profil/{user_id}', [AdminController::class, 'adm_profil'])->name('adm_profil');
@@ -90,9 +91,4 @@ Route::delete('admin/deletedata/nakes/{id}', [AdminController::class, 'delete_da
 Route::post('/add/bio', [PasienController::class, 'add_bio'])->name('add_bio');
 
 //----------------------------------Route Nakes------------------------------//
-Route::get('test', function() {
-    event(new App\Events\MedicalRecordSent('Someone'));
-    return "Medical Record has been sent!";
-});
-
-Route::get('nakes/dashboard/', [NakesController::class, 'nakes_dashboard'])->name('nakes_dashboard');
+Route::get('nakes/dashboard/{id}', [NakesController::class, 'nakes_dashboard'])->name('nakes_dashboard');

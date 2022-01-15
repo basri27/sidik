@@ -23,21 +23,6 @@
     
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
     <script src="//js.pusher.com/3.1/pusher.min.js"></script>
-
-    <!-- <script>
-
-    // Enable pusher logging - don't include this in production
-    Pusher.logToConsole = true;
-
-    var pusher = new Pusher('c42b033cec5adc3b394c', {
-        cluster: 'ap1'
-    });
-
-    var channel = pusher.subscribe('my-channel');
-    channel.bind('my-event', function(data) {
-        alert(JSON.stringify(data));
-    });
-    </script> -->
     
 </head>
 
@@ -50,7 +35,7 @@
         <ul class="navbar-nav bg-gradient-dark sidebar sidebar-dark accordion" id="accordionSidebar">
 
             <!-- Sidebar - Brand -->
-            <div class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('adm_dashboard') }}">
+            <div class="sidebar-brand d-flex align-items-center justify-content-center">
                 <div class="sidebar-brand-icon">
                     <img src="{{ asset('img/klinik.png') }}" style="width: 3em;">
                 </div>
@@ -115,56 +100,7 @@
                         </li>
 
                         <!-- Nav Item - Alerts -->
-                        @if(Auth::user()->role_id == 3)
-    
-                        <li class="nav-item dropdown no-arrow mx-1" id="list-notif">
-                            <a class="nav-link dropdown-toggle" id="alertsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i data-count="0" class="fas fa-bell fa-fw"></i>
-                                <!-- Counter - Alerts -->
-                                <span class="badge badge-danger badge-counter">0</span>
-                            </a>
-                            <!-- Dropdown - Alerts -->
-                            <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="alertsDropdown">
-                                <h6 class="dropdown-header">
-                                    Notifikasi
-                                </h6>
-                                
-                            </div>
-                        </li>
-                        @endif
-                        <script type="text/javascript">
-                            var pusher = new Pusher('c42b033cec5adc3b394c', {
-                                cluster: 'ap1'
-                            });
-                            var notificationWrap = $('#list-notif');
-                            var notificationToggle = notificationWrap.find('a[data-toggle]');
-                            var notificationCountElem = notificationToggle.find('i[data-count]');
-                            var notificationCount = parseInt(notificationCountElem.data('count'));
-                            var notification = notificationWrap.find('div.dropdown-list');
-
-                            var channel = pusher.subscribe('medical-record-sent');
-                            channel.bind('App\\Events\\MedicalRecordSent', function(data) {
-                                var existingNotif = notification.html();
-                                var newNotif = `
-                                <a class="dropdown-item d-flex align-items-center" href="#">
-                                    <div class="mr-3">
-                                        <div class="icon-circle bg-primary">
-                                            <i class="fas fa-file-alt text-white"></i>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div class="small text-gray-500">{{ \Carbon\Carbon::now() }}</div>
-                                        <span class="font-weight-bold">`+data.message+`</span>
-                                    </div>
-                                </a>
-                                `;
-                                notification.html(existingNotif + newNotif);
-                                notificationCount += 1;
-                                notificationCountElem.attr('data-count', notificationCount);
-                                notificationWrap.find('.badge-counter').text(notificationCount);
-                            });
-                        </script>
-                        
+                        @yield('notif')    
 
                         <div class="topbar-divider d-none d-sm-block"></div>
 

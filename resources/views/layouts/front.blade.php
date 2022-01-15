@@ -43,9 +43,9 @@
 			@else
         <li class="nav-item">
         @if (Auth::user()->role_id == 1)
-					<a class="btn btn-primary ml-sm-3" href={{ route('adm_dashboard') }}>Dashboard</a>
+					<a class="btn btn-primary ml-sm-3" href={{ route('adm_dashboard', Auth::user()->admin->id) }}>Dashboard</a>
         @elseif (Auth::user()->role_id == 3)
-          <a class="btn btn-primary ml-sm-3" href={{ route('nakes_dashboard') }}>Dashboard</a>
+          <a class="btn btn-primary ml-sm-3" href={{ route('nakes_dashboard', Auth::user()->tenkesehatan->id) }}>Dashboard</a>
         @endif
         </li>
         <li>

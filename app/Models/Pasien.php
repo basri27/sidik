@@ -22,24 +22,27 @@ class Pasien extends Model
         'alamat',
     ];
 
-	public function user() {
+	public function user() 
+    {
         return $this->belongsTo(User::class);
     }
 
-    public function category() {
+    public function category() 
+    {
         return $this->belongsTo(Category::class);
     }
 
-    public function fakulta() {
+    public function fakulta() 
+    {
         return $this->belongsTo(Fakulta::class);
     }
 
-    public function prodi() {
+    public function prodi() 
+    {
         return $this->belongsTo(Prodi::class);
     }
-
-    public function tenkesehatan()
+        public function rekammedik()
     {
-        return $this->belongsToMany(Tenkesehatan::class, 'rekam_mediks', 'pasien_id', 'tenkesehatan_id');
+        return $this->hasMany(RekamMedik::class);
     }
 }

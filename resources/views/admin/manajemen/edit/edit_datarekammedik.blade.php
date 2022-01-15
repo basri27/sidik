@@ -12,7 +12,7 @@
 
 @section('menu')
 <li class="nav-item">
-    <a class="nav-link" href="{{ route('adm_dashboard') }}">
+    <a class="nav-link" href="{{ route('adm_dashboard', Auth::user()->admin->id ) }}">
         <i class="fas fa-tachometer-alt"></i>
         <span>Dashboard</span>
     </a>
@@ -91,7 +91,6 @@
                                 <ul>
                                     <li>
                                         <label class="font-weight-bold text-primary">Nama</label>
-                                        <input type="text" name="pasien_id" value="{{ $pasien->id }}" hidden>
                                         <input type="text" name="nama" class="form-control" value="{{ $pasien->nama }}" disabled>
                                     </li>
                                     <li>

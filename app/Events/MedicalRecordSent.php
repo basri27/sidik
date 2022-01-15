@@ -19,13 +19,15 @@ class MedicalRecordSent implements ShouldBroadcast
      *
      * @return void
      */
-    public $username;
-    public $message;
+    public $rekammedik;
+    public $notif;
+    public $nakes_id;
 
-    public function __construct($username)
+    public function __construct($rekammedik, $notif, $nakes_id)
     {
-        $this->username = $username;
-        $this->message = "Dari {$username}: Ada pasien ingin berobat!";
+        $this->rekammedik = $rekammedik;
+        $this->notif = $notif;
+        $this->notif_id = $nakes_id;
     }
 
     /**

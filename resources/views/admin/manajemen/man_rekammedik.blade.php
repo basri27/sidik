@@ -12,7 +12,7 @@
 
 @section('menu')
 <li class="nav-item">
-    <a class="nav-link" href="{{ route('adm_dashboard') }}">
+    <a class="nav-link" href="{{ route('adm_dashboard', Auth::user()->admin->id ) }}">
         <i class="fas fa-tachometer-alt"></i>
         <span>Dashboard</span>
     </a>
@@ -109,7 +109,7 @@
                             <td>
                                 <center>
                                     <a class="btn btn-success btn-sm" href="{{ route('detail_datarekammedik', $p->id) }}"><i class="fas fa-info-circle"></i></a> 
-                                    <a class="btn btn-primary btn-sm" href="{{ route('edit_datarekammedik', $p->id) }}"><i class="fas fa-edit"></i></a>
+                                    <a class="btn btn-primary btn-sm" href="{{ route('edit_datarekammedik', $p->id) }}"><i class="fas fa-plus-circle"></i></a>
                                 </center>
                             </td>
                         </tr>
@@ -120,4 +120,11 @@
         </div>
     </div>
 </div>
+<script>
+    var msg = '{{Session::get('alert')}}';
+    var exist = '{{Session::has('alert')}}';
+    if(exist){
+      alert(msg);
+    }
+</script>
 @endsection
