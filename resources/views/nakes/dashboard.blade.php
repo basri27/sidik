@@ -79,7 +79,10 @@
     channel.bind('App\\Events\\MedicalRecordSent', function(data) {        
         var existingNotif = notification.html();
         var newNotif = `
-        <a class="dropdown-item d-flex align-items-center" href="'+data.rekammedik.id+'">
+        <h6 class="dropdown-header">
+            Notifikasi
+        </h6>
+        <a class="dropdown-item d-flex align-items-center" href="`+data.rekammedik.id+`">
             <div class="mr-3">
                 <div class="icon-circle bg-primary">
                     <i class="fas fa-notes-medical text-white"></i>
@@ -90,9 +93,22 @@
                 <span class="font-weight-bold">`+data.notif.isi+`</span>
             </div>
         </a>
+        @foreach($notifs as $notif)
+        <a class="dropdown-item d-flex align-items-center" href="{{$notif->id}}">
+            <div class="mr-3">
+                <div class="icon-circle bg-primary">
+                    <i class="fas fa-notes-medical text-white"></i>
+                </div>
+            </div>
+            <div>
+                <div class="small text-gray-500">{{ \Carbon\Carbon::parse($notif->created_at)->format('d F y') }} | {{ \Carbon\Carbon::parse($notif->created_at)->toTimeString() }}</div>
+                <span class="font-weight-bold">{{ $notif->isi }}</span>
+            </div>
+        </a>
+        @endforeach
         `;
         if(data.notif.tenkesehatan_id == nakes_id) {
-            notification.html(newNotif + existingNotif);
+            notification.html(newNotif);
             notificationCount += 1;
             notificationCountElem.attr('data-count', notificationCount);
             notificationWrap.find('.badge-counter').text(notificationCount);

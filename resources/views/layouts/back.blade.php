@@ -39,19 +39,8 @@
                 <div class="sidebar-brand-icon">
                     <img src="{{ asset('img/klinik.png') }}" style="width: 3em;">
                 </div>
-                <div class="sidebar-brand-text mx-3">SIDIK</div>
+                <div class="sidebar-brand-text mx-3">SIDIK LMMC</div>
             </div>
-
-            <!-- Divider -->
-
-            <!-- Nav Item - Dashboard -->
-            <!-- <li class="nav-item">
-                <a class="nav-link" href="{{ route('home') }}">
-                    <i class="fas fa-arrow-left"></i>
-                    <span>Kembali ke Beranda</span></a>
-            </li> -->
-
-            <!-- Divider -->
 
             <div class="sidebar-heading">
                 Menu
@@ -128,10 +117,6 @@
                                         Logout
                                     </button>
                                 </form>
-                                <!-- <a class="dropdown-item" href={{ route('home')}}>
-                                    <i class="fas fa-reply fa-sm fa-fw mr-2 text-gray-400"></i>
-                                    Ke Beranda
-                                </a> -->
                             </div>
                         </li>
 
@@ -187,9 +172,7 @@
     <script src="{{ asset('vendor/dashboard/datatables/dataTables.bootstrap4.min.js') }}"></script>
 
     <!-- Page level custom scripts -->
-    <script src="{{ asset('js/demo/datatables-demo.js') }}"></script>
-
-    <!-- JavaScript for Notif -->
+    <script src="{{ asset('js/dashboard/demo/datatables-demo.js') }}"></script>
 
 </body>
 

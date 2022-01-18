@@ -50,6 +50,9 @@ Route::get('admin/jadwalpraktek', [AdminController::class, 'adm_jadwal'])->name(
 Route::get('admin/jadwalprakterk/edit/{id}', [AdminController::class, 'adm_jadwal_edit'])->name('adm_jadwal_edit');
 Route::patch('admin/jadwalpraktek/update/{id}', [AdminController::class, 'adm_jadwal_update'])->name('adm_jadwal_update');
 
+#Rekap rekam medik
+Route::get('admin/rekaprekammedik', [AdminController::class, 'adm_rekap_rekam_medik'])->name('adm_rekap_rekam_medik');
+
 #Manajemen data 
 Route::get('admin/manajemendata/pasien', [AdminController::class, 'adm_man_datapasien'])->name('adm_man_datapasien');
 Route::get('admin/manajemendata/apoteker', [AdminController::class, 'adm_man_dataapoteker'])->name('adm_man_dataapoteker');

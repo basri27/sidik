@@ -9,7 +9,7 @@ class NakesController extends Controller
 {
     public function nakes_dashboard($id)
     {
-        $notifs = Notification::where('tenkesehatan_id', $id)->get();
+        $notifs = Notification::where('tenkesehatan_id', $id)->orderBy('id', 'DESC')->get();
         $notifCount = Notification::where('tenkesehatan_id', $id)->count();
 
         return view('nakes.dashboard', compact('notifs', 'notifCount'));
