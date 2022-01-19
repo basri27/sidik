@@ -116,15 +116,3 @@
     });
 </script>
 @endsection
-
-@section('content')
-<div class="container-fluid">
-    <div class="card shadow mb-4">
-        <div class="card-body">
-            <div class="row">
-                <h1>Ini Dashboard Tenaga Kesehatan</h1>
-            </div>
-        </div>
-    </div>
-</div>
-@endsection

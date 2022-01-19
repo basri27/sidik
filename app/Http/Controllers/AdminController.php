@@ -161,9 +161,11 @@ class AdminController extends Controller
         return view('jadwal', compact('jadwals'));
     }
 
+    //------------rekap rekam medik-------------//
     public function adm_rekap_rekam_medik()
     {
-        return view('admin.rekap_rekam_medik');
+        $pasien = Pasien::all();
+        return view('admin.rekap_rekam_medik', compact('pasien'));
     }
 
     //-----------function manajemen----------//
