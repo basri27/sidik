@@ -174,29 +174,4 @@
         </div>
     </div>
 </div>
-<script>
-    function kategori(select)
-    {
-        var f = document.getElementById('fakulta_id');
-        var p = document.getElementById('prodi_id');
-        var lf = document.getElementById('label_f');
-        var lp = document.getElementById('label_p');
-
-        if(select.value == '4') {
-            f.disabled = true;
-            f.value = '1';
-            p.disabled = true;
-            p.value = '1';
-        }
-        else if (select.value == '2') {
-            f.disabled = false;
-            p.disabled = true;
-            p.value = '1';
-        }
-        else {
-            f.disabled = false;
-            p.disabled = false;
-        }
-    }
-</script>
 @endsection

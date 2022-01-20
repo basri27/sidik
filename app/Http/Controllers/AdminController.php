@@ -20,6 +20,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use App\Events\MedicalRecordSent;
+use App\Events\FilterRekamMedik;
 
 class AdminController extends Controller
 {
@@ -166,6 +167,43 @@ class AdminController extends Controller
     {
         $pasien = Pasien::all();
         return view('admin.rekap_rekam_medik', compact('pasien'));
+    }
+    public function filterRekamMedik()
+    {
+        $columns = [
+            'id',
+            'nama',
+            ''
+        ];
+        $orderBy = $columns[request()->input("order.0.column")];
+        $data = Pasien::select('*');
+
+        if(request()->input("search.value")) {
+            $data = $data->where(function($query){
+                $query->whereRaw('LOWER(id) like ?', ['%'.strtolower(request()->input("search.value")).'%'])
+                ->orWhereRaw('LOWER(nama) like ?', ['%'.strtolower(request()->input("search.value")).'%']);
+            });
+        }
+
+        $recordsFiltered = $data->get()->count();
+        $data = $data
+            ->skip(request()
+            ->input('start'))
+            ->take(request()
+            ->input('length'))
+            ->orderBy($orderBy, request()
+            ->input("order.0.dir"))->get()
+            ;
+        $recordsTotal = $data->count();
+
+        return response()->json([
+            'draw' => request()->input('draw'),
+            'recordsTotal' => $recordsTotal,
+            'recordsFiltered' => $recordsFiltered,
+            'data' => $data
+        ]);
+
+        // dd(request()->all());
     }
 
     //-----------function manajemen----------//

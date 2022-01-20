@@ -3,11 +3,9 @@
 @section('title', 'Rekap Rekam Medik')
 
 @section('css')
-    <link rel="stylesheet" href="{{ asset('css/dashboard/sb-admin-2.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/dashboard/all.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/dashboard/animate.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/dashboard/dashboard.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/bootstrap.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/dashboard/sb-admin-2.min.css') }}"> 
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.dataTables.min.css">
 @endsection
 
 @section('menu')
@@ -25,70 +23,40 @@
         <!-- Card Content - Collapse -->
         <div class="collapse show" id="collapseCardMedik">
             <div class="card-body">
-                <div class="col-12">
+                <label class="font-weight-bold text-primary">Filter Rekam Medik</label>
+                <div class="row pl-3">
+                    <select class="form-control col-3" name="filter" id="filterRekamMedik">
+                        <option value="">Pilih Filter</option>
+                        <option value="1">Hari</option>
+                        <option value="2">Bulan</option>
+                        <option value="3">Tahun</option>
+                    </select>&nbsp;
+                    <input type="date" class="form-control col-3" name="tanggal" id="tanggalRekamMedik">&nbsp;
+                    <button class="btn btn-info tombol"><i class="fas fa-folder-open">&nbsp;Lihat</i></button>
+                    <!-- <a class="btn btn-info btn-2" href="#"><i class="fas fa-print"></i>Cetak</a> -->
+                </div>
+                <hr>
+                <!-- <div class="col-12">
                     <div class="row">
-                        <select class="form-control col-3" name="filter" id="filterRekamMedik">
-                            <option value="">Pilih Filter</option>
-                            <option value="1">Hari</option>
-                            <option value="2">Bulan</option>
-                            <option value="3">Tahun</option>
-                        </select>&nbsp;
-                        <input type="date" class="form-control col-4" name="tanggal" id="tanggalRekamMedik">&nbsp;
-                        <div class="col-4">
-                            <div class="row">
-                                <button class="btn btn-info btn-3" onClick="filterRekamMedik()"><i class="fas fa-folder-open"></i></button>
-                                <!-- <a class="btn btn-info btn-2" href="#"><i class="fas fa-print"></i>Cetak</a> -->
-                            </div>
+                        <div class="col-3">
+                            
+                        </div>
+                        <div class="col-1">
+                            <button class="btn btn-info">Cari</button>
                         </div>
                     </div>
-                </div>
-                    <!-- <div class="row"><div class="col-2">
-                        <input type="text" class="form-control" name="" id="" placeholder="Cari nama...">
-                    </div>
-                    <div class="col-1">
-                        <button class="btn btn-info">Cari</button>
-                    </div></div> -->
-                
-                <table class="table">
-                    @foreach($pasien as $p)
-                    <tr>
-                        <th>
-                            <a href="#collapseCardPasien{{ $p->id }}" class="d-block card-header py-3" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="collapseCardExample">
-                                <h6 class="m-0 font-weight-bold text-primary">{{ $p->id }}. &emsp;{{ $p->nama }}</h6>
-                            </a>
-                            <div class="collapse" id="collapseCardPasien{{ $p->id }}">
-                                <div class="card-body">
-                                    <table class="table table-striped">
-                                        <thead>
-                                            <tr>
-                                                <th scope="row">No.</th>
-                                                <th scope="row">Nama</th>
-                                                <th scope="row">Tanggal dan Waktu Periksa</th>
-                                                <th scope="row">Pemeriksa</th>
-                                                <th scope="row">Suhu</th>
-                                                <th scope="row">Tensi</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <?php $i = 0; ?>
-                                            <?php $rekammedik = \App\Models\RekamMedik::where('pasien_id', $p->id)->latest()->take(5)->get(); ?>
-                                            @foreach($rekammedik as $rkm)
-                                            <tr>
-                                                <td scope="row">{{ $i += 1 }}</td>
-                                                <td>{{ $rkm->pasien->nama }}</td>
-                                                <td>{{ \Carbon\Carbon::parse($rkm->created_at)->format('d-m-Y') }} | {{ \Carbon\Carbon::parse($rkm->created_at)->toTimeString() }}</td>
-                                                <td>{{ $rkm->tenkesehatan->nama }}</td>
-                                                <td>{{ $rkm->suhu }}</td>
-                                                <td>{{ $rkm->tensi }}</td>
-                                            </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </th>
-                    </tr>
-                    @endforeach
+                </div> -->
+                <table class="table" id="tabel-pasien">
+                    <thead>
+                        <tr>
+                            <th>Index</th>
+                            <th>Nama</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                    </tbody>
                 </table>
             </div>
         </div>
@@ -149,23 +117,96 @@
         </div>
     </div>
 </div>
+<!--Import jQuery before export.js-->
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+
+<!--Data Table-->
+<script type="text/javascript"  src=" https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/1.11.3/js/dataTables.bootstrap4.min.js"></script>
+<script type="text/javascript"  src=" https://cdn.datatables.net/buttons/1.2.4/js/dataTables.buttons.min.js"></script>
 <script>
-    function filterRekamMedik() {
-        var filter = document.getElementById('filterRekamMedik');
-        var tanggal = document.getElementById('tanggalRekamMedik').value;
-        var table = document.getElementsByClassName('table');
-        var rekammedik = $('.table');
-        var create = [`{{ $created_at = \App\Models\RekamMedik::select('created_at')->get(); }}`]
-        create.forEach(tampilData);
-        function tampilData(data) {
-            var year = `{{\Carbon\Carbon::parse(`+data+`)}}`;
-            console.log(year);
+    let filter = $('#filterRekamMedik').val();
+    let tgl = $('#tanggalRekamMedik').val();
+
+    const table_pasien = $("#tabel-pasien").DataTable({
+        "responsive": true,
+        "autoWidth": true,
+        "pageLength": 5,
+        "lengthMenu": [[5, 10, 25, 50, 100], [5, 10, 25, 50, 100]],
+        "bLengthChange": true,
+        "bFilter": true,
+        "bInfo": true,
+        "processing": true,
+        "bServerSide": true,
+        "order": [[ 0, "asc" ]],
+        "ajax":{
+            url:"{{url('filterrekammedik')}}",
+            type:"POST",
+            data:function(d){
+                d._token = "{{csrf_token()}}"
+            }
+        },
+        columns:[
+            {
+                "render": function(data, type, row, meta){
+                    return row.id
+                }
+            },
+            {
+                "render": function(data, type, row, meta){
+                    return row.nama
+                }
+            },
+            {
+                "className": 'dt-control',
+                "orderable": false,
+                "data": null,
+                "defaultContent": ''
+            }
+        ]
+    });
+
+    function format ( d ) {
+    // `d` is the original data object for the row
+    return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+
+        '<tr>'+
+            '<td>Nama:</td>'+
+            '<td>'+d.nama+'</td>'+
+        '</tr>'+
+        '<tr>'+
+            '<td>Extra info:</td>'+
+            '<td>'+d.rekammedik+'</td>'+
+        '</tr>'+
+    '</table>';
+}
+
+    $('#tabel-pasien tbody').on('click', 'td.dt-control', function () {
+        var tr = $(this).closest('tr');
+        var row = table_pasien.row( tr );
+  
+        if ( row.child.isShown() ) {
+            // This row is already open - close it
+            row.child.hide();
+            tr.find('svg').attr('data-icon', 'plus-circle');    // FontAwesome 5
         }
-    }
+        else {
+            // Open this row
+            row.child( format(row.data()) ).show();
+          tr.find('svg').attr('data-icon', 'minus-circle'); // FontAwesome 5
+        }
+    });
+
+    $('.tombol').on('click', function() {
+        filter = $('#filterRekamMedik').val();
+        tgl = $('#tanggalRekamMedik').val();
+        table_pasien.ajax.reload(null,false)
+    })
 </script>
 <!-- MDB -->
 <!-- JQuery -->
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.2/umd/popper.min.js" integrity="sha512-aDciVjp+txtxTJWsp8aRwttA0vR2sJMk/73ZT7ExuEHv7I5E6iyyobpFOlEFkq59mWW8ToYGuVZFnwhwIUisKA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <!-- MDB core JavaScript -->
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.1/js/mdb.min.js"></script>
 <script>
