@@ -31,7 +31,8 @@ class CreateRekamMediksTable extends Migration
             $table->string('obat')->nullable();
             $table->string('keterangan')->nullable();
             $table->string('keluhan')->nullable();
-            $table->timestamps();
+            $table->timestamp('rekammedik_created_at')->useCurrent();
+            $table->timestamp('rekammedik_updated_at')->useCurrent();
         });
     }
 

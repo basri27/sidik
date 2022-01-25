@@ -9,6 +9,8 @@ class Notification extends Model
 {
     use HasFactory;
 
+    public $timestamps = false;
+
     protected $fillable = [
         'tenkesehatan_id',
         'isi',

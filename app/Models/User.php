@@ -17,6 +17,9 @@ class User extends Authenticatable
      *
      * @var string[]
      */
+
+    public $timestamps = false;
+    
     protected $fillable = [
         'role_id',
         'username',

@@ -17,7 +17,8 @@ class CreateNotificationsTable extends Migration
             $table->id();
             $table->foreignId('tenkesehatan_id')->nullable()->constrained();
             $table->string('isi');
-            $table->timestamps();
+            $table->timestamp('pasien_created_at')->useCurrent();
+            $table->timestamp('pasien_updated_at')->useCurrent();
         });
     }
 

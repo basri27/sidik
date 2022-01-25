@@ -9,17 +9,19 @@ class Pasien extends Model
 {
     use HasFactory;
 	
+    public $timestamps = false;
+
     protected $fillable = [
         'user_id',
         'fakulta_id',
         'prodi_id',
         'category_id',
-        'nama',
-        'jk',
-        'tempat_lhr',
-        'tgl_lhr',
-        'no_hp',
-        'alamat',
+        'nama_pasien',
+        'jk_pasien',
+        'tempat_lhr_pasien',
+        'tgl_lhr_pasien',
+        'no_hp_pasien',
+        'alamat_pasien',
     ];
 
 	public function user() 

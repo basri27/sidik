@@ -64,12 +64,12 @@
                         @foreach ($pasiens as $pasien)
                         <tr>
                             <td>{{ $pasien->id }}</td>
-                            <td>{{ $pasien->nama }}</td>
-                            <td>{{ $pasien->tempat_lhr }}, {{ \Carbon\Carbon::parse($pasien->tgl_lhr)->format('d F Y') }}</td>
-                            <td>{{ $pasien->category->nama }}</td>
-                            <td>{{ $pasien->alamat }}</td>
-                            <td>{{ $pasien->no_hp }}</td>
-                            <td>{{ $pasien->jk }}</td>
+                            <td>{{ $pasien->nama_pasien }}</td>
+                            <td>{{ $pasien->tempat_lhr_pasien }}, {{ \Carbon\Carbon::parse($pasien->tgl_lhr)->format('d F Y') }}</td>
+                            <td>{{ $pasien->category->nama_kategori }}</td>
+                            <td>{{ $pasien->alamat_pasien }}</td>
+                            <td>{{ $pasien->no_hp_pasien }}</td>
+                            <td>{{ $pasien->jk_pasien }}</td>
                             <td>
                                 <center>
                                     <form action="{{ route('delete_datapasien', $pasien->id) }}" method="post">

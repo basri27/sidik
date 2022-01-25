@@ -60,11 +60,11 @@
                         @foreach ($pasiens as $p)
                         <tr>
                             <td>{{ $p->id }}</td>
-                            <td>{{ $p->nama }}</td>
-                            <td>{{ $p->alamat }}</td>
-                            <td>{{ \Carbon\Carbon::parse($p->tgl_lhr)->diff(\Carbon\Carbon::now())->y}}</td>
-                            <td>{{ $p->category->nama }}</td>
-                            <td>{{ $p->jk }}</td>
+                            <td>{{ $p->nama_pasien }}</td>
+                            <td>{{ $p->alamat_pasien }}</td>
+                            <td>{{ \Carbon\Carbon::parse($p->tgl_lhr_pasien)->diff(\Carbon\Carbon::now())->y}}</td>
+                            <td>{{ $p->category->nama_kategori }}</td>
+                            <td>{{ $p->jk_pasien }}</td>
                             <td>
                                 <center>
                                     <a class="btn btn-success btn-sm" href="{{ route('detail_datarekammedik', $p->id) }}"><i class="fas fa-info-circle"></i></a> 

@@ -18,9 +18,9 @@ class CreateUsersTable extends Migration
             $table->foreignId('role_id')->constrained();
             $table->string('username')->unique();
             $table->string('password');
-            $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
-            $table->timestamps();
+            $table->timestamp('user_created_at')->useCurrent();
+            $table->timestamp('user_updated_at')->useCurrent();
         });
     }
 

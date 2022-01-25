@@ -50,15 +50,15 @@
                                 <ul>
                                     <li>
                                         <label class="font-weight-bold text-primary">Nama</label>
-                                        <input type="text" name="nama" class="form-control" value="{{ $pasien->nama }}" disabled>
+                                        <input type="text" name="nama" class="form-control" value="{{ $pasien->nama_pasien }}" disabled>
                                     </li>
                                     <li>
                                         <label class="font-weight-bold text-primary">Tempat lahir</label>
-                                        <input type="text" name="tempat_lhr" class="form-control" value="{{ $pasien->tempat_lhr }}" disabled>
+                                        <input type="text" name="tempat_lhr" class="form-control" value="{{ $pasien->tempat_lhr_pasien }}" disabled>
                                     </li>
                                     <li>
                                         <label class="font-weight-bold text-primary">Tanggal lahir</label>
-                                        <input type="date" name="tgl_lhr" class="form-control" value="{{ $pasien->tgl_lhr }}" disabled>
+                                        <input type="date" name="tgl_lhr" class="form-control" value="{{ $pasien->tgl_lhr_pasien }}" disabled>
                                     </li>
                                 </ul>
                                 </div>
@@ -70,15 +70,15 @@
                                 <ul>
                                     <li>
                                         <label class="font-weight-bold text-primary">No. Hp</label>
-                                        <input type="text" name="no_hp" class="form-control" value="{{ $pasien->no_hp }}" disabled>
+                                        <input type="text" name="no_hp" class="form-control" value="{{ $pasien->no_hp_pasien }}" disabled>
                                     </li>
                                     <li>
                                         <label class="font-weight-bold text-primary">Alamat</label>
-                                        <input type="text" name="alamat" class="form-control" value="{{ $pasien->alamat }}" disabled>
+                                        <input type="text" name="alamat" class="form-control" value="{{ $pasien->alamat_pasien }}" disabled>
                                     </li>
                                     <li>
                                         <label class="font-weight-bold text-primary">Jenis Kelamin</label>
-                                        <input type="text" name="jk" class="form-control" value="{{ $pasien->jk }}" disabled>
+                                        <input type="text" name="jk" class="form-control" value="{{ $pasien->jk_pasien }}" disabled>
                                     </li>
                                 </ul>
                                 </div>
@@ -90,21 +90,21 @@
                                     <ul>
                                         <li>
                                             <label class="font-weight-bold text-primary">Kategori</label>
-                                            <input type="text" name="category_id" class="form-control" value="{{ $pasien->category->nama }}" disabled>
+                                            <input type="text" name="category_id" class="form-control" value="{{ $pasien->category->nama_kategori }}" disabled>
                                         </li>
                                         @if ($pasien->category_id == '1' or $pasien->category_id == '3')
                                         <li>
                                             <label class="font-weight-bold text-primary" id="label_f">Fakultas</label>
-                                            <input type="text" name="fakulta_id" class="form-control" value="{{ $pasien->fakulta->nama }}" disabled>
+                                            <input type="text" name="fakulta_id" class="form-control" value="{{ $pasien->fakulta->nama_fakultas }}" disabled>
                                         </li>
                                         <li>
                                             <label class="font-weight-bold text-primary" id="label_p">Program Studi</label>
-                                            <input type="text" name="prodi_id" class="form-control" value="{{ $pasien->prodi->nama }}" disabled>
+                                            <input type="text" name="prodi_id" class="form-control" value="{{ $pasien->prodi->nama_prodi }}" disabled>
                                         </li>
                                         @elseif ($pasien->category_id == '2')
                                         <li>
                                             <label class="font-weight-bold text-primary" id="label_f">Fakultas</label>
-                                            <input type="text" name="fakulta_id" class="form-control" value="{{ $pasien->fakulta->nama }}" disabled>
+                                            <input type="text" name="fakulta_id" class="form-control" value="{{ $pasien->fakulta->nama_fakultas }}" disabled>
                                         </li>
                                         @endif
                                     </ul>
@@ -147,7 +147,7 @@
                                             <select name="nakes_id" class="form-control">
                                                 <option value="">Pilih Tenaga Kesehatan</option>
                                                 @foreach($nakes as $n)
-                                                <option value="{{ $n->id }}">{{ $n->nama }}</option>
+                                                <option value="{{ $n->id }}">{{ $n->nama_tenkes }}</option>
                                                 @endforeach
                                             </select>
                                         </li>

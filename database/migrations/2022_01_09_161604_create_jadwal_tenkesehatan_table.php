@@ -23,7 +23,8 @@ class CreateJadwalTenkesehatanTable extends Migration
             $table->id();
             $table->foreignId('jadwal_id')->constrained();
             $table->foreignId('tenkesehatan_id')->nullable()->constrained();
-            $table->timestamps();
+            $table->timestamp('jadwal_tenkes_created_at')->useCurrent();
+            $table->timestamp('jadwal_tenkes_updated_at')->useCurrent();
         });
     }
 

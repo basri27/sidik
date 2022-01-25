@@ -98,11 +98,11 @@
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <span class="mr-2 d-none d-lg-inline text-white-600 small"><b>
                                 @if (Auth::user()->role_id == 1)
-                                    {{ Auth::user()->admin->nama }}
+                                    {{ Auth::user()->admin->nama_admin }}
                                 @elseif (Auth::user()->role_id == 2)
-                                    {{ Auth::user()->pasien->nama }}
+                                    {{ Auth::user()->pasien->nama_pasien }}
                                 @elseif (Auth::user()->role_id == 3)
-                                    {{ Auth::user()->tenkesehatan->nama }}
+                                    {{ Auth::user()->tenkesehatan->nama_tenkes }}
                                 @endif
                                 </b></span>
                                 <img class="img-profile rounded-circle" src="{{ asset('img/klinik.png') }}">

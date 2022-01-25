@@ -15,14 +15,13 @@ class CreateJadwalsTable extends Migration
     {
         Schema::create('jadwals', function (Blueprint $table) {
             $table->id();
-#            $table->foreignId('tenkes1_id')->nullable()->references('id')->on('tenkesehatans');
-#           $table->foreignId('tenkes2_id')->nullable()->references('id')->on('tenkesehatans');
             $table->string('hari')->nullable();
             $table->time('pagi_s')->nullable();
             $table->time('pagi_n')->nullable();
             $table->time('siang_s')->nullable();
             $table->time('siang_n')->nullable();
-            $table->timestamps();
+            $table->timestamp('jadwal_created_at')->useCurrent();
+            $table->timestamp('jadwal_updated_at')->useCurrent();
         });
     }
 

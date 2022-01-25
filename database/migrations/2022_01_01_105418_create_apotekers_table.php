@@ -16,13 +16,14 @@ class CreateApotekersTable extends Migration
         Schema::create('apotekers', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained();
-            $table->string('nama')->nullable();
-            $table->string('jk')->nullable();
-            $table->string('tempat_lhr')->nullable();
-            $table->date('tgl_lhr')->nullable();
-            $table->string('nohp')->nullable();
-            $table->string('alamat')->nullable();
-            $table->timestamps();
+            $table->string('nama_apoteker')->nullable();
+            $table->string('jk_apoteker')->nullable();
+            $table->string('tempat_lhr_apoteker')->nullable();
+            $table->date('tgl_lhr_apoteker')->nullable();
+            $table->string('nohp_apoteker')->nullable();
+            $table->string('alamat_apoteker')->nullable();
+            $table->timestamp('apoteker_created_at')->useCurrent();
+            $table->timestamp('apoteker_updated_at')->useCurrent();
         });
     }
 

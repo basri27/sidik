@@ -9,6 +9,8 @@ class RekamMedik extends Model
 {
     use HasFactory;
 
+    public $timestamps = false;
+    
     protected $fillable = [
         'pasien_id',
         'tenkesehatan_id',

@@ -19,13 +19,14 @@ class CreatePasiensTable extends Migration
             $table->foreignId('fakulta_id')->constrained();
             $table->foreignId('prodi_id')->constrained();
             $table->foreignId('category_id')->constrained();
-            $table->string('nama');
-            $table->string('jk');
-            $table->string('tempat_lhr');
-            $table->date('tgl_lhr');
-            $table->string('no_hp');
-            $table->string('alamat');
-            $table->timestamps();
+            $table->string('nama_pasien');
+            $table->string('jk_pasien');
+            $table->string('tempat_lhr_pasien');
+            $table->date('tgl_lhr_pasien');
+            $table->string('no_hp_pasien');
+            $table->string('alamat_pasien');
+            $table->timestamp('pasien_created_at')->useCurrent();
+            $table->timestamp('pasien_updated_at')->useCurrent();
         });
     }
 

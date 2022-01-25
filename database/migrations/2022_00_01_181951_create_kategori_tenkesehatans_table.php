@@ -15,8 +15,9 @@ class CreateKategoriTenkesehatansTable extends Migration
     {
         Schema::create('kategori_tenkesehatans', function (Blueprint $table) {
             $table->id();
-            $table->string('nama');
-            $table->timestamps();
+            $table->string('nama_kategori_tenkes');
+            $table->timestamp('kategori_tenkes_created_at')->useCurrent();
+            $table->timestamp('kategori_tenkes_updated_at')->useCurrent();
         });
     }
 

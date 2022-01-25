@@ -15,8 +15,9 @@ class CreateFakultasTable extends Migration
     {
         Schema::create('fakultas', function (Blueprint $table) {
             $table->id();
-            $table->string('nama');
-            $table->timestamps();
+            $table->string('nama_fakultas');
+            $table->timestamp('fakultas_created_at')->useCurrent();
+            $table->timestamp('fakultas_updated_at')->useCurrent();
         });
     }
 

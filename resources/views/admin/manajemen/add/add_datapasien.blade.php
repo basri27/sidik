@@ -77,7 +77,7 @@
                                         <label class="font-weight-bold text-primary">Kategori</label>
                                         <select class="form-control" name="category_id" onchange="kategori(this)">
                                             @foreach ($category as $cat)
-                                            <option value="{{ $cat->id }}">{{ $cat->nama }}</option>
+                                            <option value="{{ $cat->id }}">{{ $cat->nama_kategori }}</option>
                                             @endforeach
                                         </select>
                                     </li>
@@ -86,7 +86,7 @@
                                         <select class="form-control" name="fakulta_id" id="fakulta_id">
                                             <option value="1">Pilih Fakultas</option>
                                             @foreach ($fakultas as $fak)
-                                            <option value="{{ $fak->id }}">{{ $fak->nama }}</option>
+                                            <option value="{{ $fak->id }}">{{ $fak->nama_fakultas }}</option>
                                             @endforeach
                                         </select>
                                     </li>
@@ -95,7 +95,7 @@
                                         <select class="form-control" name="prodi_id" id="prodi_id">
                                             <option value="1">Pilih Program Studi</option>
                                             @foreach ($prodis as $prodi)
-                                            <option value="{{ $prodi->id }}">{{ $prodi->nama }}</option>
+                                            <option value="{{ $prodi->id }}">{{ $prodi->nama_prodi }}</option>
                                             @endforeach
                                         </select>
                                     </li>

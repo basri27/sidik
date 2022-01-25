@@ -23,35 +23,29 @@
         <!-- Card Content - Collapse -->
         <div class="collapse show" id="collapseCardMedik">
             <div class="card-body">
-                <label class="font-weight-bold text-primary">Filter Rekam Medik</label>
+                <div class="row pl-3">
+                    <label class="font-weight-bold text-primary">Filter Tanggal Rekam Medik</label>
+                </div>
                 <div class="row pl-3">
                     <select class="form-control col-3" name="filter" id="filterRekamMedik">
                         <option value="">Pilih Filter</option>
-                        <option value="1">Hari</option>
+                        <option value="1">Tanggal</option>
                         <option value="2">Bulan</option>
                         <option value="3">Tahun</option>
                     </select>&nbsp;
                     <input type="date" class="form-control col-3" name="tanggal" id="tanggalRekamMedik">&nbsp;
-                    <button class="btn btn-info tombol"><i class="fas fa-folder-open">&nbsp;Lihat</i></button>
+                    <button class="btn btn-info font-weight-light tombol"><i class="fas fa-folder-open">&nbsp;Lihat</i></button>
                     <!-- <a class="btn btn-info btn-2" href="#"><i class="fas fa-print"></i>Cetak</a> -->
                 </div>
                 <hr>
-                <!-- <div class="col-12">
-                    <div class="row">
-                        <div class="col-3">
-                            
-                        </div>
-                        <div class="col-1">
-                            <button class="btn btn-info">Cari</button>
-                        </div>
-                    </div>
-                </div> -->
                 <table class="table" id="tabel-pasien">
                     <thead>
                         <tr>
-                            <th>Index</th>
                             <th>Nama</th>
-                            <th></th>
+                            <th>Tanggal Periksa</th>
+                            <th>Kategori</th>
+                            <th>Pemeriksa</th>
+                            <th>Detail</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -121,6 +115,9 @@
 <script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.js"></script>
 <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
 
+<!-- Moment js -->
+<script src="https://momentjs.com/downloads/moment-with-locales.js"></script>
+
 <!--Data Table-->
 <script type="text/javascript"  src=" https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript" src="https://cdn.datatables.net/1.11.3/js/dataTables.bootstrap4.min.js"></script>
@@ -128,11 +125,10 @@
 <script>
     let filter = $('#filterRekamMedik').val();
     let tgl = $('#tanggalRekamMedik').val();
+    var bulan, tahun;
 
     const table_pasien = $("#tabel-pasien").DataTable({
-        "responsive": true,
-        "autoWidth": true,
-        "pageLength": 5,
+        "pageLength": 25,
         "lengthMenu": [[5, 10, 25, 50, 100], [5, 10, 25, 50, 100]],
         "bLengthChange": true,
         "bFilter": true,
@@ -144,19 +140,28 @@
             url:"{{url('filterrekammedik')}}",
             type:"POST",
             data:function(d){
-                d._token = "{{csrf_token()}}"
+                d._token = "{{csrf_token()}}";
+                d.filter = filter;
+                d.ftanggal = tgl;
+                d.bulan = bulan;
+                d.tahun = tahun;
             }
         },
         columns:[
             {
-                "render": function(data, type, row, meta){
-                    return row.id
-                }
+                data: 'nama_pasien',
             },
             {
                 "render": function(data, type, row, meta){
-                    return row.nama
+                    moment.locale('id');
+                    return moment(row.rekammedik_created_at).format('LL');
                 }
+            },
+            {
+                data: 'nama_kategori',
+            },
+            {
+                data: 'nama_tenkes'
             },
             {
                 "className": 'dt-control',
@@ -169,17 +174,29 @@
 
     function format ( d ) {
     // `d` is the original data object for the row
-    return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+
-        '<tr>'+
-            '<td>Nama:</td>'+
-            '<td>'+d.nama+'</td>'+
-        '</tr>'+
-        '<tr>'+
-            '<td>Extra info:</td>'+
-            '<td>'+d.rekammedik+'</td>'+
-        '</tr>'+
-    '</table>';
-}
+    return '<table class="table table-striped table-bordered" cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+
+            '<thead class="thead-dark">'+
+                '<tr>'+
+                    '<th>Pemeriksa</th>'+
+                    '<th>Tensi</th>'+
+                    '<th>Suhu</th>'+
+                    '<th>Keluhan</th>'+
+                    '<th>Diagnosa</th>'+
+                    '<th>Obat</th>'+
+                    '<th>Keterangan</th>'+
+                '</tr>'+
+            '</thead>'+
+            '<tr>'+
+                '<td>'+d.nama_tenkes+'</td>'+
+                '<td>'+d.tensi+'</td>'+
+                '<td>'+d.suhu+'</td>'+
+                '<td>'+d.keluhan+'</td>'+
+                '<td>'+d.diagnosa+'</td>'+
+                '<td>'+d.obat+'</td>'+
+                '<td>'+d.keterangan+'</td>'+
+            '</tr>'+
+        '</table>';
+    }
 
     $('#tabel-pasien tbody').on('click', 'td.dt-control', function () {
         var tr = $(this).closest('tr');
@@ -200,6 +217,9 @@
     $('.tombol').on('click', function() {
         filter = $('#filterRekamMedik').val();
         tgl = $('#tanggalRekamMedik').val();
+        var date = new Date(tgl);
+        bulan = date.getMonth() + 1;
+        tahun = date.getFullYear();
         table_pasien.ajax.reload(null,false)
     })
 </script>

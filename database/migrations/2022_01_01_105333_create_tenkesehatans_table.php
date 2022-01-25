@@ -17,13 +17,14 @@ class CreateTenkesehatansTable extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained();
             $table->foreignId('kategori_tenkesehatan_id')->constrained();
-            $table->string('nama')->nullable();
-            $table->string('jk')->nullable();
-            $table->string('tempat_lhr')->nullable();
-            $table->date('tgl_lhr')->nullable();
-            $table->string('nohp')->nullable();
-            $table->string('alamat')->nullable();
-            $table->timestamps();
+            $table->string('nama_tenkes')->nullable();
+            $table->string('jk_tenkes')->nullable();
+            $table->string('tempat_lhr_tenkes')->nullable();
+            $table->date('tgl_lhr_tenkes')->nullable();
+            $table->string('nohp_tenkes')->nullable();
+            $table->string('alamat_tenkes')->nullable();
+            $table->timestamp('tenkes_created_at')->useCurrent();
+            $table->timestamp('tenkes_updated_at')->useCurrent();
         });
     }
 

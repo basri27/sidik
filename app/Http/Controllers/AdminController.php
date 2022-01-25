@@ -36,8 +36,8 @@ class AdminController extends Controller
 
     public function adm_profil($user_id)
     {
-        $admins = Admin::where('user_id', '=', $user_id)->first();
-        $age = Carbon::parse($admins->tgl_lhr)->diff(Carbon::now())->y;
+        $admins = Admin::where('user_id', $user_id)->first();
+        $age = Carbon::parse($admins->tgl_lhr_admin)->diff(Carbon::now())->y;
 
         return view('admin.admin_profil', compact('admins', 'age'));
     }
@@ -45,7 +45,7 @@ class AdminController extends Controller
     public function adm_edit($user_id)
     {
         $admins = Admin::where('user_id', '=', $user_id)->first();
-        $age = Carbon::parse($admins->tgl_lhr)->diff(Carbon::now())->y;
+        $age = Carbon::parse($admins->tgl_lhr_admin)->diff(Carbon::now())->y;
 
         return view('admin.manajemen.edit.edit_profil', compact('admins', 'age'));
     }
@@ -55,12 +55,12 @@ class AdminController extends Controller
         $admins = Admin::where('user_id', '=', $user_id)->first();
 
         $admins->update([
-            'nama' => $request->input('nama'),
-            'jk' => $request->input('jk'),
-            'tempat_lhr' => $request->input('tempat_lhr'),
-            'tgl_lhr' => $request->input('tgl_lhr'),
-            'no_hp' => $request->input('no_hp'),
-            'alamat' => $request->input('alamat'),
+            'nama_admin' => $request->input('nama'),
+            'jk_admin' => $request->input('jk'),
+            'tempat_lhr_admin' => $request->input('tempat_lhr'),
+            'tgl_lhr_admin' => $request->input('tgl_lhr'),
+            'no_hp_admin' => $request->input('no_hp'),
+            'alamat_admin' => $request->input('alamat'),
         ]);
 
         return redirect()->route('adm_profil', $admins->user_id);
@@ -166,44 +166,63 @@ class AdminController extends Controller
     public function adm_rekap_rekam_medik()
     {
         $pasien = Pasien::all();
-        return view('admin.rekap_rekam_medik', compact('pasien'));
+        $rekammedik = RekamMedik::all();
+        return view('admin.rekap_rekam_medik', compact('pasien', 'rekammedik'));
     }
     public function filterRekamMedik()
     {
         $columns = [
-            'id',
-            'nama',
+            'nama_pasien',
+            'rekammedik_created_at',
+            'nama_kategori',
+            'nama_tenkes',
             ''
         ];
         $orderBy = $columns[request()->input("order.0.column")];
-        $data = Pasien::select('*');
+        $data = DB::table('rekam_mediks as rk')
+        ->join('tenkesehatans as t', 'rk.tenkesehatan_id', 't.id')
+        ->join('pasiens as p', 'rk.pasien_id', 'p.id')
+        ->join('categories as c', 'p.category_id', 'c.id')
+        ;
 
         if(request()->input("search.value")) {
             $data = $data->where(function($query){
-                $query->whereRaw('LOWER(id) like ?', ['%'.strtolower(request()->input("search.value")).'%'])
-                ->orWhereRaw('LOWER(nama) like ?', ['%'.strtolower(request()->input("search.value")).'%']);
+                $query->whereRaw('LOWER(nama_pasien) like ?', ['%'.strtolower(request()->input("search.value")).'%'])
+                ->orWhereRaw('LOWER(rekammedik_created_at) like ?', ['%'.strtolower(request()->input("search.value")).'%'])
+                ->orWhereRaw('LOWER(nama_kategori) like ?', ['%'.strtolower(request()->input("search.value")).'%']);
             });
+        }
+
+        if(request()->input("filter")) {
+            switch (request()->input('filter')) {
+                case '1':
+                    $data = $data->whereRaw('DATE(rekammedik_created_at) = ?', [request()->input('ftanggal')]);
+                    break;
+                
+                case '2':
+                    $data = $data->whereMonth('rekammedik_created_at', request()->input('bulan'));
+                    break;
+                
+                case '3':
+                    $data = $data->whereYear('rekammedik_created_at', request()->input('tahun'));
+                    break;
+            }
         }
 
         $recordsFiltered = $data->get()->count();
         $data = $data
-            ->skip(request()
-            ->input('start'))
-            ->take(request()
-            ->input('length'))
-            ->orderBy($orderBy, request()
-            ->input("order.0.dir"))->get()
-            ;
+            ->skip(request()->input('start'))
+            ->take(request()->input('length'))
+            ->orderBy($orderBy, request()->input("order.0.dir"))
+            ->get();
         $recordsTotal = $data->count();
 
         return response()->json([
             'draw' => request()->input('draw'),
             'recordsTotal' => $recordsTotal,
             'recordsFiltered' => $recordsFiltered,
-            'data' => $data
+            'data' => $data,
         ]);
-
-        // dd(request()->all());
     }
 
     //-----------function manajemen----------//
@@ -261,6 +280,8 @@ class AdminController extends Controller
                 'role_id' => '2',
                 'username' => Str::lower(Str::random(6)),
                 'password' => Hash::make(12345678),
+                'user_created_at' => Carbon::now(),
+                'user_updated_at' => Carbon::now(),
             ]);
             
             if(Request()->fakulta_id <> ""){
@@ -270,12 +291,14 @@ class AdminController extends Controller
                         'category_id' => $request->input('category_id'),
                         'fakulta_id' => $request->input('fakulta_id'),
                         'prodi_id' => $request->input('prodi_id'),
-                        'nama' => $request->input('nama'),
-                        'tempat_lhr' => $request->input('tempat_lhr'),
-                        'tgl_lhr' => $request->input('tgl_lhr'),
-                        'no_hp' => $request->input('no_hp'),
-                        'alamat' => $request->input('alamat'),
-                        'jk' => $request->input('jk'),
+                        'nama_pasien' => $request->input('nama'),
+                        'tempat_lhr_pasien' => $request->input('tempat_lhr'),
+                        'tgl_lhr_pasien' => $request->input('tgl_lhr'),
+                        'no_hp_pasien' => $request->input('no_hp'),
+                        'alamat_pasien' => $request->input('alamat'),
+                        'jk_pasien' => $request->input('jk'),
+                        'pasien_created_at' => Carbon::now(),
+                        'pasien_updated_at' => Carbon::now(),
                     ]);
                 }
                 else {
@@ -284,12 +307,14 @@ class AdminController extends Controller
                         'category_id' => $request->input('category_id'),
                         'fakulta_id' => $request->input('fakulta_id'),
                         'prodi_id' => '1',
-                        'nama' => $request->input('nama'),
-                        'tempat_lhr' => $request->input('tempat_lhr'),
-                        'tgl_lhr' => $request->input('tgl_lhr'),
-                        'no_hp' => $request->input('no_hp'),
-                        'alamat' => $request->input('alamat'),
-                        'jk' => $request->input('jk'),
+                        'nama_pasien' => $request->input('nama'),
+                        'tempat_lhr_pasien' => $request->input('tempat_lhr'),
+                        'tgl_lhr_pasien' => $request->input('tgl_lhr'),
+                        'no_hp_pasien' => $request->input('no_hp'),
+                        'alamat_pasien' => $request->input('alamat'),
+                        'jk_pasien' => $request->input('jk'),
+                        'pasien_created_at' => Carbon::now(),
+                        'pasien_updated_at' => Carbon::now(),
                     ]);
                 }
             }
@@ -299,12 +324,14 @@ class AdminController extends Controller
                     'category_id' => $request->input('category_id'),
                     'fakulta_id' => '1',
                     'prodi_id' => '1',
-                    'nama' => $request->input('nama'),
-                    'tempat_lhr' => $request->input('tempat_lhr'),
-                    'tgl_lhr' => $request->input('tgl_lhr'),
-                    'no_hp' => $request->input('no_hp'),
-                    'alamat' => $request->input('alamat'),
-                    'jk' => $request->input('jk'),
+                    'nama_pasien' => $request->input('nama'),
+                    'tempat_lhr_pasien' => $request->input('tempat_lhr'),
+                    'tgl_lhr_pasien' => $request->input('tgl_lhr'),
+                    'no_hp_pasien' => $request->input('no_hp'),
+                    'alamat_pasien' => $request->input('alamat'),
+                    'jk_pasien' => $request->input('jk'),
+                    'pasien_created_at' => Carbon::now(),
+                    'pasien_updated_at' => Carbon::now(),
                 ]);
             }
         }
@@ -339,12 +366,12 @@ class AdminController extends Controller
             ]);
             Apoteker::create([
                 'user_id' => $request->input('user_id'),
-                'nama' => $request->input('nama'),
-                'tempat_lhr' => $request->input('tempat_lhr'),
-                'tgl_lhr' => $request->input('tgl_lhr'),
-                'nohp' => $request->input('no_hp'),
-                'alamat' => $request->input('alamat'),
-                'jk' => $request->input('jk'),
+                'nama_apoteker' => $request->input('nama'),
+                'tempat_lhr_apoteker' => $request->input('tempat_lhr'),
+                'tgl_lhr_apoteker' => $request->input('tgl_lhr'),
+                'nohp_apoteker' => $request->input('no_hp'),
+                'alamat_apoteker' => $request->input('alamat'),
+                'jk_apoteker' => $request->input('jk'),
             ]);
         }
 
@@ -378,12 +405,12 @@ class AdminController extends Controller
             ]);
             Tenkesehatan::create([
                 'user_id' => $request->input('user_id'),
-                'nama' => $request->input('nama'),
-                'tempat_lhr' => $request->input('tempat_lhr'),
-                'tgl_lhr' => $request->input('tgl_lhr'),
-                'nohp' => $request->input('no_hp'),
-                'alamat' => $request->input('alamat'),
-                'jk' => $request->input('jk'),
+                'nama_tenkes' => $request->input('nama'),
+                'tempat_lhr_tenkes' => $request->input('tempat_lhr'),
+                'tgl_lhr_tenkes' => $request->input('tgl_lhr'),
+                'nohp_tenkes' => $request->input('no_hp'),
+                'alamat_tenkes' => $request->input('alamat'),
+                'jk_tenkes' => $request->input('jk'),
             ]);
         }
 
@@ -411,12 +438,12 @@ class AdminController extends Controller
                     'category_id' => $request->input('category_id'),
                     'fakulta_id' => $request->input('fakulta_id'),
                     'prodi_id' => $request->input('prodi_id'),
-                    'nama' => $request->input('nama'),
-                    'tempat_lhr' => $request->input('tempat_lhr'),
-                    'tgl_lhr' => $request->input('tgl_lhr'),
-                    'no_hp' => $request->input('no_hp'),
-                    'alamat' => $request->input('alamat'),
-                    'jk' => $request->input('jk'),
+                    'nama_pasien' => $request->input('nama'),
+                    'tempat_lhr_pasien' => $request->input('tempat_lhr'),
+                    'tgl_lhr_pasien' => $request->input('tgl_lhr'),
+                    'no_hp_pasien' => $request->input('no_hp'),
+                    'alamat_pasien' => $request->input('alamat'),
+                    'jk_pasien' => $request->input('jk'),
                 ]);
             }
             else {
@@ -424,12 +451,12 @@ class AdminController extends Controller
                     'category_id' => $request->input('category_id'),
                     'fakulta_id' => $request->input('fakulta_id'),
                     'prodi_id' => '1',
-                    'nama' => $request->input('nama'),
-                    'tempat_lhr' => $request->input('tempat_lhr'),
-                    'tgl_lhr' => $request->input('tgl_lhr'),
-                    'no_hp' => $request->input('no_hp'),
-                    'alamat' => $request->input('alamat'),
-                    'jk' => $request->input('jk'),
+                    'nama_pasien' => $request->input('nama'),
+                    'tempat_lhr_pasien' => $request->input('tempat_lhr'),
+                    'tgl_lhr_pasien' => $request->input('tgl_lhr'),
+                    'no_hp_pasien' => $request->input('no_hp'),
+                    'alamat_pasien' => $request->input('alamat'),
+                    'jk_pasien' => $request->input('jk'),
                 ]);
             }
         }
@@ -438,12 +465,12 @@ class AdminController extends Controller
                     'category_id' => $request->input('category_id'),
                     'fakulta_id' => '1',
                     'prodi_id' => '1',
-                    'nama' => $request->input('nama'),
-                    'tempat_lhr' => $request->input('tempat_lhr'),
-                    'tgl_lhr' => $request->input('tgl_lhr'),
-                    'no_hp' => $request->input('no_hp'),
-                    'alamat' => $request->input('alamat'),
-                    'jk' => $request->input('jk'),
+                    'nama_pasien' => $request->input('nama'),
+                    'tempat_lhr_pasien' => $request->input('tempat_lhr'),
+                    'tgl_lhr_pasien' => $request->input('tgl_lhr'),
+                    'no_hp_pasien' => $request->input('no_hp'),
+                    'alamat_pasien' => $request->input('alamat'),
+                    'jk_pasien' => $request->input('jk'),
                 ]);
         }
         return redirect()->route('adm_man_datapasien')->with(['success' => 'Data berhasil diubah!']);
@@ -461,12 +488,12 @@ class AdminController extends Controller
         $apoteker = Apoteker::where('id', $id);
 
         $apoteker->update([
-            'nama' => $request->input('nama'),
-            'tempat_lhr' => $request->input('tempat_lhr'),
-            'tgl_lhr' => $request->input('tgl_lhr'),
-            'nohp' => $request->input('no_hp'),
-            'alamat' => $request->input('alamat'),
-            'jk' => $request->input('jk'),
+            'nama_apoteker' => $request->input('nama'),
+            'tempat_lhr_apoteker' => $request->input('tempat_lhr'),
+            'tgl_lhr_apoteker' => $request->input('tgl_lhr'),
+            'nohp_apoteker' => $request->input('no_hp'),
+            'alamat_apoteker' => $request->input('alamat'),
+            'jk_apoteker' => $request->input('jk'),
         ]);
 
         return redirect()->route('adm_man_dataapoteker')->with(['success' => 'Data berhasil diubah!']);
@@ -484,13 +511,13 @@ class AdminController extends Controller
     {
         $tenkes = Tenkesehatan::where('id', $id)->first();
         $tenkes->update([
-            'nama' => $request->input('nama'),
-            'kategori_tenkesehatan_id' => $request->input('kts'),
-            'tempat_lhr' => $request->input('tempat_lhr'),
-            'tgl_lhr' => $request->input('tgl_lhr'),
-            'nohp' => $request->input('no_hp'),
-            'alamat' => $request->input('alamat'),
-            'jk' => $request->input('jk'),
+            'nama_tenkes' => $request->input('nama'),
+            'kategori_tenkesehatan_id_tenkes' => $request->input('kts'),
+            'tempat_lhr_tenkes' => $request->input('tempat_lhr'),
+            'tgl_lhr_tenkes' => $request->input('tgl_lhr'),
+            'nohp_tenkes' => $request->input('no_hp'),
+            'alamat_tenkes' => $request->input('alamat'),
+            'jk_tenkes' => $request->input('jk'),
         ]);
 
         return redirect()->route('adm_man_datanakes')->with(['success' => 'Data berhasil diubah!']);

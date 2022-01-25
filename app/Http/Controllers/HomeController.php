@@ -26,7 +26,7 @@ class HomeController extends Controller
     public function index()
     {
         $tenkes = Tenkesehatan::with('kategori_tenkesehatan')->get();
-        #dd($tenkes);
+        // dd($tenkes);
         return view('home', compact('tenkes'));
     }
 }
