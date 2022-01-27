@@ -25,7 +25,7 @@
                     <hr><img src="{{ asset('/img/klinik.png') }}" alt=""><hr>
                 </div>
                 <div class="detail-col col-md-8">
-                    <form method="POST" enctype="multipart/form-data" action={{ route('adm_update_profil', $admins->user_id) }}>
+                    <form method="POST" enctype="multipart/form-data" action={{ route('adm_update_profil', $admins->id) }}>
                     @method('PATCH')
                     @csrf
                     <div class="row">
@@ -35,19 +35,19 @@
                                 <ul>
                                     <li>
                                         <label class="font-weight-bold text-primary" for="">Nama</label>
-                                        <input type="text" name="nama" class="form-control" value="{{ $admins->nama }}">
+                                        <input type="text" name="nama" class="form-control" value="{{ $admins->nama_admin }}">
                                     </li>
                                     <li>
                                         <label class="font-weight-bold text-primary" for="">Tanggal lahir</label>
-                                        <input type="date" name="tgl_lhr" class="form-control" value="{{ $admins->tgl_lhr }}">
+                                        <input type="date" name="tgl_lhr" class="form-control" value="{{ $admins->tgl_lhr_admin }}">
                                     </li>
                                     <li>
                                         <label class="font-weight-bold text-primary" for="">Tempat lahir</label>
-                                        <input type="text" name="tempat_lhr" class="form-control" value="{{ $admins->tempat_lhr }}">
+                                        <input type="text" name="tempat_lhr" class="form-control" value="{{ $admins->tempat_lhr_admin }}">
                                     </li>
                                     <li>
                                         <label class="font-weight-bold text-primary" for="">Alamat</label>
-                                        <input type="text" name="alamat" class="form-control" value="{{ $admins->alamat }}">
+                                        <input type="text" name="alamat" class="form-control" value="{{ $admins->alamat_admin }}">
                                     </li>
                                 </ul>
                                 </div>
@@ -63,13 +63,17 @@
                                     </li>
                                     <li>
                                         <label class="font-weight-bold text-primary" for="">No. Hp</label>
-                                        <input type="text" name="no_hp" class="form-control" value="{{ $admins->no_hp }}">
+                                        <input type="text" name="no_hp" class="form-control" value="{{ $admins->no_hp_admin }}">
                                     </li>
                                     <li>
                                         <label class="font-weight-bold text-primary" for="">Jenis Kelamin</label>
                                         <select class="form-control" name="jk" id="jk">
-                                            <option value="Laki-laki">Laki-laki</option>
+                                            <option value="{{ $admins->jk_admin }}">{{ $admins->jk_admin }}</option>
+                                            @if($admins->jk_admin == "Laki-laki")
                                             <option value="Perempuan">Perempuan</option>
+                                            @else
+                                            <option value="Laki-laki">Laki-laki</option>
+                                            @endif
                                         </select>
                                     </li>
                                 </ul>
@@ -83,7 +87,7 @@
                         </span>    
                         <span class="text">Simpan</span>
                     </button>&nbsp;
-                    <a href={{ route('adm_profil', Auth::user()->id) }} class="btn btn-secondary btn-icon-split btn-sm">
+                    <a href={{ route('adm_profil', $admins->id) }} class="btn btn-secondary btn-icon-split btn-sm">
                         <span>
                             <i class="fas fa-times"></i>
                         </span>    

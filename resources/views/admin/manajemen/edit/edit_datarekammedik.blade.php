@@ -1,6 +1,6 @@
 @extends('layouts.back')
 
-@section('title', 'Data Rekam Medik')
+@section('title', 'Kirim Data Rekam Medik')
 
 @section('css')
     <link rel="stylesheet" href="{{ asset('css/dashboard/sb-admin-2.min.css') }}">
@@ -14,7 +14,7 @@
 @include('layouts.nav_admin')
 @endsection
 
-@section('subhead', 'Data Rekam Medik')
+@section('subhead', 'Kirim Data Rekam Medik')
 
 @section('content')
 <div class="container-fluid">

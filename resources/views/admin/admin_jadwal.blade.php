@@ -21,18 +21,18 @@
     <div class="card shadow mb-4">
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-bordered" style="text-align: center; font-size: 70%; color: white;">
-                    <thead class="bg-dark">
-                        <tr>
+                <table class="table table-bordered table-striped" style="text-align: center; font-size: 70%; color: white;">
+                    <thead>
+                        <tr class="bg-dark">
                             @foreach ($jadwals as $jadwal)
                             <th scope="col sm-1">{{ $jadwal->hari }}</th>
                             @endforeach
                         </tr>
-                        <tr>
+                        <tr class="bg-info">
                             @foreach ($jadwals as $j)
                                 <th>
                                 @foreach ($j->tenkesehatan as $t)
-                                    ({{ $t->nama }}) <br>
+                                    ({{ $t->nama_tenkes }}) <br>
                                 @endforeach
                                 </th>
                             @endforeach
@@ -52,7 +52,7 @@
                         <tr>
                             @foreach ($jadwals as $jadwal)
                             <td>
-                                <a href="{{ route('adm_jadwal_edit', $jadwal->id) }}" class="btn btn-primary btn-icon-split btn-sm">
+                                <a href="{{ route('adm_jadwal_edit', $jadwal->id) }}">
                                     <span><i class="fas fa-edit"></i></span>    
                                     <span class="text">Edit</span>
                                 </a>

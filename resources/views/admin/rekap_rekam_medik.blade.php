@@ -27,31 +27,29 @@
                     <label class="font-weight-bold text-primary">Filter Tanggal Rekam Medik</label>
                 </div>
                 <div class="row pl-3">
-                    <select class="form-control col-3" name="filter" id="filterRekamMedik">
-                        <option value="">Pilih Filter</option>
-                        <option value="1">Tanggal</option>
-                        <option value="2">Bulan</option>
-                        <option value="3">Tahun</option>
-                    </select>&nbsp;
-                    <input type="date" class="form-control col-3" name="tanggal" id="tanggalRekamMedik">&nbsp;
+                    <input type="date" class="form-control col-3" id="date-start">
+                    &nbsp;
+                    <input type="date" class="form-control col-3" id="date-end">&nbsp;
                     <button class="btn btn-info font-weight-light tombol"><i class="fas fa-folder-open">&nbsp;Lihat</i></button>
                     <!-- <a class="btn btn-info btn-2" href="#"><i class="fas fa-print"></i>Cetak</a> -->
                 </div>
                 <hr>
-                <table class="table" id="tabel-pasien">
-                    <thead>
-                        <tr>
-                            <th>Nama</th>
-                            <th>Tanggal Periksa</th>
-                            <th>Kategori</th>
-                            <th>Pemeriksa</th>
-                            <th>Detail</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        
-                    </tbody>
-                </table>
+                <div class="table-responsive">
+                    <table class="table" id="tabel-pasien" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>Nama</th>
+                                <th>Tanggal Periksa</th>
+                                <th>Kategori</th>
+                                <th>Pemeriksa</th>
+                                <th>Detail</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
@@ -123,9 +121,8 @@
 <script type="text/javascript" src="https://cdn.datatables.net/1.11.3/js/dataTables.bootstrap4.min.js"></script>
 <script type="text/javascript"  src=" https://cdn.datatables.net/buttons/1.2.4/js/dataTables.buttons.min.js"></script>
 <script>
-    let filter = $('#filterRekamMedik').val();
-    let tgl = $('#tanggalRekamMedik').val();
-    var bulan, tahun;
+    let start = $('#date-start').val();
+    let end = $('#date-end').val();
 
     const table_pasien = $("#tabel-pasien").DataTable({
         "pageLength": 25,
@@ -141,10 +138,8 @@
             type:"POST",
             data:function(d){
                 d._token = "{{csrf_token()}}";
-                d.filter = filter;
-                d.ftanggal = tgl;
-                d.bulan = bulan;
-                d.tahun = tahun;
+                d.mulai = start;
+                d.habis = end;
             }
         },
         columns:[
@@ -215,11 +210,8 @@
     });
 
     $('.tombol').on('click', function() {
-        filter = $('#filterRekamMedik').val();
-        tgl = $('#tanggalRekamMedik').val();
-        var date = new Date(tgl);
-        bulan = date.getMonth() + 1;
-        tahun = date.getFullYear();
+        start = $('#date-start').val();
+        end = $('#date-end').val();
         table_pasien.ajax.reload(null,false)
     })
 </script>
@@ -230,28 +222,30 @@
 <!-- MDB core JavaScript -->
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.1/js/mdb.min.js"></script>
 <script>
-    var ctxB = document.getElementById("barChart").getContext('2d');
-    var myBarChart = new Chart(ctxB, {
-        type: 'bar',
-        data: {
-            labels: ["Januari", "Februari", "Maret", "April", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"],
-            datasets: [{
-                label: 'Jumlah Pasien',
-                data: [12, 19, 3, 5, 2, 3],
-                backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                borderColor: 'rgba(54, 162, 235, 1)',
-                borderWidth: 1
-            }]
-        },
-        options: {
-            scales: {
-                yAxes: [{
-                    ticks: {
-                    beginAtZero: true
-                    }
+    $(document).ready(function(){
+        var ctxB = document.getElementById("barChart").getContext('2d');
+        var myBarChart = new Chart(ctxB, {
+            type: 'bar',
+            data: {
+                labels: ["Januari", "Februari", "Maret", "April", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"],
+                datasets: [{
+                    label: 'Jumlah Pasien',
+                    data: [12, 19, 3, 5, 2, 3],
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
                 }]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                        beginAtZero: true
+                        }
+                    }]
+                }
             }
-        }
+        });
     });
 </script>
 <script>

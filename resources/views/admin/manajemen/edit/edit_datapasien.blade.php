@@ -32,15 +32,15 @@
                                 <ul>
                                     <li>
                                         <label class="font-weight-bold text-primary">Nama</label>
-                                        <input type="text" name="nama" class="form-control" value="{{ $pasiens->nama }}">
+                                        <input type="text" name="nama" class="form-control" value="{{ $pasiens->nama_pasien }}">
                                     </li>
                                     <li>
                                         <label class="font-weight-bold text-primary">Tempat lahir</label>
-                                        <input type="text" name="tempat_lhr" class="form-control" value="{{ $pasiens->tempat_lhr }}">
+                                        <input type="text" name="tempat_lhr" class="form-control" value="{{ $pasiens->tempat_lhr_pasien }}">
                                     </li>
                                     <li>
                                         <label class="font-weight-bold text-primary">Tanggal lahir</label>
-                                        <input type="date" name="tgl_lhr" class="form-control" value="{{ $pasiens->tgl_lhr }}">
+                                        <input type="date" name="tgl_lhr" class="form-control" value="{{ $pasiens->tgl_lhr_pasien }}">
                                     </li>
                                 </ul>
                                 </div>
@@ -52,16 +52,16 @@
                                 <ul>
                                     <li>
                                         <label class="font-weight-bold text-primary">No. Hp</label>
-                                        <input type="text" name="no_hp" class="form-control" value="{{ $pasiens->no_hp }}">
+                                        <input type="text" name="no_hp" class="form-control" value="{{ $pasiens->no_hp_pasien }}">
                                     </li>
                                     <li>
                                         <label class="font-weight-bold text-primary">Alamat</label>
-                                        <input type="text" name="alamat" class="form-control" value="{{ $pasiens->alamat }}">
+                                        <input type="text" name="alamat" class="form-control" value="{{ $pasiens->alamat_pasien }}">
                                     </li>
                                     <li>
                                         <label class="font-weight-bold text-primary">Jenis Kelamin</label>
                                         <select class="form-control" name="jk" id="jk">
-                                            <option value="{{ $pasiens->jk }}" selected>{{ $pasiens->jk }}</option>
+                                            <option value="{{ $pasiens->jk_pasien }}" selected>{{ $pasiens->jk_pasien }}</option>
                                             <option value="Laki-laki">Laki-laki</option>
                                             <option value="Perempuan">Perempuan</option>
                                         </select>
@@ -77,9 +77,9 @@
                                     <li>
                                         <label class="font-weight-bold text-primary">Kategori</label>
                                         <select class="form-control" name="category_id" onChange="kategori(this)">
-                                            <option value="{{ $pasiens->category_id }}" selected>{{ $pasiens->category->nama }}</option>
+                                            <option value="{{ $pasiens->category_id }}" selected>{{ $pasiens->category->nama_kategori }}</option>
                                             @foreach ($category as $cat)
-                                            <option value="{{ $cat->id }}">{{ $cat->nama }}</option>
+                                            <option value="{{ $cat->id }}">{{ $cat->nama_kategori }}</option>
                                             @endforeach
                                         </select>
                                     </li>
@@ -87,18 +87,18 @@
                                     <li>
                                         <label class="font-weight-bold text-primary" id="label_f">Fakultas</label>
                                         <select class="form-control" name="fakulta_id" id="fakulta_id">
-                                            <option value="{{ $pasiens->fakulta_id }}" selected>{{ $pasiens->fakulta->nama }}</option>
+                                            <option value="{{ $pasiens->fakulta_id }}" selected>{{ $pasiens->fakulta->nama_fakultas }}</option>
                                             @foreach ($fakultas as $fak)
-                                            <option value="{{ $fak->id }}">{{ $fak->nama }}</option>
+                                            <option value="{{ $fak->id }}">{{ $fak->nama_fakultas }}</option>
                                             @endforeach
                                         </select>
                                     </li>
                                     <li>
                                         <label class="font-weight-bold text-primary" id="label_p">Program Studi</label>
                                         <select class="form-control" name="prodi_id" id="prodi_id">
-                                            <option value="{{ $pasiens->prodi_id }}" selected>{{ $pasiens->prodi->nama }}</option>
+                                            <option value="{{ $pasiens->prodi_id }}" selected>{{ $pasiens->prodi->nama_prodi }}</option>
                                             @foreach ($prodis as $prodi)
-                                            <option value="{{ $prodi->id }}">{{ $prodi->nama }}</option>
+                                            <option value="{{ $prodi->id }}">{{ $prodi->nama_prodi }}</option>
                                             @endforeach
                                         </select>
                                     </li>
@@ -106,18 +106,18 @@
                                     <li>
                                         <label class="font-weight-bold text-primary" id="label_f">Fakultas</label>
                                         <select class="form-control" name="fakulta_id" id="fakulta_id">
-                                            <option value="{{ $pasiens->fakulta_id }}" selected>{{ $pasiens->fakulta->nama }}</option>
+                                            <option value="{{ $pasiens->fakulta_id }}" selected>{{ $pasiens->fakulta->nama_fakultas }}</option>
                                             @foreach ($fakultas as $fak)
-                                            <option value="{{ $fak->id }}">{{ $fak->nama }}</option>
+                                            <option value="{{ $fak->id }}">{{ $fak->nama_fakultas }}</option>
                                             @endforeach
                                         </select>
                                     </li>
                                     <li>
                                         <label class="font-weight-bold text-primary" id="label_p">Program Studi</label>
                                         <select class="form-control" name="prodi_id" id="prodi_id" disabled>
-                                            <option value="{{ $pasiens->prodi_id }}" selected>{{ $pasiens->prodi->nama }}</option>
+                                            <option value="{{ $pasiens->prodi_id }}" selected>{{ $pasiens->prodi->nama_prodi }}</option>
                                             @foreach ($prodis as $prodi)
-                                            <option value="{{ $prodi->id }}">{{ $prodi->nama }}</option>
+                                            <option value="{{ $prodi->id }}">{{ $prodi->nama_prodi }}</option>
                                             @endforeach
                                         </select>
                                     </li>
@@ -125,18 +125,18 @@
                                     <li>
                                         <label class="font-weight-bold text-primary" id="label_f">Fakultas</label>
                                         <select class="form-control" name="fakulta_id" id="fakulta_id" disabled>
-                                            <option value="{{ $pasiens->fakulta_id }}" selected>{{ $pasiens->fakulta->nama }}</option>
+                                            <option value="{{ $pasiens->fakulta_id }}" selected>{{ $pasiens->fakulta->nama_fakultas }}</option>
                                             @foreach ($fakultas as $fak)
-                                            <option value="{{ $fak->id }}">{{ $fak->nama }}</option>
+                                            <option value="{{ $fak->id }}">{{ $fak->nama_fakultas }}</option>
                                             @endforeach
                                         </select>
                                     </li>
                                     <li>
                                         <label class="font-weight-bold text-primary" id="label_p">Program Studi</label>
                                         <select class="form-control" name="prodi_id" id="prodi_id" disabled>
-                                            <option value="{{ $pasiens->prodi_id }}" selected>{{ $pasiens->prodi->nama }}</option>
+                                            <option value="{{ $pasiens->prodi_id }}" selected>{{ $pasiens->prodi->nama_prodi }}</option>
                                             @foreach ($prodis as $prodi)
-                                            <option value="{{ $prodi->id }}">{{ $prodi->nama }}</option>
+                                            <option value="{{ $prodi->id }}">{{ $prodi->nama_prodi }}</option>
                                             @endforeach
                                         </select>
                                     </li>

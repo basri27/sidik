@@ -25,28 +25,28 @@
                 @csrf
                 <div class="table-responsive">
                     <table class="table table-bordered col-12" style="text-align: center; font-size: 70%; color: white;" width="100%" cellspacing="0">
-                        <thead class="bg-dark">   
-                            <tr>
+                        <thead>   
+                            <tr class="bg-dark">
                                 <th scope="col sm-1">{{ $jadwals->hari}}</th>
                             </tr>
-                            <tr>
+                            <tr class="bg-info">
                                 <th>
                                     <label for="tenkes1">Pilih Dokter: </label>
                                     <select name="tenkes1" class="form-control">
                                         <option value="">Kosong</option>
                                         @foreach ($tenkes as $tks)
-                                        <option value="{{ $tks->id }}">{{ $tks->nama }}</option>
+                                        <option value="{{ $tks->id }}">{{ $tks->nama_tenkes }}</option>
                                         @endforeach
                                     </select>
                                 </th>
                             </tr>
-                            <tr>
+                            <tr class="bg-info">
                                 <th>
-                                    <label for="tenkes2">Pilih Tenaga Kesehatan: </label>
+                                    <label for="tenkes2">Pilih Dokter: </label>
                                     <select name="tenkes2" class="form-control">
                                         <option value="">Kosong</option>
                                         @foreach ($tenkes as $tks)
-                                        <option value="{{ $tks->id }}">{{ $tks->nama }}</option>
+                                        <option value="{{ $tks->id }}">{{ $tks->nama_tenkes }}</option>
                                         @endforeach
                                     </select>
                                 </th>

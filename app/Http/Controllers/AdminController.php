@@ -189,7 +189,8 @@ class AdminController extends Controller
             $data = $data->where(function($query){
                 $query->whereRaw('LOWER(nama_pasien) like ?', ['%'.strtolower(request()->input("search.value")).'%'])
                 ->orWhereRaw('LOWER(rekammedik_created_at) like ?', ['%'.strtolower(request()->input("search.value")).'%'])
-                ->orWhereRaw('LOWER(nama_kategori) like ?', ['%'.strtolower(request()->input("search.value")).'%']);
+                ->orWhereRaw('LOWER(nama_kategori) like ?', ['%'.strtolower(request()->input("search.value")).'%'])
+                ->orWhereRaw('LOWER(nama_tenkes) like ?', ['%'.strtolower(request()->input("search.value")).'%']);
             });
         }
 
@@ -207,6 +208,11 @@ class AdminController extends Controller
                     $data = $data->whereYear('rekammedik_created_at', request()->input('tahun'));
                     break;
             }
+        }
+
+        if(request()->input('mulai') or request()->input('habis')) {
+            $data = $data->whereBetween('rekammedik_created_at', [request()->input('mulai'), request()->input('habis')])
+            ->orWhereDate('rekammedik_created_at', request()->input('habis'));
         }
 
         $recordsFiltered = $data->get()->count();

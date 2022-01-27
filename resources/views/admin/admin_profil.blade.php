@@ -25,14 +25,14 @@
                     <img src="{{ asset('/img/klinik.png') }}" alt="">
                 </div>
                 <div class="detail-col col-md-8">
-                    <h2>{{ Auth::user()->admin->nama }}</h2>
+                    <h2>{{ Auth::user()->admin->nama_admin }}</h2>
                     <div class="row">
                         <div class="col-md-6 col-12">
                             <div class="info-list">
                                 <ul>
-                                    <li><span>Tanggal Lahir: </span>{{ \Carbon\Carbon::parse(Auth::user()->admin->tgl_lhr)->format('d F Y') }}</li>
-                                    <li><span>Tempat Lahir: </span>{{ Auth::user()->admin->tempat_lhr }}</li>
-                                    <li><span>Alamat: </span>{{ Auth::user()->admin->alamat }}</li>
+                                    <li><span>Tanggal Lahir: </span>{{ \Carbon\Carbon::parse(Auth::user()->admin->tgl_lhr_admin)->format('d F Y') }}</li>
+                                    <li><span>Tempat Lahir: </span>{{ Auth::user()->admin->tempat_lhr_admin }}</li>
+                                    <li><span>Alamat: </span>{{ Auth::user()->admin->alamat_admin }}</li>
                                 </ul>
                             </div>
                         </div>
@@ -40,8 +40,8 @@
                             <div class="info-list">
                                 <ul>
                                     <li><span>Umur: </span>{{ $age }}</li>
-                                    <li><span>Phone: </span>{{ Auth::user()->admin->no_hp}}</li>
-                                    <li><span>Jenis Kelamin: </span>{{ Auth::user()->admin->jk }}</li>
+                                    <li><span>Phone: </span>{{ Auth::user()->admin->no_hp_admin}}</li>
+                                    <li><span>Jenis Kelamin: </span>{{ Auth::user()->admin->jk_admin }}</li>
                                 </ul>
                             </div>
                         </div>
