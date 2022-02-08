@@ -20,18 +20,45 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use App\Events\MedicalRecordSent;
-use App\Events\FilterRekamMedik;
+use App\Charts\RekamMedikBarChart;
 
 class AdminController extends Controller
 {
-    public function adm_dashboard($id)
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
+    public function adm_dashboard()
     {
         $pasiens = DB::table('pasiens')->count();
         $nakes = DB::table('tenkesehatans')->count();
         $rekammedik = DB::table('rekam_mediks')->count();
         $apoteker = DB::table('apotekers')->count();
 
-        return view('admin.dashboard', compact('pasiens', 'nakes', 'rekammedik', 'apoteker'));
+        $api = url('admin/dashboard/');
+
+        $chart = new RekamMedikBarChart;
+
+        return view('admin.dashboard', compact('pasiens', 'nakes', 'rekammedik', 'apoteker', 'chart'));
+    }
+
+    public function chartBarAjax(Request $request)
+    {
+        $year = $request->has('year') ? $request->year : date('Y');
+        $rekammedik = RekamMedik::select(DB::raw("COUNT(*) as count"))
+            ->whereYear('rekammedik_created_at', $year)
+            ->groupBy(DB::raw("Month(rekammedik_created_at)"))
+            ->pluck('count')
+        ;
+
+        $chart = new RekamMedikBarChart;
+        $chart->dataset('Jumlah Pasien', 'bar', $rekammedik)->options([
+            'fill' => 'true',
+            'borderColor' => '#51C1C0',
+        ]);
+
+        return $chart->api();
     }
 
     public function adm_profil($user_id)
@@ -155,13 +182,6 @@ class AdminController extends Controller
         return redirect()->route('adm_jadwal', $id);
     }
 
-    public function show_jadwal()
-    {
-        $jadwals = Jadwal::get();
-        
-        return view('jadwal', compact('jadwals'));
-    }
-
     //------------rekap rekam medik-------------//
     public function adm_rekap_rekam_medik()
     {
@@ -180,9 +200,11 @@ class AdminController extends Controller
         ];
         $orderBy = $columns[request()->input("order.0.column")];
         $data = DB::table('rekam_mediks as rk')
-        ->join('tenkesehatans as t', 'rk.tenkesehatan_id', 't.id')
-        ->join('pasiens as p', 'rk.pasien_id', 'p.id')
-        ->join('categories as c', 'p.category_id', 'c.id')
+        ->join('tenkesehatans as t', 't.id', 'rk.tenkesehatan_id')
+        ->join('pasiens as p', 'p.id', 'rk.pasien_id')
+        ->join('categories as c', 'c.id', 'p.category_id')
+        ->join('diagnosas as d', 'rk.diagnosa_id', 'd.id')
+        ->join('obats as o', 'rk.obat_id', 'o.id')
         ;
 
         if(request()->input("search.value")) {
@@ -194,23 +216,7 @@ class AdminController extends Controller
             });
         }
 
-        if(request()->input("filter")) {
-            switch (request()->input('filter')) {
-                case '1':
-                    $data = $data->whereRaw('DATE(rekammedik_created_at) = ?', [request()->input('ftanggal')]);
-                    break;
-                
-                case '2':
-                    $data = $data->whereMonth('rekammedik_created_at', request()->input('bulan'));
-                    break;
-                
-                case '3':
-                    $data = $data->whereYear('rekammedik_created_at', request()->input('tahun'));
-                    break;
-            }
-        }
-
-        if(request()->input('mulai') or request()->input('habis')) {
+        if(request()->input('mulai') and request()->input('habis')) {
             $data = $data->whereBetween('rekammedik_created_at', [request()->input('mulai'), request()->input('habis')])
             ->orWhereDate('rekammedik_created_at', request()->input('habis'));
         }
@@ -229,6 +235,35 @@ class AdminController extends Controller
             'recordsFiltered' => $recordsFiltered,
             'data' => $data,
         ]);
+    }
+
+    //-----------filter grafik bar--------------//
+    public function filterGrafikBar()
+    {
+        $data = DB::table('rekam_mediks')
+        ->whereYear('rekammedik_created_at', request()->input('tahun'))
+        ->get()
+        ->groupBy(function($date) {
+            return Carbon::parse($date->rekammedik_created_at)->format('m');
+        });
+
+        $usermcount = [];
+        $userArr = [];
+
+        foreach ($data as $key => $value) {
+            $usermcount[(int)$key] = count($value);
+        }
+
+        for ($i=1; $i <= 12 ; $i++) { 
+            if(!empty($usermcount[$i])) {
+                $userArr[$i]['count'] = $usermcount[$i];
+            }
+            else {
+                $userArr[$i]['count'] = 0;
+            }
+        }
+        
+        return json_encode(compact('userArr'));
     }
 
     //-----------function manajemen----------//
@@ -378,6 +413,8 @@ class AdminController extends Controller
                 'nohp_apoteker' => $request->input('no_hp'),
                 'alamat_apoteker' => $request->input('alamat'),
                 'jk_apoteker' => $request->input('jk'),
+                'apoteker_created_at' => Carbon::now(),
+                'apoteker_updated_at' => Carbon::now(),
             ]);
         }
 
@@ -417,6 +454,8 @@ class AdminController extends Controller
                 'nohp_tenkes' => $request->input('no_hp'),
                 'alamat_tenkes' => $request->input('alamat'),
                 'jk_tenkes' => $request->input('jk'),
+                'tenkes_created_at' => Carbon::now(),
+                'tenkes_updated_at' => Carbon::now(),
             ]);
         }
 
@@ -542,6 +581,8 @@ class AdminController extends Controller
         $validated = $request->validate([
             'nakes_id' => 'required',
         ]);
+        
+        $tenkes = Tenkesehatan::find(Request()->nakes_id);
 
         if($validated) {
             $rekammedik = RekamMedik::create([
@@ -550,13 +591,15 @@ class AdminController extends Controller
                 'suhu' => Request()->suhu,
                 'tensi' => Request()->tensi,
             ]);
+
+            $rkm = RekamMedik::all()->last();
             $notif = Notification::create([
-                'tenkesehatan_id' => Request()->nakes_id,
+                'rekam_medik_id' => $rkm->id,
+                'user_id' => $tenkes->user->id,
                 'isi' => 'Pasien ingin berobat!',
             ]);
-            $nakes_id = Request()->nakes_id;
 
-            MedicalRecordSent::dispatch($rekammedik, $notif, $nakes_id);
+            MedicalRecordSent::dispatch($rekammedik, $notif);
         }
 
         return redirect()->route('adm_man_datarekammedik')->with(['success' => 'Data berhasil dikirim!']);

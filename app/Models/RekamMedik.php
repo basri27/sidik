@@ -14,12 +14,14 @@ class RekamMedik extends Model
     protected $fillable = [
         'pasien_id',
         'tenkesehatan_id',
+        'diagnosa_id',
+        'obat_id',
         'suhu',
         'tensi',
-        'diagnosa',
-        'obat',
         'keterangan',
         'keluhan',
+        'rekammedik_created_at',
+        'rekammedik_updated_at',
     ];
 
     public function pasien()
@@ -30,5 +32,20 @@ class RekamMedik extends Model
     public function tenkesehatan()
     {
         return $this->belongsTo(Tenkesehatan::class);
+    }
+
+    public function notification()
+    {
+        return $this->hasMany(Notification::class);
+    }
+
+    public function diagnosa()
+    {
+        return $this->belongsTo(Diagnosa::class);
+    }
+
+    public function obat()
+    {
+        return $this->belongsTo(Obat::class);
     }
 }

@@ -62,15 +62,15 @@
                         @foreach ($apotekers as $apoteker)
                         <tr>
                             <td>{{ $apoteker->id }}</td>
-                            <td>{{ $apoteker->nama }}</td>
-                            <td>{{ $apoteker->tempat_lhr }}, {{ \Carbon\Carbon::parse($apoteker->tgl_lhr)->format('d F Y') }}</td>
-                            @if($apoteker->nohp == "")
+                            <td>{{ $apoteker->nama_apoteker }}</td>
+                            <td>{{ $apoteker->tempat_lhr_apoteker }}, {{ \Carbon\Carbon::parse($apoteker->tgl_lhr_apoteker)->format('d F Y') }}</td>
+                            @if($apoteker->nohp_apoteker == "")
                             <td style="text-align: center">-</td>
                             @else
-                            <td>{{ $apoteker->nohp }}</td>
+                            <td>{{ $apoteker->nohp_apoteker }}</td>
                             @endif
-                            <td>{{ $apoteker->alamat }}</td>
-                            <td>{{ $apoteker->jk }}</td>
+                            <td>{{ $apoteker->alamat_apoteker }}</td>
+                            <td>{{ $apoteker->jk_apoteker }}</td>
                             <td>
                                 <center>
                                     <form action="{{ route('delete_dataapoteker', $apoteker->id) }}" method="post">

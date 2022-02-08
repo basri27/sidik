@@ -70,9 +70,24 @@ class DatabaseSeeder extends Seeder
             DB::table('tenkesehatans')->insert([
                 'nama_tenkes' => $nakes,
                 'user_id' => $i,
+                'tempat_lhr_tenkes' => "Banjarmasin",
                 'kategori_tenkesehatan_id' => random_int(1,3),
             ]);
         }
+
+        DB::table('users')->insert([
+            'role_id' => '4',
+            'username' => 'apoteker1',
+            'password' => Hash::make(12345678),
+        ]);
+
+        DB::table('apotekers')->insert([
+            'nama_apoteker' => 'Didin',
+            'user_id' => '9',
+            'tempat_lhr_apoteker' => 'Banjarmasin',
+            'jk_apoteker' => 'Laki-laki',
+            'tgl_lhr_apoteker' => '1988-7-10',
+        ]);
 
         $days = ['Senin', 'Selasa', 'Rabu', 'Kamis', "Jum'at"];
         foreach ($days as $day) {
@@ -126,6 +141,25 @@ class DatabaseSeeder extends Seeder
                     'tenkesehatan_id' => $t,
                 ]);
             }
+        }
+
+        $diagnosa = array(
+            array('nama_diagnosa' => 'Acute Nasopharyngitis (common cold)', 'kode_diagnosa' => 'J00'),
+            array('nama_diagnosa' => 'Essential (primary) hypertension', 'kode_diagnosa' => 'I10'),
+            array('nama_diagnosa' => 'Non-insulin-dependent diabetes mellitus', 'kode_diagnosa' => 'E11'),
+            array('nama_diagnosa' => 'Pure Hypercholesterolaemia', 'kode_diagnosa' => 'E78.0'), 
+            array('nama_diagnosa' => 'Dyspepsia', 'kode_diagnosa' => 'K30'), 
+            array('nama_diagnosa' => 'Necrosis of pulp', 'kode_diagnosa' => 'K04.1'), 
+            array('nama_diagnosa' => 'Myalgia', 'kode_diagnosa' => 'M79.1'), 
+            array('nama_diagnosa' => 'Astigmatism', 'kode_diagnosa' => 'H52.2'), 
+            array('nama_diagnosa' => 'Myopia', 'kode_diagnosa' => 'H52.1'), 
+            array('nama_diagnosa' => 'Hypermetropia', 'kode_diagnosa' => 'H52.0')
+        );
+        DB::table('diagnosas')->insert($diagnosa);
+
+        $obat = ['Hydrocodone', 'Simvastatin', 'Lisinopril', 'Levothyroxine Sodium', 'Amlodipine Besylate', 'Omeprazole', 'Azithromycin', 'Amoxicillin', 'Metformin'];
+        foreach($obat as $o) {
+            DB::table('obats')->insert(['nama_obat' => $o]);
         }
     }
 }

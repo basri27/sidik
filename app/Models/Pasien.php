@@ -22,6 +22,8 @@ class Pasien extends Model
         'tgl_lhr_pasien',
         'no_hp_pasien',
         'alamat_pasien',
+        'pasien_created_at',
+        'pasien_updated_at',
     ];
 
 	public function user() 

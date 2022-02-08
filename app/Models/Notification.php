@@ -12,12 +12,18 @@ class Notification extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'tenkesehatan_id',
+        'user_id',
         'isi',
+        'rekam_medik_id',
     ];
 
-    public function tenkesehatan()
+    public function user()
     {
-        return $this->belongsTo(Tenkesehatan::class);
+        return $this->belongsTo(User::class);
+    }
+
+    public function rekam_medik()
+    {
+        return $this->belongsTo(RekamMedik::class);
     }
 }

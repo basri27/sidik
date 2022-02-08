@@ -15,10 +15,11 @@ class CreateNotificationsTable extends Migration
     {
         Schema::create('notifications', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('tenkesehatan_id')->nullable()->constrained();
+            $table->foreignId('user_id')->constrained();
+            $table->foreignId('rekam_medik_id')->nullable()->constrained();
             $table->string('isi');
-            $table->timestamp('pasien_created_at')->useCurrent();
-            $table->timestamp('pasien_updated_at')->useCurrent();
+            $table->timestamp('notif_created_at')->useCurrent();
+            $table->timestamp('notif_updated_at')->useCurrent();
         });
     }
 

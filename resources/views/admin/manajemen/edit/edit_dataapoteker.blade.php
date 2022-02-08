@@ -32,15 +32,15 @@
                                 <ul>
                                     <li>
                                         <label class="font-weight-bold text-primary">Nama</label>
-                                        <input type="text" name="nama" class="form-control" value="{{ $apoteker->nama }}">
+                                        <input type="text" name="nama" class="form-control" value="{{ $apoteker->nama_apoteker }}">
                                     </li>
                                     <li>
                                         <label class="font-weight-bold text-primary">Tempat lahir</label>
-                                        <input type="text" name="tempat_lhr" class="form-control" value="{{ $apoteker->tempat_lhr }}">
+                                        <input type="text" name="tempat_lhr" class="form-control" value="{{ $apoteker->tempat_lhr_apoteker }}">
                                     </li>
                                     <li>
                                         <label class="font-weight-bold text-primary">Tanggal lahir</label>
-                                        <input type="date" name="tgl_lhr" class="form-control" value="{{ $apoteker->tgl_lhr }}">
+                                        <input type="date" name="tgl_lhr" class="form-control" value="{{ $apoteker->tgl_lhr_apoteker }}">
                                     </li>
                                 </ul>
                                 </div>
@@ -52,16 +52,16 @@
                                 <ul>
                                     <li>
                                         <label class="font-weight-bold text-primary">No. Hp</label>
-                                        <input type="text" name="no_hp" class="form-control" value="{{ $apoteker->nohp }}">
+                                        <input type="text" name="no_hp" class="form-control" value="{{ $apoteker->nohp_apoteker }}">
                                     </li>
                                     <li>
                                         <label class="font-weight-bold text-primary">Alamat</label>
-                                        <input type="text" name="alamat" class="form-control" value="{{ $apoteker->alamat }}">
+                                        <input type="text" name="alamat" class="form-control" value="{{ $apoteker->alamat_apoteker }}">
                                     </li>
                                     <li>
                                         <label class="font-weight-bold text-primary">Jenis Kelamin</label>
                                         <select class="form-control" name="jk" id="jk">
-                                            <option value="{{ $apoteker->jk }}" selected>{{ $apoteker->jk }}</option>
+                                            <option value="{{ $apoteker->jk_apoteker }}" selected>{{ $apoteker->jk_apoteker }}</option>
                                             <option value="Laki-laki">Laki-laki</option>
                                             <option value="Perempuan">Perempuan</option>
                                         </select>

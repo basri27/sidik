@@ -9,14 +9,16 @@ class Apoteker extends Model
 {
     use HasFactory;
 
+    public $timestamps = false;
+
     protected $fillable = [
         'user_id',
-        'nama',
-        'tempat_lhr',
-        'tgl_lhr',
-        'nohp',
-        'alamat',
-        'jk',
+        'nama_apoteker',
+        'tempat_lhr_apoteker',
+        'tgl_lhr_apoteker',
+        'nohp_apoteker',
+        'alamat_apoteker',
+        'jk_apoteker',
     ];
 
     public function user()

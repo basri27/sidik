@@ -10,7 +10,7 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class MedicalRecordSent implements ShouldBroadcast
+class ObatSent implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -35,6 +35,6 @@ class MedicalRecordSent implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new Channel('medical-record-sent');
+        return new Channel('obat-sent');
     }
 }

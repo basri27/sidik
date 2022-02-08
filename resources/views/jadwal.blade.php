@@ -24,23 +24,23 @@
     <h2 class="my-5 text-center">Jadwal Praktek</h2>
     <div class="table-responsive">
         <table class="table table-bordered" style="text-align: center; font-size: 80%; color: white;">
-            <thead class="bg-dark">   
-                <tr>
+            <thead>   
+                <tr class="bg-dark">
                     @foreach ($jadwals as $jadwal)
                     <th scope="col sm-1">{{ $jadwal->hari }}</th>
                     @endforeach
                 </tr>
-                <tr>
+                <tr class="text-dark">
                     @foreach ($jadwals as $j)
                     <th>
                         @foreach ($j->tenkesehatan as $n)
-                            {{ $n->nama }} <br>
+                            {{ $n->nama_tenkes }} <br>
                         @endforeach
                     </th>
                     @endforeach
                 </tr>
             </thead>
-            <tbody style="color: black">
+            <tbody class="font-weight-bold text-dark">
                 <tr>
                     @foreach ($jadwals as $jadwal)
                     <td>{{ \Carbon\Carbon::parse($jadwal->pagi_s)->format('H:i') }} - {{ \Carbon\Carbon::parse($jadwal->pagi_n)->format('H:i') }}</td>

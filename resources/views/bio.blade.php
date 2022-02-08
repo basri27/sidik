@@ -35,9 +35,9 @@
                             </select>
 				        </div>
                         <div class="form-group">
-                            <select class="form-input" name="kategori" id="kategori">
+                            <select class="form-input" name="kategori" id="kategori" onchange="kategori(this)">
                                 @foreach ($kategori as $kat)
-                                <option value="{{ $kat->id }}">{{ $kat->nama }}</option>
+                                <option value="{{ $kat->id }}">{{ $kat->nama_kategori }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -45,7 +45,7 @@
                             <select class="form-input" name="fakultas" id="fakultas">
                                 <option value="">Fakultas</option>
                                 @foreach ($fakultas as $fak)
-                                <option value="{{ $fak->id }}">{{ $fak->nama }}</option>
+                                <option value="{{ $fak->id }}">{{ $fak->nama_fakultas }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -53,7 +53,7 @@
                             <select class="form-input" name="prodi" id="prodi">
                                 <option value="">Program Studi</option>
                                 @foreach ($prodi as $pro)
-                                <option value="{{ $pro->id }}">{{ $pro->nama }}</option>
+                                <option value="{{ $pro->id }}">{{ $pro->nama_prodi }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -91,6 +91,30 @@
     gtag('js', new Date());
 
     gtag('config', 'UA-23581568-13');
+    </script>
+    <script>
+        function kategori(select)
+        {
+            var f = document.getElementById('fakultas');
+            var p = document.getElementById('prodi');
+            var lf = document.getElementById('label_f');
+            var lp = document.getElementById('label_p');
+
+            if(select.value == '4') {
+                f.disabled = true;
+                f.value = '1';
+                p.disabled = true;
+                p.value = '1';
+            }
+            else if (select.value == '2') {
+                p.disabled = true;
+                p.value = '1';
+            }
+            else {
+                f.disabled = false;
+                p.disabled = false;
+            }
+        }
     </script>
     <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"rayId":"68f0132ccea7140e","token":"cd0b4b3a733644fc843ef0b185f98241","version":"2021.8.1","si":10}'></script>
 </body>

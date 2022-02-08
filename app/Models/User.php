@@ -17,8 +17,6 @@ class User extends Authenticatable
      *
      * @var string[]
      */
-
-    public $timestamps = false;
     
     protected $fillable = [
         'role_id',
@@ -63,5 +61,10 @@ class User extends Authenticatable
 
     public function apoteker() {
         return $this->hasOne(Apoteker::class);
+    }
+
+    public function notification()
+    {
+        return $this->hasMany(Notification::class);
     }
 }

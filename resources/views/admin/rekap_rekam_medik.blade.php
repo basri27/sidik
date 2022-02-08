@@ -24,13 +24,18 @@
         <div class="collapse show" id="collapseCardMedik">
             <div class="card-body">
                 <div class="row pl-3">
-                    <label class="font-weight-bold text-primary">Filter Tanggal Rekam Medik</label>
+                    <h5 class="font-weight-bold text-primary">Filter Tanggal Rekam Medik</h5>
+                </div>
+                <hr>
+                <div class="row pl-2">
+                    <label class="font-weight-bold text-secondary col-3">Start</label>
+                    <label class="font-weight-bold text-secondary col-3">End</label>
                 </div>
                 <div class="row pl-3">
                     <input type="date" class="form-control col-3" id="date-start">
                     &nbsp;
-                    <input type="date" class="form-control col-3" id="date-end">&nbsp;
-                    <button class="btn btn-info font-weight-light tombol"><i class="fas fa-folder-open">&nbsp;Lihat</i></button>
+                    <input type="date" class="form-control col-3" id="date-end" max="{{ \Carbon\Carbon::now()->toDateString() }}" value="{{ \Carbon\Carbon::now()->toDateString() }}">&nbsp;
+                    <button class="btn btn-info tombol btn-2"><i class="fas fa-folder-open">&nbsp;Lihat</i></button>
                     <!-- <a class="btn btn-info btn-2" href="#"><i class="fas fa-print"></i>Cetak</a> -->
                 </div>
                 <hr>
@@ -40,8 +45,8 @@
                             <tr>
                                 <th>Nama</th>
                                 <th>Tanggal Periksa</th>
-                                <th>Kategori</th>
                                 <th>Pemeriksa</th>
+                                <th>Kategori</th>
                                 <th>Detail</th>
                             </tr>
                         </thead>
@@ -57,13 +62,13 @@
         <div class=" col-lg-8">      
             <div class="card shadow mb-4">
                 <a href="#collapseCardGrafik" class="d-block card-header py-3" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="collapseCardExample">
-                    <h6 class="m-0 font-weight-bold text-primary">Grafik Jumlah Pasien Berobat Perbulan</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">Grafik Jumlah Pasien Berobat Pertahun</h6>
                 </a>
                 <div class="collapse show" id="collapseCardGrafik">
                     <div class="card-body">
                         <div class="container row">
-                        <input type="text" class="form-control col-5" name="" id="" placeholder="Masukkan tahun...">&nbsp;
-                        <button class="btn btn-info btn-circle btn-2"><i class="fas fa-folder-open"></i></button>
+                            <input type="number" class="form-control col-5" id="tahun-grafik" placeholder="Masukkan tahun..." required>&nbsp;
+                            <button class="btn btn-info btn-2 tombol-grafik"><i class="fas fa-folder-open"></i>&nbsp;Lihat</button>
                         </div>
                         <hr>
                         <div class="chart-area">
@@ -153,16 +158,18 @@
                 }
             },
             {
+                data: 'nama_tenkes',
+                orderable: false,
+            },
+            {
                 data: 'nama_kategori',
+                orderable: false,
             },
             {
-                data: 'nama_tenkes'
-            },
-            {
-                "className": 'dt-control',
-                "orderable": false,
-                "data": null,
-                "defaultContent": ''
+                className: 'dt-control',
+                orderable: false,
+                data: null,
+                defaultContent: ''
             }
         ]
     });
@@ -172,7 +179,6 @@
     return '<table class="table table-striped table-bordered" cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+
             '<thead class="thead-dark">'+
                 '<tr>'+
-                    '<th>Pemeriksa</th>'+
                     '<th>Tensi</th>'+
                     '<th>Suhu</th>'+
                     '<th>Keluhan</th>'+
@@ -182,12 +188,11 @@
                 '</tr>'+
             '</thead>'+
             '<tr>'+
-                '<td>'+d.nama_tenkes+'</td>'+
                 '<td>'+d.tensi+'</td>'+
                 '<td>'+d.suhu+'</td>'+
                 '<td>'+d.keluhan+'</td>'+
-                '<td>'+d.diagnosa+'</td>'+
-                '<td>'+d.obat+'</td>'+
+                '<td>'+d.nama_diagnosa+'</td>'+
+                '<td>'+d.nama_obat+'</td>'+
                 '<td>'+d.keterangan+'</td>'+
             '</tr>'+
         '</table>';
@@ -213,7 +218,7 @@
         start = $('#date-start').val();
         end = $('#date-end').val();
         table_pasien.ajax.reload(null,false)
-    })
+    });
 </script>
 <!-- MDB -->
 <!-- JQuery -->
@@ -222,28 +227,80 @@
 <!-- MDB core JavaScript -->
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.1/js/mdb.min.js"></script>
 <script>
-    $(document).ready(function(){
-        var ctxB = document.getElementById("barChart").getContext('2d');
-        var myBarChart = new Chart(ctxB, {
-            type: 'bar',
+    let tahun = $('tahun-grafik').val();
+    
+    $(document).ready(function() {
+        $.ajax({
+            url: "{{url('filtergrafikbar')}}",
+            type: "post",
             data: {
-                labels: ["Januari", "Februari", "Maret", "April", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"],
-                datasets: [{
-                    label: 'Jumlah Pasien',
-                    data: [12, 19, 3, 5, 2, 3],
-                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                    borderColor: 'rgba(54, 162, 235, 1)',
-                    borderWidth: 1
-                }]
+                _token: "{{csrf_token()}}",
+                tahun: moment().format('YYYY')
             },
-            options: {
-                scales: {
-                    yAxes: [{
-                        ticks: {
-                        beginAtZero: true
+            success: function(d) {
+                var ctxB = document.getElementById("barChart").getContext('2d');
+                var myBarChart = new Chart(ctxB, {
+                    type: 'bar',
+                    data: {
+                        labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dec"],
+                        datasets: [{
+                            label: 'Jumlah Pasien',
+                            data: [
+                                'userArr.count'
+                            ],
+                            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            yAxes: [{
+                                ticks: {
+                                    beginAtZero: true
+                                }
+                            }]
                         }
-                    }]
-                }
+                    }
+                });
+            }
+        });
+    });
+
+    $('.tombol-grafik').on('click', function() {
+        tahun = $('#tahun-grafik').val();
+        $.ajax({
+            url: "{{url('filtergrafikbar')}}",
+            type: "post",
+            data: {
+                _token: "{{csrf_token()}}",
+                tahun: tahun
+            },
+            success: function() {
+
+                var ctxB = document.getElementById("barChart").getContext('2d');
+                var myBarChart = new Chart(ctxB, {
+                    type: 'bar',
+                    data: {
+                        labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dec"],
+                        datasets: [{
+                            label: 'Jumlah Pasien',
+                            data: ['userArr.count'],
+                            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            yAxes: [{
+                                ticks: {
+                                    beginAtZero: true
+                                }
+                            }]
+                        }
+                    }
+                });
             }
         });
     });
@@ -256,9 +313,9 @@
     data: {
         labels: ["Mahasiswa", "Dosen", "Karyawan", "Umum"],
         datasets: [{
-        data: [210, 130, 120, 160],
-        backgroundColor: ["#F7464A", "#46BFBD", "#FDB45C", "#FF00FF"],
-        hoverBackgroundColor: ["#FF5A5E", "#5AD3D1", "#FFC870", "#fa64fa"]
+            data: [210, 130, 120, 160],
+            backgroundColor: ["#F7464A", "#46BFBD", "#FDB45C", "#FF00FF"],
+            hoverBackgroundColor: ["#FF5A5E", "#5AD3D1", "#FFC870", "#fa64fa"]
         }]
     },
     options: {

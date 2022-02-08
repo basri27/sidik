@@ -23,18 +23,56 @@ class PasienController extends Controller
         ]);
 
         if($validated) {
-            Pasien::create([
-                'user_id' => $request->input('id_pasien'),
-                'fakulta_id' => $request->input('fakultas'),
-                'prodi_id' => $request->input('prodi'),
-                'category_id' => $request->input('kategori'),
-                'nama' => $request->input('name'),
-                'jk' => $request->input('jk'),
-                'tempat_lhr' => $request->input('tempat_lhr'),
-                'tgl_lhr' => $request->input('tgl_lhr'),
-                'no_hp' => $request->input('nohp'),
-                'alamat' => $request->input('alamat'),
-            ]);
+            if(Request()->fakulta_id <> ""){
+                if(Request()->prodi_id <> ""){
+                    Pasien::create([
+                        'user_id' => $request->input('user_id'),
+                        'category_id' => $request->input('category_id'),
+                        'fakulta_id' => $request->input('fakulta_id'),
+                        'prodi_id' => $request->input('prodi_id'),
+                        'nama_pasien' => $request->input('nama'),
+                        'tempat_lhr_pasien' => $request->input('tempat_lhr'),
+                        'tgl_lhr_pasien' => $request->input('tgl_lhr'),
+                        'no_hp_pasien' => $request->input('no_hp'),
+                        'alamat_pasien' => $request->input('alamat'),
+                        'jk_pasien' => $request->input('jk'),
+                        'pasien_created_at' => Carbon::now(),
+                        'pasien_updated_at' => Carbon::now(),
+                    ]);
+                }
+                else {
+                    Pasien::create([
+                        'user_id' => $request->input('user_id'),
+                        'category_id' => $request->input('category_id'),
+                        'fakulta_id' => $request->input('fakulta_id'),
+                        'prodi_id' => '1',
+                        'nama_pasien' => $request->input('nama'),
+                        'tempat_lhr_pasien' => $request->input('tempat_lhr'),
+                        'tgl_lhr_pasien' => $request->input('tgl_lhr'),
+                        'no_hp_pasien' => $request->input('no_hp'),
+                        'alamat_pasien' => $request->input('alamat'),
+                        'jk_pasien' => $request->input('jk'),
+                        'pasien_created_at' => Carbon::now(),
+                        'pasien_updated_at' => Carbon::now(),
+                    ]);
+                }
+            }
+            else {
+                Pasien::create([
+                    'user_id' => $request->input('user_id'),
+                    'category_id' => $request->input('category_id'),
+                    'fakulta_id' => '1',
+                    'prodi_id' => '1',
+                    'nama_pasien' => $request->input('nama'),
+                    'tempat_lhr_pasien' => $request->input('tempat_lhr'),
+                    'tgl_lhr_pasien' => $request->input('tgl_lhr'),
+                    'no_hp_pasien' => $request->input('no_hp'),
+                    'alamat_pasien' => $request->input('alamat'),
+                    'jk_pasien' => $request->input('jk'),
+                    'pasien_created_at' => Carbon::now(),
+                    'pasien_updated_at' => Carbon::now(),
+                ]);
+            }
         }
 
         return redirect()->route('home');

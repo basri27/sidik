@@ -63,12 +63,12 @@
                         @foreach($tenkes as $nakes)
                         <tr>
                             <td>{{ $nakes->id }}</td>
-                            <td>{{ $nakes->nama }}</td>
-                            <td>{{ $nakes->kategori_tenkesehatan->nama }}</td>
-                            <td>{{ $nakes->tempat_lhr }}, {{ \Carbon\Carbon::parse($nakes->tgl_lhr)->format('d F Y') }}</td>
-                            <td>{{ $nakes->nohp }}</td>
-                            <td>{{ $nakes->alamat }}</td>
-                            <td>{{ $nakes->jk }}</td>
+                            <td>{{ $nakes->nama_tenkes }}</td>
+                            <td>{{ $nakes->kategori_tenkesehatan->nama_kategori_tenkes }}</td>
+                            <td>{{ $nakes->tempat_lhr_tenkes }}, {{ \Carbon\Carbon::parse($nakes->tgl_lhr_tenkes)->format('d F Y') }}</td>
+                            <td>{{ $nakes->nohp_tenkes }}</td>
+                            <td>{{ $nakes->alamat_tenkes }}</td>
+                            <td>{{ $nakes->jk_tenkes }}</td>
                             <td>
                                 <center>
                                     <form action="{{ route('delete_datanakes', $nakes->id) }}" method="post">

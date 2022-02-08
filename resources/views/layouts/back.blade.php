@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -39,7 +38,7 @@
                 <div class="sidebar-brand-icon">
                     <img src="{{ asset('img/klinik.png') }}" style="width: 3em;">
                 </div>
-                <div class="sidebar-brand-text mx-3">SIDIK LMMC</div>
+                <div class="sidebar-brand-text mx-3">SIDIK <span class="text-warning">LMMC</span></div>
             </div>
 
             <div class="sidebar-heading">
@@ -77,7 +76,7 @@
                     <!-- Topbar Search -->
                     <div class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100">
                         <div class="input-group">
-                            <h4 style="color: white"><b>@yield('subhead')</b></h4>
+                            <h5 style="color: white"><b>@yield('subhead')</b></h5>
                         </div>
                     </div>
 

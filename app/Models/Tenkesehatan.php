@@ -9,15 +9,19 @@ class Tenkesehatan extends Model
 {
     use HasFactory;
 
+    public $timestamps = false;
+
     protected $fillable = [
         'user_id',
         'kategori_tenkesehatan_id',
-        'nama',
-        'jk',
-        'tempat_lhr',
-        'tgl_lhr',
-        'nohp',
-        'alamat',
+        'nama_tenkes',
+        'jk_tenkes',
+        'tempat_lhr_tenkes',
+        'tgl_lhr_tenkes',
+        'nohp_tenkes',
+        'alamat_tenkes',
+        'tenkes_created_at',
+        'tenkes_updated_at',
     ];
 
     public function kategori_tenkesehatan()
@@ -40,8 +44,4 @@ class Tenkesehatan extends Model
         return $this->hasMany(RekamMedik::class);
     }
 
-    public function notification()
-    {
-        return $this->hasMany(Notification::class);
-    }
 }

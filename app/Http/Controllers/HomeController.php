@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Tenkesehatan;
 use App\Models\Kategori_tenkesehatan;
+use App\Models\Jadwal;
 
 class HomeController extends Controller
 {
@@ -28,5 +29,12 @@ class HomeController extends Controller
         $tenkes = Tenkesehatan::with('kategori_tenkesehatan')->get();
         // dd($tenkes);
         return view('home', compact('tenkes'));
+    }
+
+    public function show_jadwal()
+    {
+        $jadwals = Jadwal::get();
+        
+        return view('jadwal', compact('jadwals'));
     }
 }

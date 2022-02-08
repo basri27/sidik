@@ -55,120 +55,21 @@
 
 <div class="page-section">
     <div class="container">
-    <h1 class="text-center mb-5 wow fadeInUp">Our Doctors</h1>
+        <h1 class="text-center mb-5 wow fadeInUp">Our Doctors</h1>
 
-    <div class="owl-carousel wow fadeInUp" id="doctorSlideshow">
-        @foreach ($tenkes as $tks)
-        <div class="item">
-            <div class="card-doctor">
-                <img src=" {{ asset('/img/doctors/doctor_1.jpg') }} " alt="">
-                <div class="body">
-                    <p class="text-xl mb-0">{{ $tks->nama }}</p>
-                    <span class="text-sm text-grey">{{ $tks->kategori_tenkesehatan->nama }}</span>
+        <div class="owl-carousel wow fadeInUp" id="doctorSlideshow">
+            @foreach ($tenkes as $tks)
+            <div class="item">
+                <div class="card-doctor">
+                    <img src=" {{ asset('/img/doctors/doctor_1.jpg') }} " alt="">
+                    <div class="body">
+                        <p class="text-xl mb-0">{{ $tks->nama_tenkes }}</p>
+                        <span class="text-sm text-grey">{{ $tks->kategori_tenkesehatan->nama_kategori_tenkes }}</span>
+                    </div>
                 </div>
             </div>
+            @endforeach
         </div>
-        @endforeach
-        <!-- <div class="item">
-            <div class="card-doctor">
-                <img src="{{ asset('/img/doctors/doctor_2.jpg') }}" alt="">
-                <div class="body">
-                    <p class="text-xl mb-0">dr. Lena Rosida, M.Kes</p>
-                    <span class="text-sm text-grey">Dokter Umum</span>
-                </div>
-            </div>
-        </div>
-        <div class="item">
-            <div class="card-doctor">
-                <img src="{{ asset('/img/doctors/doctor_3.jpg') }}" alt="">
-                <div class="body">
-                    <p class="text-xl mb-0">dr. Alfi Yasmina, M.Kes,PhD</p>
-                    <span class="text-sm text-grey">Dokter Umum</span>
-                </div>
-            </div>
-        </div>
-        <div class="item">
-            <div class="card-doctor">
-                <img src="{{ asset('/img/doctors/doctor_3.jpg') }}" alt="">
-                <div class="body">
-                    <p class="text-xl mb-0">dr. Husnul Khatimah M.Sc</p>
-                    <span class="text-sm text-grey">Dokter Umum</span>
-                </div>
-            </div>
-        </div>
-        <div class="item">
-            <div class="card-doctor">
-                <img src="{{ asset('/img/doctors/doctor_3.jpg') }}" alt="">
-                <div class="body">
-                    <p class="text-xl mb-0">dr. Farida Heriyani, MPH</p>
-                    <span class="text-sm text-grey">Dokter Umum</span>
-                </div>
-            </div>
-        </div>
-        <div class="item">
-            <div class="card-doctor">
-                <img src="{{ asset('/img/doctors/doctor_1.jpg') }}" alt="">
-                <div class="body">
-                    <p class="text-xl mb-0">drg. Gusti Meidi Listiananda</p>
-                    <span class="text-sm text-grey">Dokter Gigi</span>
-                </div>
-            </div>
-        </div>
-        <div class="item">
-            <div class="card-doctor">
-                <img src="{{ asset('/img/doctors/doctor_1.jpg') }}" alt="">
-                <div class="body">
-                    <p class="text-xl mb-0">dr. Tara Wahyudita Mentari</p>
-                    <span class="text-sm text-grey">Dokter Umum</span>
-                </div>
-            </div>
-        </div>
-        <div class="item">
-            <div class="card-doctor">
-                <img src="{{ asset('/img/doctors/doctor_1.jpg') }}" alt="">
-                <div class="body">
-                    <p class="text-xl mb-0">Ina Rainie, A.Md.Kep</p>
-                    <span class="text-sm text-grey">Perawat</span>
-                </div>
-            </div>
-        </div>
-        <div class="item">
-            <div class="card-doctor">
-                <img src="{{ asset('/img/doctors/doctor_1.jpg') }}" alt="">
-                <div class="body">
-                    <p class="text-xl mb-0">Muhammad Rizal, S.Kep., Ners</p>
-                    <span class="text-sm text-grey">Perawat</span>
-                </div>
-            </div>
-        </div>
-        <div class="item">
-            <div class="card-doctor">
-                <img src="{{ asset('/img/doctors/doctor_1.jpg') }}" alt="">
-                <div class="body">
-                    <p class="text-xl mb-0">Apriyanti, A.Md.Kep</p>
-                    <span class="text-sm text-grey">Perawat</span>
-                </div>
-            </div>
-        </div>
-        <div class="item">
-            <div class="card-doctor">
-                <img src="{{ asset('/img/doctors/doctor_1.jpg') }}" alt="">
-                <div class="body">
-                    <p class="text-xl mb-0">Yunita Faza, K.S. S.Tr.Kes</p>
-                    <span class="text-sm text-grey">Analis</span>
-                </div>
-            </div>
-        </div>
-        <div class="item">
-            <div class="card-doctor">
-                <img src="{{ asset('/img/doctors/doctor_1.jpg') }}" alt="">
-                <div class="body">
-                    <p class="text-xl mb-0">Monia Arfa, A.Md, Kes</p>
-                    <span class="text-sm text-grey">Perawat Gigi</span>
-                </div>
-            </div>
-        </div> -->
-    </div>
     </div>
 </div>
 

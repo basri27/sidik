@@ -29,7 +29,7 @@
                             <div class="info-list">
                                 <div class="form-group">
                                     <label class="font-weight-bold text-primary">Tanggal</label> 
-                                    <input type="text" class="form-control" value="{{ \Carbon\Carbon::now()->format('d F Y') }}" disabled>                                   
+                                    <input type="text" class="form-control" value="{{ \Carbon\Carbon::now()->format('d F Y') }}" readonly>                                   
                                 </div>
                             </div>
                         </div>
@@ -37,7 +37,7 @@
                             <div class="info-list">
                                 <div class="form-group">
                                     <label class="font-weight-bold text-primary">Waktu</label>
-                                    <input type="text" class="form-control" value="{{ \Carbon\Carbon::now()->toTimeString() }}" disabled>
+                                    <input type="text" class="form-control" value="{{ \Carbon\Carbon::now()->toTimeString() }}" readonly>
                                 </div>
                             </div>
                         </div>
@@ -50,15 +50,15 @@
                                 <ul>
                                     <li>
                                         <label class="font-weight-bold text-primary">Nama</label>
-                                        <input type="text" name="nama" class="form-control" value="{{ $pasien->nama_pasien }}" disabled>
+                                        <input type="text" name="nama" class="form-control" value="{{ $pasien->nama_pasien }}" readonly>
                                     </li>
                                     <li>
                                         <label class="font-weight-bold text-primary">Tempat lahir</label>
-                                        <input type="text" name="tempat_lhr" class="form-control" value="{{ $pasien->tempat_lhr_pasien }}" disabled>
+                                        <input type="text" name="tempat_lhr" class="form-control" value="{{ $pasien->tempat_lhr_pasien }}" readonly>
                                     </li>
                                     <li>
                                         <label class="font-weight-bold text-primary">Tanggal lahir</label>
-                                        <input type="date" name="tgl_lhr" class="form-control" value="{{ $pasien->tgl_lhr_pasien }}" disabled>
+                                        <input type="date" name="tgl_lhr" class="form-control" value="{{ $pasien->tgl_lhr_pasien }}" readonly>
                                     </li>
                                 </ul>
                                 </div>
@@ -70,15 +70,15 @@
                                 <ul>
                                     <li>
                                         <label class="font-weight-bold text-primary">No. Hp</label>
-                                        <input type="text" name="no_hp" class="form-control" value="{{ $pasien->no_hp_pasien }}" disabled>
+                                        <input type="text" name="no_hp" class="form-control" value="{{ $pasien->no_hp_pasien }}" readonly>
                                     </li>
                                     <li>
                                         <label class="font-weight-bold text-primary">Alamat</label>
-                                        <input type="text" name="alamat" class="form-control" value="{{ $pasien->alamat_pasien }}" disabled>
+                                        <input type="text" name="alamat" class="form-control" value="{{ $pasien->alamat_pasien }}" readonly>
                                     </li>
                                     <li>
                                         <label class="font-weight-bold text-primary">Jenis Kelamin</label>
-                                        <input type="text" name="jk" class="form-control" value="{{ $pasien->jk_pasien }}" disabled>
+                                        <input type="text" name="jk" class="form-control" value="{{ $pasien->jk_pasien }}" readonly>
                                     </li>
                                 </ul>
                                 </div>
@@ -90,21 +90,21 @@
                                     <ul>
                                         <li>
                                             <label class="font-weight-bold text-primary">Kategori</label>
-                                            <input type="text" name="category_id" class="form-control" value="{{ $pasien->category->nama_kategori }}" disabled>
+                                            <input type="text" name="category_id" class="form-control" value="{{ $pasien->category->nama_kategori }}" readonly>
                                         </li>
                                         @if ($pasien->category_id == '1' or $pasien->category_id == '3')
                                         <li>
                                             <label class="font-weight-bold text-primary" id="label_f">Fakultas</label>
-                                            <input type="text" name="fakulta_id" class="form-control" value="{{ $pasien->fakulta->nama_fakultas }}" disabled>
+                                            <input type="text" name="fakulta_id" class="form-control" value="{{ $pasien->fakulta->nama_fakultas }}" readonly>
                                         </li>
                                         <li>
                                             <label class="font-weight-bold text-primary" id="label_p">Program Studi</label>
-                                            <input type="text" name="prodi_id" class="form-control" value="{{ $pasien->prodi->nama_prodi }}" disabled>
+                                            <input type="text" name="prodi_id" class="form-control" value="{{ $pasien->prodi->nama_prodi }}" readonly>
                                         </li>
                                         @elseif ($pasien->category_id == '2')
                                         <li>
                                             <label class="font-weight-bold text-primary" id="label_f">Fakultas</label>
-                                            <input type="text" name="fakulta_id" class="form-control" value="{{ $pasien->fakulta->nama_fakultas }}" disabled>
+                                            <input type="text" name="fakulta_id" class="form-control" value="{{ $pasien->fakulta->nama_fakultas }}" readonly>
                                         </li>
                                         @endif
                                     </ul>

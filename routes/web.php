@@ -2,9 +2,12 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PasienController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\NakesController;
+use App\Http\Controllers\ApotekerController;
+use App\Http\Controllers\ChartController;
 use App\Events\MedicalRecordSent;
 
 
@@ -23,14 +26,15 @@ Auth::routes(); //Route bawaan laravel ui bootstrap --auth
 
 //---------------------------Route Tampilan depan-----------------------------//
 #Home
-Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
 #Jadwal
-Route::get('jadwalpraktek', [AdminController::class, 'show_jadwal'])->name('jadwal');
+Route::get('jadwalpraktek', [HomeController::class, 'show_jadwal'])->name('jadwal');
 
 //-------------------------------Route Admin---------------------------------//
 #Dahsboard admin
-Route::get('admin/dashboard/{id}', [AdminController::class, 'adm_dashboard'])->name('adm_dashboard');
+Route::get('admin/dashboard', [AdminController::class, 'adm_dashboard'])->name('adm_dashboard');
+Route::get('chart-bar-ajax', [AdminController::class, 'chartBarAjax']);
 
 #Profil admin
 Route::get('admin/profil/{user_id}', [AdminController::class, 'adm_profil'])->name('adm_profil');
@@ -53,6 +57,9 @@ Route::patch('admin/jadwalpraktek/update/{id}', [AdminController::class, 'adm_ja
 #Rekap rekam medik
 Route::get('admin/rekaprekammedik', [AdminController::class, 'adm_rekap_rekam_medik'])->name('adm_rekap_rekam_medik');
 Route::post('filterrekammedik', [AdminController::class, 'filterRekamMedik'])->name('filterRekamMedik');
+
+#Filter grafik bar data pasien
+Route::post('filtergrafikbar', [AdminController::class, 'filterGrafikBar'])->name('filterGrafikBar');
 
 #Manajemen data 
 Route::get('admin/manajemendata/pasien', [AdminController::class, 'adm_man_datapasien'])->name('adm_man_datapasien');
@@ -95,4 +102,17 @@ Route::delete('admin/deletedata/nakes/{id}', [AdminController::class, 'delete_da
 Route::post('/add/bio', [PasienController::class, 'add_bio'])->name('add_bio');
 
 //----------------------------------Route Nakes------------------------------//
-Route::get('nakes/dashboard/{id}', [NakesController::class, 'nakes_dashboard'])->name('nakes_dashboard');
+Route::get('nakes/dashboard/{id}', [NakesController::class, 'nakesDashboard'])->name('nakes_dashboard');
+Route::get('nakes/profil/{id}', [NakesController::class, 'nakesProfil'])->name('nakes_profil');
+Route::get('nakes/profil/edit/{id}', [NakesController::class, 'nakesEditProfil'])->name('nakes_edit_profil');
+Route::patch('nakes/profil/update/{id}', [NakesController::class, 'nakesUpdateProfil'])->name('nakes_update_profil');
+Route::get('nakes/usernamepassword/edit/{id}', [NakesController::class, 'nakesEditUserPw'])->name('nakes_edit_userpw');
+Route::patch('nakes/usernamepassword/update/{id}', [NakesController::class, 'nakesUpdateUserPw'])->name('nakes_update_userpw');
+Route::get('nakes/data/edit/rekammedik/{id}', [NakesController::class, 'nakesEditRekamMedik'])->name('nakes_edit_rekammedik');
+Route::post('nakes/data/rekammedik/kirim/{id}', [NakesController::class, 'nakesKirimDataRekamMedik'])->name('nakes_kirim_datarekammedik');
+
+//----------------------Route Apoteker----------------------//
+Route::get('apoteker/dashboard/{id}', [ApotekerController::class, 'apotekerDashboard'])->name('apoteker_dashboard');
+
+#Obat pasien
+Route::get('apoteker/obat/{id}', [ApotekerController::class, 'apotekerObatPasien'])->name('apoteker_obat_pasien');

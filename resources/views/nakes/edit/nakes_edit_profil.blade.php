@@ -1,6 +1,6 @@
 @extends('layouts.back')
 
-@section('title', 'Dashboard')
+@section('title', 'Ubah Profil Dokter')
 
 @section('css')
     <link rel="stylesheet" href="{{ asset('css/dashboard/sb-admin-2.min.css') }}">
@@ -11,21 +11,21 @@
 @endsection
 
 @section('menu')
-    <li class="nav-item active">
+    <li class="nav-item">
         <a class="nav-link" href={{ route('nakes_dashboard', Auth::user()->id) }}>
             <i class="fas fa-tachometer-alt"></i>
             <span>Dashboard</span>
         </a>
     </li>
-    <li class="nav-item">
-        <a class="nav-link" href={{ route('nakes_profil', Auth::user()->id)}}>
+    <li class="nav-item active">
+        <a class="nav-link" href={{ route('nakes_profil', Auth::user()->id) }}>
             <i class="fas fa-user"></i>
             <span>Profil</span>
         </a>
     </li>
 @endsection
 
-@section('subhead', 'Dashboard Dokter')
+@section('subhead', 'Ubah Profil Dokter')
 
 @section('notif')
     <li class="nav-item dropdown no-arrow mx-1" id="list-notif">
@@ -119,48 +119,87 @@
 @endsection
 
 @section('content')
-    <div class="container-fluid">
-        @if ($message = Session::get('success'))
-            <div class="alert alert-success alert-block">
-                <button type="button" class="close" data-dismiss="alert">×</button>    
-                <strong>{{ $message }}</strong>
-            </div>
-        @endif
-        <div class="card shadow p-3">
-            <div class="row">
-            <p class="font-weight-bold text-primary col-3">Tanggal: {{ \Carbon\Carbon::now()->format('d F Y') }}</p>
-            <p class="font-weight-bold text-primary col">Waktu: {{ \Carbon\Carbon::now()->toTimeString() }}</p></div>
-            <p class="font-weight-bold text-primary ">Jumlah Pasien hari ini: {{ $pasienCount }}</p>
-            <form action="{{ route('nakes_dashboard', Auth::user()->id) }}">
-                <button class="btn btn-success btn-sm pl-2 pr-2" id="refresh"><i class="fas fa-sync-alt"></i> Refresh</button></form><br>
-            @foreach($pasiens as $p)
-                <div class="mb-2">
-                    <a href="#collapseCardMedik{{$p->id}}" class="d-block card-header py-3" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="collapseCardExample">
-                        <h6 class="m-0 font-weight-bold text-primary">{{ $p->pasien->nama_pasien}}</h6>
-                    </a>
-                    <div class="collapse" id="collapseCardMedik{{$p->id}}">
-                        <div class="card-body shadow">
-                            <div class="row">
-                                <div class="col">
-                                    <p class="font-weight-bold text-primary">Suhu: <span class="text-danger">{{ $p->suhu }} </span>&#8451;</p>
-                                    <p class="font-weight-bold text-primary">Tensi: <span class="text-danger">{{ $p->tensi }}</span> mmHg</p>
-                                    <p class="font-weight-bold text-primary">Keluhan: <span class="text-danger">{{ $p->keluhan }}</span> </p>
+<div class="container-fluid">
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            <div class="about-row row">
+                <div class="image-col col-md-2">
+                    <hr><img src="{{ asset('/img/klinik.png') }}" alt=""><hr>
+                </div>
+                <div class="detail-col col-md-8">
+                    <form method="POST" enctype="multipart/form-data" action={{ route('nakes_update_profil', $nakes->user_id) }}>
+                    @method('PATCH')
+                    @csrf
+                    <div class="row">
+                        <div class="col-md-6 col-12">
+                            <div class="info-list">
+                                <div class="form-group">
+                                <ul>
+                                    <li>
+                                        <label class="font-weight-bold text-primary" for="">Nama</label>
+                                        <input type="text" name="nama" class="form-control" value="{{ $nakes->nama_tenkes }}">
+                                    </li>
+                                    <li>
+                                        <label class="font-weight-bold text-primary" for="">Tanggal lahir</label>
+                                        <input type="date" name="tgl_lhr" class="form-control" value="{{ $nakes->tgl_lhr_tenkes }}">
+                                    </li>
+                                    <li>
+                                        <label class="font-weight-bold text-primary" for="">Tempat lahir</label>
+                                        <input type="text" name="tempat_lhr" class="form-control" value="{{ $nakes->tempat_lhr_tenkes }}">
+                                    </li>
+                                    
+                                </ul>
                                 </div>
-                                <div class="col">
-                                    <p class="font-weight-bold text-primary">Jam: <span class="text-danger">{{ \Carbon\Carbon::parse($p->rekammedik_created_at)->toTimeString() }}</span></p>
-                                    <p class="font-weight-bold text-primary">Diagnosa: <span class="text-danger">{{ $p->diagnosa->nama_diagnosa }}</span></p>
-                                    <p class="font-weight-bold text-primary">Obat: <span class="text-danger">{{ $p->obat->nama_obat }}</span></p>        
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-12">
+                            <div class="info-list">
+                                <div class="form-group">
+                                <ul>
+                                    <li>
+                                        <label class="font-weight-bold text-primary" for="">Alamat</label>
+                                        <input type="text" name="alamat" class="form-control" value="{{ $nakes->alamat_tenkes }}">
+                                    </li>
+                                    <li>
+                                        <label class="font-weight-bold text-primary" for="">No. Hp | <small class="font-weight-light text-dark">Format: 0812-3456-7890</small></label>
+                                        <input type="tel" name="no_hp" class="form-control" pattern="[0-9]{4}-[0-9]{4}-[0-9]{}" value="{{ $nakes->nohp_tenkes }}">
+                                        
+                                    </li>
+                                    <li>
+                                        <label class="font-weight-bold text-primary" for="">Jenis Kelamin</label>
+                                        <select class="form-control" name="jk" id="jk">
+                                            <option value="{{ $nakes->jk_tenkes }}">{{ $nakes->jk_tenkes }}</option>
+                                            @if($nakes->jk_tenkes == "Laki-laki")
+                                            <option value="Perempuan">Perempuan</option>
+                                            @elseif($nakes->jk_tenkes == "Perempuan")
+                                            <option value="Laki-laki">Laki-laki</option>
+                                            @else
+                                            <option value="Laki-laki">Laki-laki</option>
+                                            <option value="Perempuan">Perempuan</option>
+                                            @endif
+                                        </select>
+                                    </li>
+                                </ul>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            @endforeach
+                    <button type="submit" class="btn btn-success btn-sm">
+                        <span>
+                            <i class="fas fa-check"></i>&nbsp;
+                        </span>    
+                        <span class="text">Simpan</span>
+                    </button>
+                    <a href={{ route('nakes_profil', $nakes->user_id) }} class="btn btn-secondary btn-sm">
+                        <span>
+                            <i class="fas fa-times"></i>&nbsp;
+                        </span>    
+                        <span class="text">Batal</span>
+                    </a>
+                    </form>
+                </div>                    
+            </div>
         </div>
     </div>
-    <script type="text/javascript">
-    setTimeout(function(){
-       location.reload();
-    },30000);
-    </script>
+</div>
 @endsection
