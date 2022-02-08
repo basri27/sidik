@@ -118,6 +118,10 @@
     </script>
 @endsection
 
+@section('foto')
+<img class="img-profile rounded-circle" src="{{ asset('foto_profil/' . Auth::user()->tenkesehatan->foto_tenkes) }}">
+@endsection
+
 @section('content')
     <div class="container-fluid">
         @if ($message = Session::get('success'))
@@ -128,34 +132,41 @@
         @endif
         <div class="card shadow p-3">
             <div class="row">
-            <p class="font-weight-bold text-primary col-3">Tanggal: {{ \Carbon\Carbon::now()->format('d F Y') }}</p>
-            <p class="font-weight-bold text-primary col">Waktu: {{ \Carbon\Carbon::now()->toTimeString() }}</p></div>
-            <p class="font-weight-bold text-primary ">Jumlah Pasien hari ini: {{ $pasienCount }}</p>
+                <p class="font-weight-bold text-primary col-3">Tanggal: <span class="text-success">{{ \Carbon\Carbon::now()->format('d F Y') }}</span></p>
+                <p class="font-weight-bold text-primary col">Waktu: <span class="text-success">{{ \Carbon\Carbon::now()->toTimeString() }}</span></p>
+            </div>
+            <p class="font-weight-bold text-primary ">Jumlah Pasien hari ini: <span class="text-success">{{ $pasienCount }} orang</span></p>
             <form action="{{ route('nakes_dashboard', Auth::user()->id) }}">
-                <button class="btn btn-success btn-sm pl-2 pr-2" id="refresh"><i class="fas fa-sync-alt"></i> Refresh</button></form><br>
-            @foreach($pasiens as $p)
-                <div class="mb-2">
-                    <a href="#collapseCardMedik{{$p->id}}" class="d-block card-header py-3" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="collapseCardExample">
-                        <h6 class="m-0 font-weight-bold text-primary">{{ $p->pasien->nama_pasien}}</h6>
-                    </a>
-                    <div class="collapse" id="collapseCardMedik{{$p->id}}">
-                        <div class="card-body shadow">
-                            <div class="row">
-                                <div class="col">
-                                    <p class="font-weight-bold text-primary">Suhu: <span class="text-danger">{{ $p->suhu }} </span>&#8451;</p>
-                                    <p class="font-weight-bold text-primary">Tensi: <span class="text-danger">{{ $p->tensi }}</span> mmHg</p>
-                                    <p class="font-weight-bold text-primary">Keluhan: <span class="text-danger">{{ $p->keluhan }}</span> </p>
-                                </div>
-                                <div class="col">
-                                    <p class="font-weight-bold text-primary">Jam: <span class="text-danger">{{ \Carbon\Carbon::parse($p->rekammedik_created_at)->toTimeString() }}</span></p>
-                                    <p class="font-weight-bold text-primary">Diagnosa: <span class="text-danger">{{ $p->diagnosa->nama_diagnosa }}</span></p>
-                                    <p class="font-weight-bold text-primary">Obat: <span class="text-danger">{{ $p->obat->nama_obat }}</span></p>        
+                <button class="btn btn-success btn-sm pl-2 pr-2" id="refresh"><i class="fas fa-sync-alt"></i> Refresh</button>
+            </form><br>
+            <h5 class="font-weight-bold text-primary">Daftar pasien hari ini:</h5>
+            @if($pasienCount == 0)
+                <center><br><h5 class="text-info">Belum ada pasien hari ini</h5><br></center>
+            @else
+                @foreach($pasiens as $p)
+                    <div class="mb-2">
+                        <a href="#collapseCardMedik{{$p->id}}" class="d-block card-header py-3" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="collapseCardExample">
+                            <h6 class="m-0 font-weight-bold text-primary">{{ $p->pasien->nama_pasien}}</h6>
+                        </a>
+                        <div class="collapse" id="collapseCardMedik{{$p->id}}">
+                            <div class="card-body shadow">
+                                <div class="row">
+                                    <div class="col">
+                                        <p class="font-weight-bold text-primary">Suhu: <span class="text-danger">{{ $p->suhu }} </span>&#8451;</p>
+                                        <p class="font-weight-bold text-primary">Tensi: <span class="text-danger">{{ $p->tensi }}</span> mmHg</p>
+                                        <p class="font-weight-bold text-primary">Keluhan: <span class="text-danger">{{ $p->keluhan }}</span> </p>
+                                    </div>
+                                    <div class="col">
+                                        <p class="font-weight-bold text-primary">Jam: <span class="text-danger">{{ \Carbon\Carbon::parse($p->rekammedik_created_at)->toTimeString() }}</span></p>
+                                        <p class="font-weight-bold text-primary">Diagnosa: <span class="text-danger">{{ $p->diagnosa->nama_diagnosa }}</span></p>
+                                        <p class="font-weight-bold text-primary">Obat: <span class="text-danger">{{ $p->obat->nama_obat }}</span></p>        
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            @endforeach
+                @endforeach
+            @endif
         </div>
     </div>
     <script type="text/javascript">

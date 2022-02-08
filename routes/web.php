@@ -108,6 +108,7 @@ Route::get('nakes/profil/edit/{id}', [NakesController::class, 'nakesEditProfil']
 Route::patch('nakes/profil/update/{id}', [NakesController::class, 'nakesUpdateProfil'])->name('nakes_update_profil');
 Route::get('nakes/usernamepassword/edit/{id}', [NakesController::class, 'nakesEditUserPw'])->name('nakes_edit_userpw');
 Route::patch('nakes/usernamepassword/update/{id}', [NakesController::class, 'nakesUpdateUserPw'])->name('nakes_update_userpw');
+Route::patch('nakes/reset/foto/{id}', [NakesController::class, 'nakesResetFoto'])->name('nakes_reset_foto');
 Route::get('nakes/data/edit/rekammedik/{id}', [NakesController::class, 'nakesEditRekamMedik'])->name('nakes_edit_rekammedik');
 Route::post('nakes/data/rekammedik/kirim/{id}', [NakesController::class, 'nakesKirimDataRekamMedik'])->name('nakes_kirim_datarekammedik');
 

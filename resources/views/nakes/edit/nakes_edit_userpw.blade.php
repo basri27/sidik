@@ -118,6 +118,10 @@
     </script>
 @endsection
 
+@section('foto')
+<img class="img-profile rounded-circle" src="{{ asset('foto_profil/' . $nakes->tenkesehatan->foto_tenkes) }}">
+@endsection
+
 @section('content')
 <div class="container-fluid">
     <div class="card shadow mb-4">
@@ -186,8 +190,15 @@
                             </div>
                         </div>
                     </div>
-                    <input type="checkbox" class="form-control-input" onclick="showPassword()"> Tampilkan Password <br><br>
-                    <button type="submit" class="btn btn-success btn-sm" data-toggle="modal" data-target="#contohModal">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <input type="checkbox" class="form-control-input" onclick="showPassword()"> Tampilkan Password
+                        </div>
+                        <div class="col-md-3">
+                            <input type="checkbox" class="form-control-input" onclick="updateOnlyUsername()"> Hanya ganti username
+                        </div>
+                    </div><br>
+                    <button type="submit" class="btn btn-success btn-sm">
                         <span>
                             <i class="fas fa-check"></i>&nbsp;
                         </span>    
@@ -220,6 +231,21 @@
             y.type = "password";
             z.type = "password";
         }
+    }
+
+    function updateOnlyUsername() {
+        var y = document.getElementById('password-baru');
+        var z = document.getElementById('password-baru-confirm');
+        
+        if(y.disabled == false) {
+            y.disabled = true;
+            z.disabled = true;
+        }
+        else {
+            y.disabled = false;
+            z.disabled = false;
+        }
+        
     }
 </script>
 @endsection

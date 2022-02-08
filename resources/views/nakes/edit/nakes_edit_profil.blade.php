@@ -118,51 +118,56 @@
     </script>
 @endsection
 
+@section('foto')
+<img class="img-profile rounded-circle" src="{{ asset('foto_profil/' . $nakes->foto_tenkes) }}">
+@endsection
+
 @section('content')
+
 <div class="container-fluid">
     <div class="card shadow mb-4">
         <div class="card-body">
             <div class="about-row row">
-                <div class="image-col col-md-2">
+                <!-- <div class="image-col col-md-2">
                     <hr><img src="{{ asset('/img/klinik.png') }}" alt=""><hr>
-                </div>
-                <div class="detail-col col-md-8">
+                </div> -->
+                <div class="detail-col col-md-12">
                     <form method="POST" enctype="multipart/form-data" action={{ route('nakes_update_profil', $nakes->user_id) }}>
                     @method('PATCH')
                     @csrf
                     <div class="row">
-                        <div class="col-md-6 col-12">
+                        <div class="col-md-4 col-12">
                             <div class="info-list">
                                 <div class="form-group">
                                 <ul>
                                     <li>
                                         <label class="font-weight-bold text-primary" for="">Nama</label>
-                                        <input type="text" name="nama" class="form-control" value="{{ $nakes->nama_tenkes }}">
+                                        <input type="text" name="nama" class="form-control" value="{{ $nakes->nama_tenkes }}" required>
                                     </li>
                                     <li>
                                         <label class="font-weight-bold text-primary" for="">Tanggal lahir</label>
-                                        <input type="date" name="tgl_lhr" class="form-control" value="{{ $nakes->tgl_lhr_tenkes }}">
+                                        <input type="date" name="tgl_lhr" class="form-control" value="{{ $nakes->tgl_lhr_tenkes }}" required>
                                     </li>
                                     <li>
                                         <label class="font-weight-bold text-primary" for="">Tempat lahir</label>
-                                        <input type="text" name="tempat_lhr" class="form-control" value="{{ $nakes->tempat_lhr_tenkes }}">
+                                        <input type="text" name="tempat_lhr" class="form-control" value="{{ $nakes->tempat_lhr_tenkes }}" required>
                                     </li>
                                     
                                 </ul>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-6 col-12">
+                        <div class="col-md-4 col-12">
                             <div class="info-list">
                                 <div class="form-group">
                                 <ul>
                                     <li>
                                         <label class="font-weight-bold text-primary" for="">Alamat</label>
-                                        <input type="text" name="alamat" class="form-control" value="{{ $nakes->alamat_tenkes }}">
+                                        <input type="text" name="alamat" class="form-control" value="{{ $nakes->alamat_tenkes }}" required>
                                     </li>
                                     <li>
                                         <label class="font-weight-bold text-primary" for="">No. Hp | <small class="font-weight-light text-dark">Format: 0812-3456-7890</small></label>
-                                        <input type="tel" name="no_hp" class="form-control" pattern="[0-9]{4}-[0-9]{4}-[0-9]{}" value="{{ $nakes->nohp_tenkes }}">
+                                        <input type="tel" name="no_hp" class="form-control" pattern="[0-9]{4}-[0-9]{4}-[0-9]{}" value="{{ $nakes->nohp_tenkes }}" required>
                                         
                                     </li>
                                     <li>
@@ -178,6 +183,26 @@
                                             <option value="Perempuan">Perempuan</option>
                                             @endif
                                         </select>
+                                    </li>
+                                </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-12">
+                            <div class="info-list">
+                                <div class="form-group">
+                                <ul>
+                                    <li>
+                                        <label class="font-weight-bold text-primary">Foto Profil</label>
+                                        <div class="image-col col-md-7">
+                                            <img src="{{ asset('/foto_profil/' . $nakes->foto_tenkes) }}" alt="">
+                                        </div>                                        
+                                    </li>
+                                    <br>
+                                    <li>
+                                        <div class="row container">
+                                            <input type="file" name="foto_tenkes">
+                                        </div>
                                     </li>
                                 </ul>
                                 </div>

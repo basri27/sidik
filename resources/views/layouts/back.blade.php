@@ -104,7 +104,7 @@
                                     {{ Auth::user()->tenkesehatan->nama_tenkes }}
                                 @endif
                                 </b></span>
-                                <img class="img-profile rounded-circle" src="{{ asset('img/klinik.png') }}">
+                                @yield('foto')<!-- <img class="img-profile rounded-circle" src="{{ asset('img/klinik.png') }}"> -->
                             </a>
                             <!-- Dropdown - User Information -->
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"

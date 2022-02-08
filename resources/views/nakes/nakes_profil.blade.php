@@ -118,6 +118,10 @@
     </script>
 @endsection
 
+@section('foto')
+<img class="img-profile rounded-circle" src="{{ asset('foto_profil/' . $nakes->foto_tenkes) }}">
+@endsection
+
 @section('content')
 <div class="container-fluid">
     @if ($message = Session::get('success'))
@@ -129,8 +133,15 @@
     <div class="card shadow mb-4">         
         <div class="card-body">        
             <div class="about-row row">
-                <div class="image-col col-md-2">
-                    <img src="{{ asset('/img/klinik.png') }}" alt="">
+                <div class="col-md-2">
+                    <img src="{{ asset('/foto_profil/' . $nakes->foto_tenkes) }}" alt=""><br><br>
+                    @if($nakes->foto_tenkes != 'default.jpg')
+                    <form method="POST" action={{ route('nakes_reset_foto', $nakes->user_id) }}>
+                    @method('PATCH')
+                    @csrf
+                        <button type="submit" class="btn btn-sm btn-danger col" href="#"><i class="fas fa-trash"></i>&ensp;Hapus foto profil</button>
+                    </form>
+                    @endif
                 </div>
                 <div class="detail-col col-md-8">
                     <h3 class="font-weight-bold">{{ $nakes->nama_tenkes }}</h3 class="font-weight-bold">
@@ -147,7 +158,7 @@
                         <div class="col-md-6 col-12">
                             <div class="info-list">
                                 <ul class="font-weight-bold">
-                                    <li>Umur: <span class="font-weight-bold text-dark">{{ $age }}</span></li>
+                                    <li>Umur: <span class="font-weight-bold text-dark">{{ $age }} tahun</span></li>
                                     <li>Phone: <span class="font-weight-boldl text-primary">{{ $nakes->nohp_tenkes}}</span></li>
                                     <li>Jenis Kelamin: <span class="font-weight-bold text-dark">{{ $nakes->jk_tenkes }}</span></li>
                                 </ul>

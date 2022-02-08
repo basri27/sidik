@@ -20,6 +20,7 @@ class Tenkesehatan extends Model
         'tgl_lhr_tenkes',
         'nohp_tenkes',
         'alamat_tenkes',
+        'foto_tenkes',
         'tenkes_created_at',
         'tenkes_updated_at',
     ];

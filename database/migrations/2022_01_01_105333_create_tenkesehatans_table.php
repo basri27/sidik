@@ -23,6 +23,7 @@ class CreateTenkesehatansTable extends Migration
             $table->date('tgl_lhr_tenkes')->nullable();
             $table->string('nohp_tenkes')->nullable();
             $table->string('alamat_tenkes')->nullable();
+            $table->string('foto_tenkes')->nullable();
             $table->timestamp('tenkes_created_at')->useCurrent();
             $table->timestamp('tenkes_updated_at')->useCurrent();
         });

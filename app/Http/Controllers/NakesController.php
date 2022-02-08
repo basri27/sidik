@@ -44,7 +44,7 @@ class NakesController extends Controller
         $notifs = Notification::where('user_id', $id)->orderBy('id', 'DESC')->get();
         $notifCount = Notification::where('user_id', $id)->count();
         $nakes = Tenkesehatan::where('user_id', $id)->first();
-        $age = Carbon::parse($nakes->tgl_lhr_tenkes)->diff(Carbon::now())->y;
+        $age = Carbon::parse($nakes->tgl_lhr_tenkes)->age;
 
         return view('nakes.nakes_profil', compact('notifs', 'notifCount', 'nakes', 'age'));
     }
@@ -62,18 +62,48 @@ class NakesController extends Controller
     public function nakesUpdateProfil(Request $request, $id)
     {
         $nakes = Tenkesehatan::where('user_id', $id)->first();
+        
+        if(Request()->foto_tenkes <> "") {
+            $image = Request()->foto_tenkes;
+            $imageName = $id . '.' . $image->extension();
+            $image->move(public_path('foto_profil'), $imageName);
 
-        $nakes->update([
-            'nama_tenkes' => $request->input('nama'),
-            'jk_tenkes' => $request->input('jk'),
-            'tempat_lhr_tenkes' => $request->input('tempat_lhr'),
-            'tgl_lhr_tenkes' => $request->input('tgl_lhr'),
-            'nohp_tenkes' => $request->input('no_hp'),
-            'alamat_tenkes' => $request->input('alamat'),
-            'tenkes_updated_at' => Carbon::now(),
-        ]);
+            
+            $nakes->update([
+                'nama_tenkes' => $request->input('nama'),
+                'jk_tenkes' => $request->input('jk'),
+                'tempat_lhr_tenkes' => $request->input('tempat_lhr'),
+                'tgl_lhr_tenkes' => $request->input('tgl_lhr'),
+                'nohp_tenkes' => $request->input('no_hp'),
+                'alamat_tenkes' => $request->input('alamat'),
+                'foto_tenkes' => $imageName,
+                'tenkes_updated_at' => Carbon::now(),
+            ]);
+        }
+        else {
+            $nakes->update([
+                'nama_tenkes' => $request->input('nama'),
+                'jk_tenkes' => $request->input('jk'),
+                'tempat_lhr_tenkes' => $request->input('tempat_lhr'),
+                'tgl_lhr_tenkes' => $request->input('tgl_lhr'),
+                'nohp_tenkes' => $request->input('no_hp'),
+                'alamat_tenkes' => $request->input('alamat'),
+                'tenkes_updated_at' => Carbon::now(),
+            ]);
+        }
 
         return redirect()->route('nakes_profil', $nakes->user_id)->with(['success' => 'Profil berhasil diperbarui!']);
+    }
+
+    public function nakesResetFoto($id)
+    {
+        $nakes = Tenkesehatan::where('user_id', $id)->first();
+        unlink(public_path('foto_profil') . '/' . $nakes->foto_tenkes);
+        $nakes->update([
+            'foto_tenkes' => 'default.png',
+        ]);
+
+        return redirect()->route('nakes_profil', $nakes->user_id)->with(['success' => 'Foto profil berhasil dihapus!']);
     }
 
     public function nakesEditUserPw($id)
@@ -87,38 +117,45 @@ class NakesController extends Controller
 
     public function nakesUpdateUserPw(UpdatePasswordRequest $request, $id)
     {
-        $nakes = User::where('id', $id)->first();
+        $user = User::where('id', $id)->first();
         
-        if($request->input('username') != $nakes->username) {
-            Request()->validate([
-                'username' => 'unique:users,username',
-                'password' => 'min:8|confirmed',
-            ], [
-                'username.unique' => 'Username telah digunakan',
-                'password.confirmed' => 'Password konfirmasi tidak sesuai',
-                'password.min' => 'Password minimal 8 karakter',
+        if($request->input('password') <> "") {
+            if($request->input('username') != $user->username) {
+                Request()->validate([
+                    'username' => 'unique:users,username',
+                    'password' => 'min:8|confirmed',
+                ], [
+                    'username.unique' => 'Username telah digunakan',
+                    'password.confirmed' => 'Password konfirmasi tidak sesuai',
+                    'password.min' => 'Password minimal 8 karakter',
+                ]);
+            }
+            else {
+                Request()->validate([
+                    'username' => 'required',
+                    'current_password' => 'required',
+                    'password' => 'required|min:8|confirmed',
+                    'password_confirmation' => 'required',
+                ], [
+                    'username.required' => 'Username wajib diisi',
+                    'current_password.required' => 'Password wajib diisi !',
+                    'password.required' => 'Password wajib diisi !',
+                    'password.confirmed' => 'Password konfirmasi tidak sesuai',
+                ]);
+            }
+            
+            $user->update([
+                'username' => $request->input('username'),
+                'password' => Hash::make($request->get('password')),
             ]);
         }
         else {
-            Request()->validate([
-                'username' => 'required',
-                'current_password' => 'required',
-                'password' => 'required|min:8|confirmed',
-                'password_confirmation' => 'required',
-            ], [
-                'username.required' => 'Username wajib diisi',
-                'current_password.required' => 'Password wajib diisi !',
-                'password.required' => 'Password wajib diisi !',
-                'password.confirmed' => 'Password konfirmasi tidak sesuai',
+            $user->update([
+                'username' => $request->input('username')
             ]);
         }
-        
-        $nakes->update([
-            'username' => $request->input('username'),
-            'password' => Hash::make($request->get('password')),
-        ]);
 
-        return redirect()->route('nakes_profil', $nakes->id)->with(['success' => 'Username atau password berhasil diperbarui!']);
+        return redirect()->route('nakes_profil', $user->id)->with(['success' => 'Username atau password berhasil diperbarui!']);
     }
 
     public function nakesEditRekamMedik($id)
