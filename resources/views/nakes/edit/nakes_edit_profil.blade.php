@@ -108,11 +108,11 @@
             @endforeach
             `;
             if(data.notif.user_id == nakes_id) {
-                alert("Pasien ingin berobat");
                 notification.html(newNotif);
                 notificationCount += 1;
                 notificationCountElem.attr('data-count', notificationCount);
                 notificationWrap.find('.badge-counter').text(notificationCount);
+                alert("Pasien ingin berobat");
             }
         });
     </script>
@@ -166,8 +166,8 @@
                                         <input type="text" name="alamat" class="form-control" value="{{ $nakes->alamat_tenkes }}" required>
                                     </li>
                                     <li>
-                                        <label class="font-weight-bold text-primary" for="">No. Hp | <small class="font-weight-light text-dark">Format: 0812-3456-7890</small></label>
-                                        <input type="tel" name="no_hp" class="form-control" pattern="[0-9]{4}-[0-9]{4}-[0-9]{}" value="{{ $nakes->nohp_tenkes }}" required>
+                                        <label class="font-weight-bold text-primary" for="">No. Hp</label>
+                                        <input type="text" name="no_hp" class="form-control" value="{{ $nakes->nohp_tenkes }}" required>
                                         
                                     </li>
                                     <li>

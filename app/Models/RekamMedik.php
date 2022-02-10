@@ -15,7 +15,6 @@ class RekamMedik extends Model
         'pasien_id',
         'tenkesehatan_id',
         'diagnosa_id',
-        'obat_id',
         'suhu',
         'tensi',
         'keterangan',
@@ -44,8 +43,8 @@ class RekamMedik extends Model
         return $this->belongsTo(Diagnosa::class);
     }
 
-    public function obat()
+    public function resepobat()
     {
-        return $this->belongsTo(Obat::class);
+        return $this->hasMany(ResepObat::class);
     }
 }

@@ -26,7 +26,6 @@ class CreateRekamMediksTable extends Migration
             $table->foreignId('pasien_id')->constrained();
             $table->foreignId('tenkesehatan_id')->nullable()->constrained();
             $table->foreignId('diagnosa_id')->nullable()->constrained();
-            $table->foreignId('obat_id')->nullable()->constrained();
             $table->string('suhu')->nullable();
             $table->string('tensi')->nullable();
             $table->string('keterangan')->nullable();

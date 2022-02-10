@@ -22,6 +22,7 @@ class CreateApotekersTable extends Migration
             $table->date('tgl_lhr_apoteker')->nullable();
             $table->string('nohp_apoteker')->nullable();
             $table->string('alamat_apoteker')->nullable();
+            $table->string('foto_apoteker')->nullable();
             $table->timestamp('apoteker_created_at')->useCurrent();
             $table->timestamp('apoteker_updated_at')->useCurrent();
         });

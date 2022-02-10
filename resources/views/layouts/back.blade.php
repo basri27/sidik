@@ -102,6 +102,8 @@
                                     {{ Auth::user()->pasien->nama_pasien }}
                                 @elseif (Auth::user()->role_id == 3)
                                     {{ Auth::user()->tenkesehatan->nama_tenkes }}
+                                @elseif (Auth::user()->role_id == 4)
+                                    {{ Auth::user()->apoteker->nama_apoteker }}
                                 @endif
                                 </b></span>
                                 @yield('foto')<!-- <img class="img-profile rounded-circle" src="{{ asset('img/klinik.png') }}"> -->

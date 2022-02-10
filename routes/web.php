@@ -110,6 +110,8 @@ Route::get('nakes/usernamepassword/edit/{id}', [NakesController::class, 'nakesEd
 Route::patch('nakes/usernamepassword/update/{id}', [NakesController::class, 'nakesUpdateUserPw'])->name('nakes_update_userpw');
 Route::patch('nakes/reset/foto/{id}', [NakesController::class, 'nakesResetFoto'])->name('nakes_reset_foto');
 Route::get('nakes/data/edit/rekammedik/{id}', [NakesController::class, 'nakesEditRekamMedik'])->name('nakes_edit_rekammedik');
+Route::post('nakes/resepobat/add/{id}', [NakesController::class, 'addResepObat'])->name('add_resep_obat');
+Route::delete('nakes/resepobat/delete/{id}/{notif}', [NakesController::class, 'deleteResepObat'])->name('delete_resep_obat');
 Route::post('nakes/data/rekammedik/kirim/{id}', [NakesController::class, 'nakesKirimDataRekamMedik'])->name('nakes_kirim_datarekammedik');
 
 //----------------------Route Apoteker----------------------//

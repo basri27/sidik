@@ -16,6 +16,10 @@
 
 @section('subhead', 'Jadwal Praktek')
 
+@section('foto')
+@include('layouts.foto_profil_admin')
+@endsection
+
 @section('content')
 <div class="container-fluid">
     <div class="card shadow mb-4">

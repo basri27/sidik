@@ -14,6 +14,10 @@
 
 @section('subhead', 'Rekap Rekam Medik')
 
+@section('foto')
+@include('layouts.foto_profil_admin')
+@endsection
+
 @section('content')
 <div class="container-fluid">
     <div class="card shadow mb-4">
@@ -246,7 +250,7 @@
                         datasets: [{
                             label: 'Jumlah Pasien',
                             data: [
-                                'userArr.count'
+                                '100', '90', '78', '112', '76', '31'
                             ],
                             backgroundColor: 'rgba(54, 162, 235, 0.2)',
                             borderColor: 'rgba(54, 162, 235, 1)',

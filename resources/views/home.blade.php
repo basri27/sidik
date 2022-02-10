@@ -61,7 +61,7 @@
             @foreach ($tenkes as $tks)
             <div class="item">
                 <div class="card-doctor">
-                    <img src=" {{ asset('/img/doctors/doctor_1.jpg') }} " alt="">
+                    <img src=" {{ asset('/foto_profil/' . $tks->foto_tenkes) }} " alt="">
                     <div class="body">
                         <p class="text-xl mb-0">{{ $tks->nama_tenkes }}</p>
                         <span class="text-sm text-grey">{{ $tks->kategori_tenkesehatan->nama_kategori_tenkes }}</span>

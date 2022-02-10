@@ -108,11 +108,11 @@
             @endforeach
             `;
             if(data.notif.user_id == nakes_id) {
-                alert("Pasien ingin berobat");
                 notification.html(newNotif);
                 notificationCount += 1;
                 notificationCountElem.attr('data-count', notificationCount);
                 notificationWrap.find('.badge-counter').text(notificationCount);
+                alert("Pasien ingin berobat");
             }
         });
     </script>

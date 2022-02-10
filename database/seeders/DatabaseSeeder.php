@@ -34,6 +34,7 @@ class DatabaseSeeder extends Seeder
             'tgl_lhr_admin' => '2000-09-27',
             'no_hp_admin' => '081234567890',
             'alamat_admin' => 'Jl. H. Hasan Basri No. 5',
+            'foto_admin' => 'default.jpg',
         ]);
         
         DB::table('users')->insert([
@@ -49,6 +50,7 @@ class DatabaseSeeder extends Seeder
             'tgl_lhr_admin' => '1992-09-20',
             'no_hp_admin' => '081234567890',
             'alamat_admin' => 'Jl. S. Parman No. 20',
+            'foto_admin' => 'default.jpg',
         ]);
 
         for($i = 3; $i < 9; $i++) {
@@ -72,6 +74,7 @@ class DatabaseSeeder extends Seeder
                 'user_id' => $i,
                 'tempat_lhr_tenkes' => "Banjarmasin",
                 'kategori_tenkesehatan_id' => random_int(1,3),
+                'foto_tenkes' => 'default.jpg',
             ]);
         }
 
@@ -87,6 +90,7 @@ class DatabaseSeeder extends Seeder
             'tempat_lhr_apoteker' => 'Banjarmasin',
             'jk_apoteker' => 'Laki-laki',
             'tgl_lhr_apoteker' => '1988-7-10',
+            'foto_apoteker' => 'default.jpg',
         ]);
 
         $days = ['Senin', 'Selasa', 'Rabu', 'Kamis', "Jum'at"];

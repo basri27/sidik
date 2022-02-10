@@ -14,6 +14,7 @@ use App\Models\Diagnosa;
 use App\Models\Obat;
 use App\Models\Tenkesehatan;
 use App\Models\User;
+use App\Models\ResepObat;
 use Carbon\Carbon;
 
 class NakesController extends Controller
@@ -100,7 +101,7 @@ class NakesController extends Controller
         $nakes = Tenkesehatan::where('user_id', $id)->first();
         unlink(public_path('foto_profil') . '/' . $nakes->foto_tenkes);
         $nakes->update([
-            'foto_tenkes' => 'default.png',
+            'foto_tenkes' => 'default.jpg',
         ]);
 
         return redirect()->route('nakes_profil', $nakes->user_id)->with(['success' => 'Foto profil berhasil dihapus!']);
@@ -155,17 +156,42 @@ class NakesController extends Controller
             ]);
         }
 
-        return redirect()->route('nakes_profil', $user->id)->with(['success' => 'Username atau password berhasil diperbarui!']);
+        return redirect()->route('nakes_profil', $user->id)->with(['success' => 'Resep obat berhasil ditambah!']);
     }
 
     public function nakesEditRekamMedik($id)
     {
         $notif = Notification::where('id', $id)->first();
+        $notifs = Notification::where('user_id', $notif->user_id)->orderBy('id', 'DESC')->get();
+        $notifCount = $notifs->count();
         $rekammedik = RekamMedik::find($notif->rekam_medik_id);
+        $resep = ResepObat::where('rekam_medik_id', $rekammedik->id)->get();
         $diagnosa = Diagnosa::all();
         $obat = Obat::all();
 
-        return view('nakes.edit.nakes_edit_rekammedik', compact('notif', 'rekammedik', 'diagnosa', 'obat'));
+        return view('nakes.edit.nakes_edit_rekammedik', compact('notif', 'notifs', 'notifCount', 'rekammedik', 'resep', 'diagnosa', 'obat'));
+    }
+
+    public function addResepObat(Request $request, $id)
+    {   
+        $keterangan = $request->input('resep').' x '.$request->input('hari').' hari | '.$request->input('takaran').' '.$request->input('kuantitas').' ('.$request->input('waktu').')';
+        ResepObat::create([
+            'obat_id' => $request->input('obat_id'),
+            'rekam_medik_id' => $request->input('rekammedik_id'),
+            'keterangan' => $keterangan,
+            'resepobat_created_at' => Carbon::now(),
+            'resepobat_updated_at' => Carbon::now(),
+        ]);
+
+        return redirect()->route('nakes_edit_rekammedik', $id)->with(['success' => 'Resep obat berhasil ditambah!']);
+    }
+
+    public function deleteResepObat($id, $notif_id)
+    {
+        $resep = ResepObat::where('id', $id)->first();
+        $resep->delete();
+
+        return redirect()->route('nakes_edit_rekammedik', $notif_id)->with(['success' => 'Resep obat berhasil dihapus!']);
     }
 
     public function nakesKirimDataRekamMedik(Request $request, $id)
@@ -177,7 +203,6 @@ class NakesController extends Controller
             'tensi' => $request->input('tensi'),
             'diagnosa_id' => $request->input('diagnosa'),
             'keluhan' => $request->input('keluhan'),
-            'obat_id' => $request->input('obat'),
             'keterangan' => $request->input('keterangan'),
             'rekammedik_updated_at' => Carbon::now(),
         ]);

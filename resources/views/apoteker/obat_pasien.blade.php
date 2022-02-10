@@ -124,39 +124,5 @@
 @endsection
 
 @section('content')
-    <div class="container-fluid">
-        @if ($message = Session::get('success'))
-            <div class="alert alert-success alert-block">
-                <button type="button" class="close" data-dismiss="alert">×</button>    
-                <strong>{{ $message }}</strong>
-            </div>
-        @endif
-        <div class="card shadow p-3">
-            <div class="row">
-                <p class="font-weight-bold text-primary col-3">Tanggal: <span class="text-success">{{ \Carbon\Carbon::now()->format('d F Y') }}</span></p>
-                <p class="font-weight-bold text-primary col">Waktu: <span class="text-success">{{ \Carbon\Carbon::now()->toTimeString() }}</span></p>
-            </div>
-            <p class="font-weight-bold text-primary ">Jumlah pasien hari ini: <span class="text-success">{{ $pasienCount }} orang</span></p>
-            <form action="{{ route('nakes_dashboard', Auth::user()->id) }}">
-                <button class="btn btn-success btn-sm pl-2 pr-2" id="refresh"><i class="fas fa-sync-alt"></i> Refresh</button>
-            </form><br>
-            <h5 class="font-weight-bold text-primary">Daftar pasien hari ini:</h5>
-            @if($pasienCount == 0)
-                <center><br><h5 class="text-info">Belum ada pasien hari ini</h5><br></center>
-            @else
-                @foreach($pasiens as $p)
-                    <div class="mb-2">
-                        <div class="d-block card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-dark">{{ $p->pasien->nama_pasien}}&emsp;<span class="text-primary">|&emsp;Resep obat:</span> <span class="text-dark">@foreach($resep as $r)({{ $r->obat->nama_obat }})&ensp;|&ensp;@endforeach</span></h6>
-                        </div>
-                    </div>
-                @endforeach
-            @endif
-        </div>
-    </div>
-    <script type="text/javascript">
-        setTimeout(function(){
-        location.reload();
-        },30000);
-    </script>
+    
 @endsection

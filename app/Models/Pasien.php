@@ -22,6 +22,7 @@ class Pasien extends Model
         'tgl_lhr_pasien',
         'no_hp_pasien',
         'alamat_pasien',
+        'foto_pasien',
         'pasien_created_at',
         'pasien_updated_at',
     ];

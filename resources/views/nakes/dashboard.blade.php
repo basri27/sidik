@@ -108,18 +108,18 @@
             @endforeach
             `;
             if(data.notif.user_id == nakes_id) {
-                alert("Pasien ingin berobat");
                 notification.html(newNotif);
                 notificationCount += 1;
                 notificationCountElem.attr('data-count', notificationCount);
                 notificationWrap.find('.badge-counter').text(notificationCount);
+                alert("Pasien ingin berobat");
             }
         });
     </script>
 @endsection
 
 @section('foto')
-<img class="img-profile rounded-circle" src="{{ asset('foto_profil/' . Auth::user()->tenkesehatan->foto_tenkes) }}">
+    <img class="img-profile rounded-circle" src="{{ asset('foto_profil/' . Auth::user()->tenkesehatan->foto_tenkes) }}">
 @endsection
 
 @section('content')
@@ -135,7 +135,7 @@
                 <p class="font-weight-bold text-primary col-3">Tanggal: <span class="text-success">{{ \Carbon\Carbon::now()->format('d F Y') }}</span></p>
                 <p class="font-weight-bold text-primary col">Waktu: <span class="text-success">{{ \Carbon\Carbon::now()->toTimeString() }}</span></p>
             </div>
-            <p class="font-weight-bold text-primary ">Jumlah Pasien hari ini: <span class="text-success">{{ $pasienCount }} orang</span></p>
+            <p class="font-weight-bold text-primary ">Jumlah pasien hari ini: <span class="text-success">{{ $pasienCount }} orang</span></p>
             <form action="{{ route('nakes_dashboard', Auth::user()->id) }}">
                 <button class="btn btn-success btn-sm pl-2 pr-2" id="refresh"><i class="fas fa-sync-alt"></i> Refresh</button>
             </form><br>

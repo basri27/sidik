@@ -13,8 +13,8 @@ class Obat extends Model
         'nama_obat',
     ];
 
-    public function rekammedik()
+    public function resepobat()
     {
-        return $this->hasMany(RekamMedik::class);
+        return $this->hasMany(ResepObat::class);
     }
 }

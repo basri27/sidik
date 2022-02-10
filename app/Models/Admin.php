@@ -11,12 +11,13 @@ class Admin extends Model
 
     protected $fillable = [
         'user_id',
-        'nama',
-        'jk',
-        'tempat_lhr',
-        'tgl_lhr',
-        'no_hp',
-        'alamat',
+        'nama_admin',
+        'jk_admin',
+        'tempat_lhr_admin',
+        'tgl_lhr_admin',
+        'no_hp_admin',
+        'alamat_admin',
+        'foto_admin'
     ];
 
     public function user() {
