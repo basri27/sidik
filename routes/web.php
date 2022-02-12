@@ -125,6 +125,6 @@ Route::patch('apoteker/reset/foto/{id}', [ApotekerController::class, 'apotekerRe
 Route::get('apoteker/dataobat/{id}', [ApotekerController::class, 'apotekerDataObat'])->name('apoteker_data_obat');
 Route::post('apoteker/dataobat/add/{id}', [ApotekerController::class, 'addObat'])->name('apoteker_add_obat');
 Route::patch('apoteker/dataobat/edit/{id}{user_id}', [ApotekerController::class, 'editObat'])->name('apoteker_edit_obat');
-
+Route::patch('apoteker/dataobat/delete/{id}{user_id}', [ApotekerController::class, 'deleteObat'])->name('apoteker_delete_obat');
 #Obat pasien
 Route::get('apoteker/obat/{id}', [ApotekerController::class, 'apotekerObatPasien'])->name('apoteker_obat_pasien');

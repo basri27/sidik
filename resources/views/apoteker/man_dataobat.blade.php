@@ -17,13 +17,13 @@
             <span>Dashboard</span>
         </a>
     </li>
-    <li class="nav-item active">
+    <li class="nav-item">
         <a class="nav-link" href={{ route('apoteker_profil', Auth::user()->id) }}>
             <i class="fas fa-user"></i>
             <span>Profil</span>
         </a>
     </li>
-    <li class="nav-item">
+    <li class="nav-item active">
         <a class="nav-link" href={{ route('apoteker_data_obat', Auth::user()->id) }}>
             <i class="fas fa-capsules"></i>
             <span>Data Obat</span>
@@ -81,12 +81,8 @@
                             <th class="text-center">{{ $i++ }}</th>
                             <td class="">{{ $obat->nama_obat }}</td>
                             <td class="text-center">
-                                    <form action="{{ route('delete_dataapoteker', $apoteker->id) }}" method="post">
-                                        @method('DELETE')
-                                        @csrf
-                                        <a class="btn btn-success" href=#editObat{{ $obat->id }} data-toggle="modal"><i class="fas fa-edit"></i></a> 
-                                        <button type="submit" class="btn btn-danger" onClick="return confirm('Apakah Anda yakin akan menghapus data ini?')"><i class="fas fa-trash"></i></button>
-                                    </form>
+                                <a class="btn btn-success" href="#editObat{{ $obat->id }}" data-toggle="modal"><i class="fas fa-edit"></i></a> 
+                                <a class="btn btn-danger" href="#deleteObat{{ $obat->id }}" data-toggle="modal"><i class="fas fa-trash"></i></a>
                             </td>
                         </tr>
                         @endforeach
@@ -117,7 +113,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-success">Simpan</button>
-                    <button type="button" class="btn btn-dark" data-dismiss="modal">Tutup</button>
+                    <button type="button" class="btn btn-dark" data-dismiss="modal">Batal</button>
                 </div>
             </form>
         </div>
@@ -139,7 +135,29 @@
                     </div>
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-success">Simpan</button>
-                        <button type="button" class="btn btn-dark" data-dismiss="modal">Tutup</button>
+                        <button type="button" class="btn btn-dark" data-dismiss="modal">Batal</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div id="deleteObat{{ $obat->id }}" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title font-weight-bold float-left">Hapus Obat</h4>
+                </div>
+                <form action={{ route('apoteker_delete_obat', [$obat->id, Auth::user()->id]) }} method="post">
+                    @method('PATCH')
+                    @csrf
+                    <div class="modal-body">
+                        <h5 class="font-weight-bold">Anda yakin ingin menghapus obat ini?</h5>
+                        <label>Nama obat:</label>
+                        <input type="text" name="obat" class="form-control" value="{{ $obat->nama_obat }}" readonly>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success">Ya</button>
+                        <button type="button" class="btn btn-dark" data-dismiss="modal">Tidak</button>
                     </div>
                 </form>
             </div>

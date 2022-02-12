@@ -11,6 +11,7 @@ class Obat extends Model
 
     protected $fillable = [
         'nama_obat',
+        'status_obat',
     ];
 
     public function resepobat()

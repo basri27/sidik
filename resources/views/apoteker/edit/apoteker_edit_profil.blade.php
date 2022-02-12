@@ -24,7 +24,7 @@
         </a>
     </li>
     <li class="nav-item">
-        <a class="nav-link" href={{ route('apoteker_data_obat'), Auth::user()->id }}>
+        <a class="nav-link" href={{ route('apoteker_data_obat', Auth::user()->id) }}>
             <i class="fas fa-capsules"></i>
             <span>Data Obat</span>
         </a>

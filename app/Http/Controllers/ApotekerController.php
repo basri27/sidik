@@ -162,7 +162,7 @@ class ApotekerController extends Controller
         $notifications = Notification::where('user_id', $id)->orderBy('id', 'DESC')->get();
         $notifCount = $notifications->count();
         $apoteker = User::where('id', $id)->first();
-        $obats = Obat::all();
+        $obats = Obat::where('status_obat', 'aktif')->get();
 
         return view('apoteker.man_dataobat', compact('notifications', 'notifCount', 'apoteker', 'obats'));
     }
@@ -171,6 +171,7 @@ class ApotekerController extends Controller
     {
         Obat::create([
             'nama_obat' => $request->input('obat'),
+            'status_obat' => 'aktif',
         ]);
 
         return redirect()->route('apoteker_data_obat', $id)->with(['success' => 'Data obat berhasil ditambahkan!']);
@@ -184,5 +185,15 @@ class ApotekerController extends Controller
         ]);
 
         return redirect()->route('apoteker_data_obat', $user_id)->with(['success' => 'Data obat berhasil diperbarui!']);
+    }
+
+    public function deleteObat($id, $user_id)
+    {
+        $obat = Obat::where('id', $id)->first();
+        $obat->update([
+            'status_obat' => 'non-aktif',
+        ]);
+
+        return redirect()->route('apoteker_data_obat', $user_id)->with(['success' => 'Data obat berhasil dihapus!']);
     }
 }

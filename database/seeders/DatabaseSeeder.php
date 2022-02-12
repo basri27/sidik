@@ -163,7 +163,10 @@ class DatabaseSeeder extends Seeder
 
         $obat = ['Hydrocodone', 'Simvastatin', 'Lisinopril', 'Levothyroxine Sodium', 'Amlodipine Besylate', 'Omeprazole', 'Azithromycin', 'Amoxicillin', 'Metformin'];
         foreach($obat as $o) {
-            DB::table('obats')->insert(['nama_obat' => $o]);
+            DB::table('obats')->insert([
+                'nama_obat' => $o,
+                'status_obat' => 'aktif',
+            ]);
         }
     }
 }
