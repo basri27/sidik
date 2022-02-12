@@ -118,6 +118,34 @@
         </div>
     </div>
 </div>
+@foreach($rekammedik as $rk)
+    <div id="viewResep{{ $rk->id }}" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <!-- konten modal-->
+            <div class="modal-content">
+                <!-- heading modal -->
+                <div class="modal-header bg-light">
+                    <h4 class="modal-title font-weight-bold float-left">Daftar resep obat</h4>
+                </div>
+                <!-- body modal -->
+                <div class="modal-body">        
+                    <table class="table table-borderless">
+                        <?php $resep = \App\Models\ResepObat::where('rekam_medik_id', $rk->id)->whereDate('resepobat_created_at', \Carbon\Carbon::parse($rk->rekammedik_created_at)->toDateString())->get(); ?>
+                        @foreach($resep as $rs)
+                            <tr>
+                                <td>{{ $rs->obat->nama_obat }} | {{ $rs->keterangan }}</td>
+                            </tr>
+                        @endforeach
+                    </table>
+                </div>
+                <!-- footer modal -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
+@endforeach
 <!--Import jQuery before export.js-->
 <script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.js"></script>
 <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
@@ -191,14 +219,16 @@
                     '<th>Keterangan</th>'+
                 '</tr>'+
             '</thead>'+
-            '<tr>'+
-                '<td>'+d.tensi+'</td>'+
-                '<td>'+d.suhu+'</td>'+
-                '<td>'+d.keluhan+'</td>'+
-                '<td>'+d.nama_diagnosa+'</td>'+
-                '<td>'+d.nama_obat+'</td>'+
-                '<td>'+d.keterangan+'</td>'+
-            '</tr>'+
+            '<tbody>'+
+                '<tr>'+
+                    '<td>'+d.tensi+'</td>'+
+                    '<td>'+d.suhu+'</td>'+
+                    '<td>'+d.keluhan+'</td>'+
+                    '<td>'+d.kode_diagnosa+' - '+d.nama_diagnosa+'</td>'+
+                    '<td><a href="#viewResep'+d.id+'" class="btn btn-sm border border-dark" data-toggle="modal"><small><i class="fas fa-eye"></i>&nbsp;Lihat</small></a></td>'+
+                    '<td>'+d.keterangan+'</td>'+
+                '</tr>'+
+            '</tbody>'+
         '</table>';
     }
 

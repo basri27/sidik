@@ -79,8 +79,8 @@
                                     <form action="{{ route('delete_datapasien', $pasien->id) }}" method="post">
                                         @method('DELETE')
                                         @csrf
-                                        <a class="btn btn-success btn-sm" href="{{ route('adm_man_datapasien_edit', $pasien->id) }}"><i class="fas fa-edit"></i></a>
-                                        <button type="submit" class="btn btn-danger btn-sm" onClick="return confirm('Apakah Anda yakin akan menghapus data ini?')"><i class="fas fa-trash"></i></button>
+                                            <a class="btn btn-success btn-sm" href="{{ route('adm_man_datapasien_edit', $pasien->id) }}"><i class="fas fa-edit"></i></a>
+                                            <button type="submit" class="btn btn-danger btn-sm" onClick="return confirm('Apakah Anda yakin akan menghapus data ini?')"><i class="fas fa-trash"></i></button>
                                     </form>
                                 </center>
                             </td>

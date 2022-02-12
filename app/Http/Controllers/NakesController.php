@@ -156,7 +156,7 @@ class NakesController extends Controller
             ]);
         }
 
-        return redirect()->route('nakes_profil', $user->id)->with(['success' => 'Resep obat berhasil ditambah!']);
+        return redirect()->route('nakes_profil', $user->id)->with(['success' => 'Username atau password berhasil diganti!']);
     }
 
     public function nakesEditRekamMedik($id)
@@ -222,6 +222,4 @@ class NakesController extends Controller
 
         return redirect()->route('nakes_dashboard', $rekammedik->tenkesehatan->user->id)->with(['success' => 'Rekam Medik berhasil dikirim!']);
     }
-
-    
 }

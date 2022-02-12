@@ -159,7 +159,7 @@
                                     <div class="col">
                                         <p class="font-weight-bold text-primary">Jam: <span class="text-danger">{{ \Carbon\Carbon::parse($p->rekammedik_created_at)->toTimeString() }}</span></p>
                                         <p class="font-weight-bold text-primary">Diagnosa: <span class="text-danger">{{ $p->diagnosa->nama_diagnosa }}</span></p>
-                                        <p class="font-weight-bold text-primary">Obat: <span class="text-danger">{{ $p->obat->nama_obat }}</span></p>        
+                                        <p class="font-weight-bold text-primary">Resep Obat: <span class="text-danger"><a class="btn btn-sm border border-dark" href="#viewResep"><i class="fas fa-eye"></i>&nbsp;Lihat</a></span></p>
                                     </div>
                                 </div>
                             </div>

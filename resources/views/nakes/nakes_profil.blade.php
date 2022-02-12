@@ -119,17 +119,17 @@
 @endsection
 
 @section('foto')
-<img class="img-profile rounded-circle" src="{{ asset('foto_profil/' . $nakes->foto_tenkes) }}">
+    <img class="img-profile rounded-circle" src="{{ asset('foto_profil/' . $nakes->foto_tenkes) }}">
 @endsection
 
 @section('content')
 <div class="container-fluid">
     @if ($message = Session::get('success'))
-            <div class="alert alert-success alert-block">
-                <button type="button" class="close" data-dismiss="alert">×</button>    
-                <strong>{{ $message }}</strong>
-            </div>
-        @endif
+        <div class="alert alert-success alert-block">
+            <button type="button" class="close" data-dismiss="alert">×</button>    
+            <strong>{{ $message }}</strong>
+        </div>
+    @endif
     <div class="card shadow mb-4">         
         <div class="card-body">        
             <div class="about-row row">

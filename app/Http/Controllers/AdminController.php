@@ -16,6 +16,7 @@ use App\Models\Apoteker;
 use App\Models\Kategori_tenkesehatan;
 use App\Models\RekamMedik;
 use App\Models\Notification;
+use App\Models\ResepObat;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -186,7 +187,8 @@ class AdminController extends Controller
     public function adm_rekap_rekam_medik()
     {
         $pasien = Pasien::all();
-        $rekammedik = RekamMedik::all();
+        $rekammedik = RekamMedik::all();//dd($rekammedik);  
+
         return view('admin.rekap_rekam_medik', compact('pasien', 'rekammedik'));
     }
     public function filterRekamMedik()
@@ -204,7 +206,11 @@ class AdminController extends Controller
         ->join('pasiens as p', 'p.id', 'rk.pasien_id')
         ->join('categories as c', 'c.id', 'p.category_id')
         ->join('diagnosas as d', 'rk.diagnosa_id', 'd.id')
-        ->join('obats as o', 'rk.obat_id', 'o.id')
+        ->select('rk.id', 'rk.pasien_id', 'rk.tenkesehatan_id', 'rk.diagnosa_id', 'rk.suhu', 'rk.tensi', 'rk.keluhan', 'rk.keterangan', 'rk.rekammedik_created_at',
+            't.nama_tenkes',
+            'p.nama_pasien', 
+            'c.nama_kategori', 
+            'd.nama_diagnosa', 'd.kode_diagnosa')
         ;
 
         if(request()->input("search.value")) {

@@ -116,6 +116,15 @@ Route::post('nakes/data/rekammedik/kirim/{id}', [NakesController::class, 'nakesK
 
 //----------------------Route Apoteker----------------------//
 Route::get('apoteker/dashboard/{id}', [ApotekerController::class, 'apotekerDashboard'])->name('apoteker_dashboard');
+Route::get('apoteker/profil/{id}', [ApotekerController::class, 'apotekerProfil'])->name('apoteker_profil');
+Route::get('apoteker/profil/edit/{id}', [ApotekerController::class, 'apotekerEditProfil'])->name('apoteker_edit_profil');
+Route::patch('apoteker/profil/update/{id}', [ApotekerController::class, 'apotekerUpdateProfil'])->name('apoteker_update_profil');
+Route::get('apoteker/usernamepassword/edit/{id}', [ApotekerController::class, 'apotekerEditUserPw'])->name('apoteker_edit_userpw');
+Route::patch('apoteker/usernamepassword/update/{id}', [ApotekerController::class, 'apotekerUpdateUserPw'])->name('apoteker_update_userpw');
+Route::patch('apoteker/reset/foto/{id}', [ApotekerController::class, 'apotekerResetFoto'])->name('apoteker_reset_foto');
+Route::get('apoteker/dataobat/{id}', [ApotekerController::class, 'apotekerDataObat'])->name('apoteker_data_obat');
+Route::post('apoteker/dataobat/add/{id}', [ApotekerController::class, 'addObat'])->name('apoteker_add_obat');
+Route::patch('apoteker/dataobat/edit/{id}{user_id}', [ApotekerController::class, 'editObat'])->name('apoteker_edit_obat');
 
 #Obat pasien
 Route::get('apoteker/obat/{id}', [ApotekerController::class, 'apotekerObatPasien'])->name('apoteker_obat_pasien');
