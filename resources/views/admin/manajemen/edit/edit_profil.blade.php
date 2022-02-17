@@ -25,15 +25,12 @@
     <div class="card shadow mb-4">
         <div class="card-body">
             <div class="about-row row">
-                <div class="image-col col-md-2">
-                    <hr><img src="{{ asset('/img/klinik.png') }}" alt=""><hr>
-                </div>
-                <div class="detail-col col-md-8">
+                <div class="detail-col col-md-12">
                     <form method="POST" enctype="multipart/form-data" action={{ route('adm_update_profil', $admins->id) }}>
                     @method('PATCH')
                     @csrf
                     <div class="row">
-                        <div class="col-md-6 col-12">
+                        <div class="col-md-4 col-12">
                             <div class="info-list">
                                 <div class="form-group">
                                 <ul>
@@ -57,7 +54,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-6 col-12">
+                        <div class="col-md-4 col-12">
                             <div class="info-list">
                                 <div class="form-group">
                                 <ul>
@@ -75,8 +72,11 @@
                                             <option value="{{ $admins->jk_admin }}">{{ $admins->jk_admin }}</option>
                                             @if($admins->jk_admin == "Laki-laki")
                                             <option value="Perempuan">Perempuan</option>
+                                            @elseif($admins->jk_admin == "Perempuan")
+                                            <option value="Laki-laki">Laki-laki</option>
                                             @else
                                             <option value="Laki-laki">Laki-laki</option>
+                                            <option value="Perempuan">Perempuan</option>
                                             @endif
                                         </select>
                                     </li>
@@ -84,14 +84,34 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="col-md-4 col-12">
+                            <div class="info-list">
+                                <div class="form-group">
+                                    <ul>
+                                        <li>
+                                            <label class="font-weight-bold text-primary">Foto Profil</label>
+                                            <div class="image-col col-md-7">
+                                                <img src="{{ asset('/foto_profil/admin/' . $admins->foto_admin) }}" alt="">
+                                            </div>                                        
+                                        </li>
+                                        <br>
+                                        <li>
+                                            <div class="row container">
+                                                <input type="file" name="foto_admin">
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <button type="submit" class="btn btn-success btn-icon-split btn-sm">
+                    <button type="submit" class="btn btn-success btn-sm">
                         <span>
                             <i class="fas fa-check"></i>
                         </span>    
                         <span class="text">Simpan</span>
                     </button>&nbsp;
-                    <a href={{ route('adm_profil', $admins->id) }} class="btn btn-secondary btn-icon-split btn-sm">
+                    <a href={{ route('adm_profil', $admins->id) }} class="btn btn-secondary btn-sm">
                         <span>
                             <i class="fas fa-times"></i>
                         </span>    

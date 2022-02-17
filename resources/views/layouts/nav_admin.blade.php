@@ -29,7 +29,7 @@
             <a class="collapse-item" href="{{ route('adm_man_datapasien') }}">Pasien</a>
             <a class="collapse-item" href="{{ route('adm_man_dataapoteker') }}">Apoteker</a>
             <a class="collapse-item" href="{{ route('adm_man_datanakes') }}">Tenaga Kesehatan</a>
-            <a class="collapse-item" href="#">Dokumentasi Kegiatan</a>
+            <a class="collapse-item" href="{{ route('adm_man_datadiagnosa') }}">Diagnosa</a>
             <a class="collapse-item" href="{{ route('adm_man_datarekammedik') }}">Rekam Medik</a>
         </div>
     </div>

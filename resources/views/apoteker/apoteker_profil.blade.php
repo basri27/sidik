@@ -38,7 +38,7 @@
 @endsection
 
 @section('foto')
-    <img class="img-profile rounded-circle" src="{{ asset('foto_profil/' . Auth::user()->apoteker->foto_apoteker) }}">
+    <img class="img-profile rounded-circle" src="{{ asset('foto_profil/apoteker/' . $apoteker->foto_apoteker) }}">
 @endsection
 
 @section('content')
@@ -53,7 +53,7 @@
         <div class="card-body">        
             <div class="about-row row">
                 <div class="col-md-2">
-                    <img src="{{ asset('/foto_profil/' . $apoteker->foto_apoteker) }}" alt=""><br><br>
+                    <img src="{{ asset('/foto_profil/apoteker/' . $apoteker->foto_apoteker) }}" alt=""><br><br>
                     @if($apoteker->foto_apoteker != 'default.jpg')
                     <form method="POST" action={{ route('apoteker_reset_foto', $apoteker->user_id) }}>
                     @method('PATCH')

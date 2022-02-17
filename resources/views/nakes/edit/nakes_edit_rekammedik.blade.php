@@ -247,7 +247,7 @@
                                     <div class="form-group">
                                         <label class="font-weight-bold text-primary">Suhu</label>
                                         <div class="container row">
-                                            <input type="number" step="0,001" name="suhu" class="form-control col-7" value="{{ $rekammedik->suhu }}">
+                                            <input type="number" step="0.01" name="suhu" class="form-control col-7" value="{{ $rekammedik->suhu }}">
                                             &nbsp;<p class="form-control col-4" readonly>&#8451;</p>
                                         </div>
                                     </div>
@@ -268,7 +268,7 @@
                                 <div class="info-list">
                                     <div class="form-group">
                                         <label class="font-weight-bold text-primary">Keluhan</label>
-                                        <textarea class="form-control" name="keluhan" rows="1" placeholder="Keluhan">{{ $rekammedik->keluhan }}</textarea>
+                                        <textarea class="form-control" name="keluhan" rows="1" placeholder="Keluhan" value="{{ old('keluhan') }}">{{ $rekammedik->keluhan }}</textarea>
                                     </div>
                                 </div>
                             </div>
@@ -289,7 +289,7 @@
                                 <div class="info-list">
                                     <div class="form-group">
                                         <label class="font-weight-bold text-primary">Keterangan</label>
-                                        <textarea class="form-control" name="keterangan" rows="1" placeholder="Keterangan"></textarea>
+                                        <textarea class="form-control" name="keterangan" rows="1" placeholder="Keterangan" value="{{ old('keterangan') }}"></textarea>
                                     </div>
                                 </div>
                             </div>
@@ -337,14 +337,14 @@
                         </select>
                         <label class="font-weight-bold text-dark">Resep:</label>
                         <div class="container row">
-                            <input class="form-control col-2" type="number" name="resep">&nbsp;
+                            <input class="form-control col-2" type="number" name="resep" min="1">&nbsp;
                             <input class="form-control col-1" type="text" value="x" disabled>&nbsp;
-                            <input class="form-control col-2" type="number" name="hari">&nbsp;
+                            <input class="form-control col-2" type="number" name="hari" min="1">&nbsp;
                             <input class="form-control col-2" type="text" value="Hari" disabled>
                         </div>
                         <label class="font-weight-bold text-dark">Takaran:</label>
                         <div class="container row">
-                            <input class="form-control col-2" type="number" step="0.001" name="takaran">&nbsp;
+                            <input class="form-control col-2" type="number" step="0.001" name="takaran" min="1">&nbsp;
                             <select class="form-control col-3" name="kuantitas">
                                 <option value="tablet">Tablet</option>
                                 <option value="kapsul">Kapsul</option>

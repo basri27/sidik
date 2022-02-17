@@ -119,7 +119,7 @@
 @endsection
 
 @section('foto')
-    <img class="img-profile rounded-circle" src="{{ asset('foto_profil/' . $nakes->foto_tenkes) }}">
+    <img class="img-profile rounded-circle" src="{{ asset('foto_profil/nakes/' . $nakes->foto_tenkes) }}">
 @endsection
 
 @section('content')
@@ -134,7 +134,7 @@
         <div class="card-body">        
             <div class="about-row row">
                 <div class="col-md-2">
-                    <img src="{{ asset('/foto_profil/' . $nakes->foto_tenkes) }}" alt=""><br><br>
+                    <img src="{{ asset('/foto_profil/nakes/' . $nakes->foto_tenkes) }}" alt=""><br><br>
                     @if($nakes->foto_tenkes != 'default.jpg')
                     <form method="POST" action={{ route('nakes_reset_foto', $nakes->user_id) }}>
                     @method('PATCH')

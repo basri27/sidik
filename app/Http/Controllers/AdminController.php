@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Http\Requests\UpdatePasswordRequest;
 use App\Models\Admin;
 use App\Models\User;
 use App\Models\Jadwal;
@@ -17,6 +18,7 @@ use App\Models\Kategori_tenkesehatan;
 use App\Models\RekamMedik;
 use App\Models\Notification;
 use App\Models\ResepObat;
+use App\Models\Diagnosa;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -36,43 +38,50 @@ class AdminController extends Controller
         $nakes = DB::table('tenkesehatans')->count();
         $rekammedik = DB::table('rekam_mediks')->count();
         $apoteker = DB::table('apotekers')->count();
+        $y2022 = RekamMedik::select(DB::raw("COUNT(*) as count"))
+        ->whereYear('rekammedik_created_at', '2022')
+        ->groupBy(DB::raw("Month(rekammedik_created_at)"))
+        ->pluck('count');
+        $y2021 = RekamMedik::select(DB::raw("COUNT(*) as count"))
+        ->whereYear('rekammedik_created_at', '2021')
+        ->groupBy(DB::raw("Month(rekammedik_created_at)"))
+        ->pluck('count');
 
-        $api = url('admin/dashboard/');
+        $months = RekamMedik::whereYear('rekammedik_created_at', '2022')
+        ->get()
+        ->groupBy(function($date) {
+            return Carbon::parse($date->rekammedik_created_at)->format('M');
+        });
 
-        $chart = new RekamMedikBarChart;
+        $usermcount = [];
+        $userArr = [];
 
-        return view('admin.dashboard', compact('pasiens', 'nakes', 'rekammedik', 'apoteker', 'chart'));
-    }
+        foreach($months as $key => $value) {
+            $usermcount[(int)$key] = count($value);
+        }
 
-    public function chartBarAjax(Request $request)
-    {
-        $year = $request->has('year') ? $request->year : date('Y');
-        $rekammedik = RekamMedik::select(DB::raw("COUNT(*) as count"))
-            ->whereYear('rekammedik_created_at', $year)
-            ->groupBy(DB::raw("Month(rekammedik_created_at)"))
-            ->pluck('count')
-        ;
-
-        $chart = new RekamMedikBarChart;
-        $chart->dataset('Jumlah Pasien', 'bar', $rekammedik)->options([
-            'fill' => 'true',
-            'borderColor' => '#51C1C0',
-        ]);
-
-        return $chart->api();
+        for($i = 1; $i <= 12; $i++){
+            if(!empty($usermcount[$i])){
+                $userArr[$i] = $usermcount[$i];
+            }else {
+                $userArr[$i] = 0;
+            }
+        }
+        
+        return view('admin.dashboard', compact('pasiens', 'nakes', 'rekammedik', 'apoteker', 'y2022', 'y2021', 'months', 'userArr', 'usermcount'));
     }
 
     public function adm_profil($user_id)
     {
-        $admins = Admin::where('user_id', $user_id)->first();
-        $age = Carbon::parse($admins->tgl_lhr_admin)->diff(Carbon::now())->y;
+        $admin = Admin::where('user_id', $user_id)->first();
+        $age = Carbon::parse($admin->tgl_lhr_admin)->diff(Carbon::now())->y;
 
-        return view('admin.admin_profil', compact('admins', 'age'));
+        return view('admin.admin_profil', compact('admin', 'age'));
     }
 
     public function adm_edit($user_id)
     {
-        $admins = Admin::where('user_id', '=', $user_id)->first();
+        $admins = Admin::where('user_id', $user_id)->first();
         $age = Carbon::parse($admins->tgl_lhr_admin)->diff(Carbon::now())->y;
 
         return view('admin.manajemen.edit.edit_profil', compact('admins', 'age'));
@@ -80,37 +89,112 @@ class AdminController extends Controller
 
     public function adm_update(Request $request, $user_id)
     {
-        $admins = Admin::where('user_id', '=', $user_id)->first();
+        $admins = Admin::where('user_id', $user_id)->first();
 
-        $admins->update([
-            'nama_admin' => $request->input('nama'),
-            'jk_admin' => $request->input('jk'),
-            'tempat_lhr_admin' => $request->input('tempat_lhr'),
-            'tgl_lhr_admin' => $request->input('tgl_lhr'),
-            'no_hp_admin' => $request->input('no_hp'),
-            'alamat_admin' => $request->input('alamat'),
+        if(Request()->foto_admin <> "") {
+            $image = Request()->foto_admin;
+            $imageName = $user_id . '_admin' . '.' . $image->extension();
+            $image->move(public_path('foto_profil/admin'), $imageName);
+
+            $admins->update([
+                'nama_admin' => $request->input('nama'),
+                'jk_admin' => $request->input('jk'),
+                'tempat_lhr_admin' => $request->input('tempat_lhr'),
+                'tgl_lhr_admin' => $request->input('tgl_lhr'),
+                'no_hp_admin' => $request->input('no_hp'),
+                'alamat_admin' => $request->input('alamat'),
+                'foto_admin' => $imageName,
+                'admin_updated_at' => Carbon::now(),
+            ]);
+        }
+        else {
+            $admins->update([
+                'nama_admin' => $request->input('nama'),
+                'jk_admin' => $request->input('jk'),
+                'tempat_lhr_admin' => $request->input('tempat_lhr'),
+                'tgl_lhr_admin' => $request->input('tgl_lhr'),
+                'no_hp_admin' => $request->input('no_hp'),
+                'alamat_admin' => $request->input('alamat'),
+                'admin_updated_at' => Carbon::now(),
+            ]);
+        }
+
+        return redirect()->route('adm_profil', $admins->user_id)->with(['success' => 'Profil berhasil diperbarui!']);
+    }
+
+    public function admResetFoto($user_id)
+    {
+        $admin = Admin::where('user_id', $user_id)->first();
+        unlink(public_path('foto_profil/admin') . '/' . $admin->foto_admin);
+        $admin->update([
+            'foto_admin' => 'default.jpg',
         ]);
 
-        return redirect()->route('adm_profil', $admins->user_id);
+        return redirect()->route('adm_profil', $admin->user_id)->with(['success' => 'Foto profil berhasil dihapus!']);
     }
 
     public function adm_edit_userpw($user_id)
     {
-        $admins = User::where('id', '=', $user_id)->first();
+        $admins = User::where('id', $user_id)->first();
 
         return view('admin.manajemen.edit.edit_userpw', compact('admins'));
     }
 
-    public function adm_update_userpw(Request $request, $user_id)
+    public function adm_update_userpw(UpdatePasswordRequest $request, $user_id)
     {
-        $admins = User::where('id', '=', $user_id)->first();
+        $user = User::where('id', $user_id)->first();
+        
+        if($request->input('password') <> "") {
+            if($request->input('username') != $user->username) {
+                Request()->validate([
+                    'username' => 'unique:users,username',
+                    'password' => 'min:8|confirmed',
+                ], [
+                    'username.unique' => 'Username ' . $request->input('username') . ' telah digunakan',
+                    'password.confirmed' => 'Password konfirmasi tidak sesuai',
+                    'password.min' => 'Password minimal 8 karakter',
+                ]);
+            }
+            else {
+                Request()->validate([
+                    'username' => 'required',
+                    'current_password' => 'required',
+                    'password' => 'required|min:8|confirmed',
+                    'password_confirmation' => 'required',
+                ], [
+                    'username.required' => 'Username wajib diisi',
+                    'current_password.required' => 'Password wajib diisi !',
+                    'password.required' => 'Password wajib diisi !',
+                    'password.confirmed' => 'Password konfirmasi tidak sesuai',
+                ]);
+            }
+            
+            $user->update([
+                'username' => $request->input('username'),
+                'password' => Hash::make($request->get('password')),
+            ]);
+        }
+        else {
+            if($request->input('username') != $user->username) {
+                Request()->validate([
+                    'username' => 'unique:users,username',
+                ], [
+                    'username.unique' => 'Username ' . $request->input('username') . ' telah digunakan',
+                ]);
+            }
+            else {
+                Request()->validate([
+                    'username' => 'required',
+                ], [
+                    'username.required' => 'Username wajib diisi',
+                ]);
+            }
+            $user->update([
+                'username' => $request->input('username')
+            ]);
+        }
 
-        $admins->update([
-            'username' => $request->input('username'),
-            'password' => Hash::make($request->get('password')),
-        ]);
-
-        return redirect()->route('adm_profil', $admins->id);    
+        return redirect()->route('adm_profil', $user->id)->with(['success' => 'Username atau password berhasil diganti!']);    
     }
 
     public function adm_jadwal()
@@ -187,9 +271,28 @@ class AdminController extends Controller
     public function adm_rekap_rekam_medik()
     {
         $pasien = Pasien::all();
-        $rekammedik = RekamMedik::all();//dd($rekammedik);  
+        $rekammedik = RekamMedik::all();
+        $y2022 = RekamMedik::select(DB::raw("COUNT(*) as count"))
+        ->whereYear('rekammedik_created_at', '2022')
+        ->groupBy(DB::raw("Month(rekammedik_created_at)"))
+        ->pluck('count');
+        $y2021 = RekamMedik::select(DB::raw("COUNT(*) as count"))
+        ->whereYear('rekammedik_created_at', '2021')
+        ->groupBy(DB::raw("Month(rekammedik_created_at)"))
+        ->pluck('count');
+        
+        $data = RekamMedik::whereYear('rekammedik_created_at', '2022')
+        ->get()
+        ->groupBy(function($date) {
+            return Carbon::parse($date->rekammedik_created_at)->format('M');
+        });
+        $months = [];
+        foreach($data as $key => $value){
+            $months[$key] = count($value);
+        }
+        //$months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
 
-        return view('admin.rekap_rekam_medik', compact('pasien', 'rekammedik'));
+        return view('admin.rekap_rekam_medik', compact('rekammedik'), ['y2022' => $y2022, 'y2021' => $y2021, 'months' => $months]);
     }
     public function filterRekamMedik()
     {
@@ -262,14 +365,16 @@ class AdminController extends Controller
 
         for ($i=1; $i <= 12 ; $i++) { 
             if(!empty($usermcount[$i])) {
-                $userArr[$i]['count'] = $usermcount[$i];
+                $userArr[$i] = $usermcount[$i];
             }
             else {
-                $userArr[$i]['count'] = 0;
+                $userArr[$i] = 0;
             }
         }
-        
-        return json_encode(compact('userArr'));
+
+        // return view('admin.rekap_rekam_medik', ['userArr' => $userArr]);
+        //return json_encode(compact('userArr'));
+        return response()->json(['data' => $userArr]);
     }
 
     //-----------function manajemen----------//
@@ -290,6 +395,12 @@ class AdminController extends Controller
         $tenkes = Tenkesehatan::all();
         
         return view('admin.manajemen.man_datanakes', compact('tenkes'));
+    }
+    public function admManDataDiagnosa()
+    {
+        $diagnosa = Diagnosa::where('status_diagnosa', 'aktif')->get();
+
+        return view('admin.manajemen.man_datadiagnosa', compact('diagnosa'));
     }
     public function adm_man_datarekammedik()
     {
@@ -467,6 +578,16 @@ class AdminController extends Controller
 
         return redirect()->route('adm_man_datanakes')->with(['success' => 'Data berhasil ditambahkan!']);
     }
+    public function admAddDiagnosa(Request $request)
+    {
+        Diagnosa::create([
+            'kode_diagnosa' => $request->input('kode_diagnosa'),
+            'nama_diagnosa' => $request->input('diagnosa'),
+            'status_diagnosa' => 'aktif',
+        ]);
+
+        return redirect()->route('adm_man_datadiagnosa')->with(['success' => 'Data berhasil ditambahkan!']);
+    }
 
     //--------------Edit data-------------//
     #Edit data pasien
@@ -610,6 +731,16 @@ class AdminController extends Controller
 
         return redirect()->route('adm_man_datarekammedik')->with(['success' => 'Data berhasil dikirim!']);
     }
+    public function admEditDiagnosa(Request $request, $id)
+    {
+        $diagnosa = Diagnosa::find($id);
+        $diagnosa->update([
+            'kode_diagnosa' => $request->input('kode_diagnosa'),
+            'nama_diagnosa' => $request->input('diagnosa'),
+        ]);
+
+        return redirect()->route('adm_man_datadiagnosa')->with(['success' => 'Data berhasil diperbarui!']);
+    }
 
     //---------------Delete data---------//
     public function delete_datapasien($id)
@@ -641,5 +772,14 @@ class AdminController extends Controller
         $users->delete();
 
         return redirect()->route('adm_man_datanakes')->with(['success' => 'Data berhasil dihapus!']);
+    }
+    public function admDeleteDiagnosa(Request $request, $id)
+    {
+        $diagnosa = Diagnosa::find($id);
+        $diagnosa->update([
+            'status_diagnosa' => 'non-aktif',
+        ]);
+
+        return redirect()->route('adm_man_datadiagnosa')->with(['success' => 'Data berhasil dihapus!']);
     }
 }

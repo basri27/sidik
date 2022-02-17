@@ -66,10 +66,9 @@ class NakesController extends Controller
         
         if(Request()->foto_tenkes <> "") {
             $image = Request()->foto_tenkes;
-            $imageName = $id . '.' . $image->extension();
-            $image->move(public_path('foto_profil'), $imageName);
+            $imageName = $id . '_nakes' . '.' . $image->extension();
+            $image->move(public_path('foto_profil/nakes'), $imageName);
 
-            
             $nakes->update([
                 'nama_tenkes' => $request->input('nama'),
                 'jk_tenkes' => $request->input('jk'),
@@ -99,7 +98,7 @@ class NakesController extends Controller
     public function nakesResetFoto($id)
     {
         $nakes = Tenkesehatan::where('user_id', $id)->first();
-        unlink(public_path('foto_profil') . '/' . $nakes->foto_tenkes);
+        unlink(public_path('foto_profil/nakes') . '/' . $nakes->foto_tenkes);
         $nakes->update([
             'foto_tenkes' => 'default.jpg',
         ]);
@@ -119,14 +118,14 @@ class NakesController extends Controller
     public function nakesUpdateUserPw(UpdatePasswordRequest $request, $id)
     {
         $user = User::where('id', $id)->first();
-        
+
         if($request->input('password') <> "") {
             if($request->input('username') != $user->username) {
                 Request()->validate([
                     'username' => 'unique:users,username',
                     'password' => 'min:8|confirmed',
                 ], [
-                    'username.unique' => 'Username telah digunakan',
+                    'username.unique' => 'Username ' . $request->input('username') . ' telah digunakan',
                     'password.confirmed' => 'Password konfirmasi tidak sesuai',
                     'password.min' => 'Password minimal 8 karakter',
                 ]);
@@ -151,6 +150,21 @@ class NakesController extends Controller
             ]);
         }
         else {
+            if($request->input('username') != $user->username) {
+                Request()->validate([
+                    'username' => 'unique:users,username',
+                ], [
+                    'username.unique' => 'Username ' . $request->input('username') . ' telah digunakan',
+                ]);
+            }
+            else {
+                Request()->validate([
+                    'username' => 'required',
+                ], [
+                    'username.required' => 'Username wajib diisi',
+                ]);
+            }
+
             $user->update([
                 'username' => $request->input('username')
             ]);

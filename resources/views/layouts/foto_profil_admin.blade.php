@@ -1,1 +1,1 @@
-<img class="img-profile rounded-circle" src="{{ asset('foto_profil/' . Auth::user()->admin->foto_admin) }}">
+<img class="img-profile rounded-circle" src="{{ asset('foto_profil/admin/' . Auth::user()->admin->foto_admin) }}">

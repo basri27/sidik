@@ -119,7 +119,7 @@
 @endsection
 
 @section('foto')
-<img class="img-profile rounded-circle" src="{{ asset('foto_profil/' . $nakes->foto_tenkes) }}">
+<img class="img-profile rounded-circle" src="{{ asset('foto_profil/nakes/' . $nakes->foto_tenkes) }}">
 @endsection
 
 @section('content')
@@ -128,9 +128,6 @@
     <div class="card shadow mb-4">
         <div class="card-body">
             <div class="about-row row">
-                <!-- <div class="image-col col-md-2">
-                    <hr><img src="{{ asset('/img/klinik.png') }}" alt=""><hr>
-                </div> -->
                 <div class="detail-col col-md-12">
                     <form method="POST" enctype="multipart/form-data" action={{ route('nakes_update_profil', $nakes->user_id) }}>
                     @method('PATCH')
@@ -195,7 +192,7 @@
                                     <li>
                                         <label class="font-weight-bold text-primary">Foto Profil</label>
                                         <div class="image-col col-md-7">
-                                            <img src="{{ asset('/foto_profil/' . $nakes->foto_tenkes) }}" alt="">
+                                            <img src="{{ asset('/foto_profil/nakes/' . $nakes->foto_tenkes) }}" alt="">
                                         </div>                                        
                                     </li>
                                     <br>

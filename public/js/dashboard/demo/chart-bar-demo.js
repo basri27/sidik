@@ -32,13 +32,13 @@ var ctx = document.getElementById("myBarChart");
 var myBarChart = new Chart(ctx, {
   type: 'bar',
   data: {
-    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+    labels: _ydata,
     datasets: [{
       label: "Jumlah",
       backgroundColor: "#4e73df",
       hoverBackgroundColor: "#2e59d9",
       borderColor: "#4e73df",
-      data: [100, 532, 651, 841, 981, 984, 17, 303, 391, 390, 22, 176],
+      data: _xdata,
     }],
   },
   options: {
@@ -68,7 +68,7 @@ var myBarChart = new Chart(ctx, {
       yAxes: [{
         ticks: {
           min: 0,
-          max: 3000,
+          max: _max,
           maxTicksLimit: 5,
           padding: 10,
           // Include a dollar sign in the ticks

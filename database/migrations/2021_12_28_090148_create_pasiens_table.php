@@ -26,6 +26,7 @@ class CreatePasiensTable extends Migration
             $table->string('no_hp_pasien')->nullable();
             $table->string('alamat_pasien')->nullable();
             $table->string('foto_pasien')->nullable();
+            $table->string('status_pasien')->nullable();
             $table->timestamp('pasien_created_at')->useCurrent();
             $table->timestamp('pasien_updated_at')->useCurrent();
         });

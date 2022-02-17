@@ -140,7 +140,7 @@
                                         <input type="text" name="username" class="form-control @error('username') is-invalid @enderror" value="{{ $nakes->username }}" required>
                                         <div class="invalid-feedback">
                                             @error('username')
-                                            {{ $message }}
+                                            <strong>{{ $message }}</strong>
                                             @enderror
                                         </div>
                                     </li>

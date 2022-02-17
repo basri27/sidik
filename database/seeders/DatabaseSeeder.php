@@ -75,6 +75,7 @@ class DatabaseSeeder extends Seeder
                 'tempat_lhr_tenkes' => "Banjarmasin",
                 'kategori_tenkesehatan_id' => random_int(1,3),
                 'foto_tenkes' => 'default.jpg',
+                'status_tenkes' => 'aktif',
             ]);
         }
 
@@ -91,6 +92,7 @@ class DatabaseSeeder extends Seeder
             'jk_apoteker' => 'Laki-laki',
             'tgl_lhr_apoteker' => '1988-7-10',
             'foto_apoteker' => 'default.jpg',
+            'status_apoteker' => 'aktif',
         ]);
 
         $days = ['Senin', 'Selasa', 'Rabu', 'Kamis', "Jum'at"];
@@ -148,16 +150,16 @@ class DatabaseSeeder extends Seeder
         }
 
         $diagnosa = array(
-            array('nama_diagnosa' => 'Acute Nasopharyngitis (common cold)', 'kode_diagnosa' => 'J00'),
-            array('nama_diagnosa' => 'Essential (primary) hypertension', 'kode_diagnosa' => 'I10'),
-            array('nama_diagnosa' => 'Non-insulin-dependent diabetes mellitus', 'kode_diagnosa' => 'E11'),
-            array('nama_diagnosa' => 'Pure Hypercholesterolaemia', 'kode_diagnosa' => 'E78.0'), 
-            array('nama_diagnosa' => 'Dyspepsia', 'kode_diagnosa' => 'K30'), 
-            array('nama_diagnosa' => 'Necrosis of pulp', 'kode_diagnosa' => 'K04.1'), 
-            array('nama_diagnosa' => 'Myalgia', 'kode_diagnosa' => 'M79.1'), 
-            array('nama_diagnosa' => 'Astigmatism', 'kode_diagnosa' => 'H52.2'), 
-            array('nama_diagnosa' => 'Myopia', 'kode_diagnosa' => 'H52.1'), 
-            array('nama_diagnosa' => 'Hypermetropia', 'kode_diagnosa' => 'H52.0')
+            array('nama_diagnosa' => 'Acute Nasopharyngitis (common cold)', 'kode_diagnosa' => 'J00', 'status_diagnosa' => 'aktif'),
+            array('nama_diagnosa' => 'Essential (primary) hypertension', 'kode_diagnosa' => 'I10', 'status_diagnosa' => 'aktif'),
+            array('nama_diagnosa' => 'Non-insulin-dependent diabetes mellitus', 'kode_diagnosa' => 'E11', 'status_diagnosa' => 'aktif'),
+            array('nama_diagnosa' => 'Pure Hypercholesterolaemia', 'kode_diagnosa' => 'E78.0', 'status_diagnosa' => 'aktif'), 
+            array('nama_diagnosa' => 'Dyspepsia', 'kode_diagnosa' => 'K30', 'status_diagnosa' => 'aktif'), 
+            array('nama_diagnosa' => 'Necrosis of pulp', 'kode_diagnosa' => 'K04.1', 'status_diagnosa' => 'aktif'), 
+            array('nama_diagnosa' => 'Myalgia', 'kode_diagnosa' => 'M79.1', 'status_diagnosa' => 'aktif'), 
+            array('nama_diagnosa' => 'Astigmatism', 'kode_diagnosa' => 'H52.2', 'status_diagnosa' => 'aktif'), 
+            array('nama_diagnosa' => 'Myopia', 'kode_diagnosa' => 'H52.1', 'status_diagnosa' => 'aktif'), 
+            array('nama_diagnosa' => 'Hypermetropia', 'kode_diagnosa' => 'H52.0', 'status_diagnosa' => 'aktif')
         );
         DB::table('diagnosas')->insert($diagnosa);
 

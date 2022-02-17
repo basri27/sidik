@@ -9,6 +9,8 @@ class Admin extends Model
 {
     use HasFactory;
 
+    public $timestamps = false;
+
     protected $fillable = [
         'user_id',
         'nama_admin',
@@ -17,7 +19,7 @@ class Admin extends Model
         'tgl_lhr_admin',
         'no_hp_admin',
         'alamat_admin',
-        'foto_admin'
+        'foto_admin',
     ];
 
     public function user() {

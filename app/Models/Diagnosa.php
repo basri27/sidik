@@ -10,8 +10,9 @@ class Diagnosa extends Model
     use HasFactory;
 
     protected $fillable = [
-        'kode',
+        'kode_diagnosa',
         'nama_diagnosa',
+        'status_diagnosa',
     ];
 
     public function rekammedik()

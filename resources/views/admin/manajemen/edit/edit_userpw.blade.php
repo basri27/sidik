@@ -30,47 +30,79 @@
                     @method('PATCH')
                     @csrf
                     <div class="row">
-                        <div class="col-md-6 col-12">
-                            <div class="info-list">
-                                <div class="form-group">
-                                    <ul>
-                                        <li>
-                                            <label class="font-weight-bold text-primary">Username:</label>
-                                            <input type="text" name="username" class="form-control" value="{{ $admins->username }}">
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6 col-12">
+                        <div class="col-md-3 col-12">
                             <div class="info-list">
                                 <ul>
                                     <li>
-                                        <label class="font-weight-bold text-primary">Password Lama:</label>
-                                        <input id="password-lama" type="password" name="password" class="form-control">
+                                        <label class="font-weight-bold text-primary">Username:</label>
+                                        <input type="text" name="username" class="form-control @error('username') is-invalid @enderror" value="{{ $admins->username }}" required>
+                                        <div class="invalid-feedback">
+                                            @error('username')
+                                            <strong>{{ $message }}</strong>
+                                            @enderror
+                                        </div>
                                     </li>
                                 </ul>
                             </div>
                         </div>
-                        <div class="col-md-6 col-12">
+                        <div class="col-md-3 col-12">
+                            <div class="info-list">
+                                <ul>
+                                    <li>
+                                        <label class="font-weight-bold text-primary">Password Lama:</label>
+                                        <input id="password-lama" type="password" name="current_password" class="form-control @error('current_password') is-invalid @enderror" autocomplete="current_password" required>
+                                        <div class="invalid-feedback" role="alert">
+                                            @error('current_password')
+                                            <strong>{{ $message }}</strong>
+                                            @enderror
+                                        </div>
+                                    </li>
+                                </ul>
+                                
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-12">
                             <div class="info-list">
                                 <ul>
                                     <li>
                                         <label class="font-weight-bold text-primary">Password Baru:</label>
-                                        <input id="password-baru" type="password" name="password" class="form-control">
-                                        <input type="checkbox" class="form-control-input" onclick="showPassword()"> Tampilkan Password
+                                        <input id="password-baru" type="password" name="password" class="form-control @error('password') is-invalid @enderror" required>
+                                        <div class="invalid-feedback" role="alert">
+                                            @error('password')
+                                            <strong>{{ $message }}</strong>
+                                            @enderror
+                                        </div>
+                                    </li>
+                                </ul>
+                                
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-12">
+                            <div class="info-list">
+                                <ul>
+                                    <li>
+                                        <label class="font-weight-bold text-primary">Konfirmasi Password Baru:</label>
+                                        <input id="password-baru-confirm" type="password" name="password_confirmation" class="form-control" required>
                                     </li>
                                 </ul>
                             </div>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-success btn-icon-split btn-sm">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <input type="checkbox" class="form-control-input" onclick="showPassword()"> Tampilkan password
+                        </div>
+                        <div class="col-md-3">
+                            <input type="checkbox" class="form-control-input" onclick="updateOnlyUsername()"> Hanya ganti <b>username</b>
+                        </div>
+                    </div><br>
+                    <button type="submit" class="btn btn-success btn-sm">
                         <span>
                             <i class="fas fa-check"></i>
                         </span>    
                         <span class="text">Simpan</span>
                     </button>&nbsp;
-                    <a href="{{ route('adm_profil', $admins->id) }}" class="btn btn-secondary btn-icon-split btn-sm">
+                    <a href="{{ route('adm_profil', $admins->id) }}" class="btn btn-secondary btn-sm">
                         <span>
                             <i class="fas fa-times"></i>
                         </span>    
@@ -84,13 +116,34 @@
 </div>
 <script>
     function showPassword() {
-        var x = document.getElementById('password-lama', 'password-baru');
-        if (x.type === "password") {
+        var x = document.getElementById('password-lama');
+        var y = document.getElementById('password-baru');
+        var z = document.getElementById('password-baru-confirm');
+        if (x.type == "password" || y.type == "password" || z.type == "password") {
             x.type = "text";
+            y.type = "text";
+            z.type = "text";
         }
         else {
             x.type = "password";
+            y.type = "password";
+            z.type = "password";
         }
+    }
+
+    function updateOnlyUsername() {
+        var y = document.getElementById('password-baru');
+        var z = document.getElementById('password-baru-confirm');
+        
+        if(y.disabled == false) {
+            y.disabled = true;
+            z.disabled = true;
+        }
+        else {
+            y.disabled = false;
+            z.disabled = false;
+        }
+        
     }
 </script>
 @endsection

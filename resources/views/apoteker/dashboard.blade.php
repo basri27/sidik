@@ -38,7 +38,7 @@
 @endsection
 
 @section('foto')
-    <img class="img-profile rounded-circle" src="{{ asset('foto_profil/' . Auth::user()->apoteker->foto_apoteker) }}">
+    <img class="img-profile rounded-circle" src="{{ asset('foto_profil/apoteker/' . Auth::user()->apoteker->foto_apoteker) }}">
 @endsection
 
 @section('content')

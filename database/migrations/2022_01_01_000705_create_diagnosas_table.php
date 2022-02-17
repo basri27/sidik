@@ -17,6 +17,7 @@ class CreateDiagnosasTable extends Migration
             $table->id();
             $table->string('kode_diagnosa')->unique();
             $table->string('nama_diagnosa');
+            $table->string('status_diagnosa')->nullable();
             $table->timestamps();
         });
     }

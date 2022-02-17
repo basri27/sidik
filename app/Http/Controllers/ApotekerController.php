@@ -161,7 +161,7 @@ class ApotekerController extends Controller
     {
         $notifications = Notification::where('user_id', $id)->orderBy('id', 'DESC')->get();
         $notifCount = $notifications->count();
-        $apoteker = User::where('id', $id)->first();
+        $apoteker = Apoteker::where('user_id', $id)->first();
         $obats = Obat::where('status_obat', 'aktif')->get();
 
         return view('apoteker.man_dataobat', compact('notifications', 'notifCount', 'apoteker', 'obats'));

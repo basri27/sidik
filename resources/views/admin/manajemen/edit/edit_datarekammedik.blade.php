@@ -124,7 +124,7 @@
                                     <ul>
                                         <li>
                                             <label class="font-weight-bold text-primary" id="label_f">Suhu</label>
-                                            <input type="text" name="suhu" class="form-control">
+                                            <input type="number" step="0.01" name="suhu" class="form-control">
                                         </li>
                                     </ul>
                                 </div>
@@ -160,13 +160,13 @@
                             </div>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-success btn-icon-split btn-sm">
+                    <button type="submit" class="btn btn-success btn-sm">
                         <span>
                             <i class="fas fa-check"></i>
                         </span>    
                         <span class="text">Simpan</span>
                     </button>&nbsp;
-                    <a href="{{ route('adm_man_datarekammedik') }}" class="btn btn-secondary btn-icon-split btn-sm">
+                    <a href="{{ route('adm_man_datarekammedik') }}" class="btn btn-secondary btn-sm">
                         <span>
                             <i class="fas fa-times"></i>
                         </span>    

@@ -24,28 +24,28 @@
 		        	      		<div class="w-100">
 			          		    	<h3 class="mb-4">Login</h3>
 			      	        	</div>
+								<div>
+									<img class="float-right col-4" src="{{ asset('img/klinik.png') }}" alt="">
+								</div>
 			      	        </div>
 							<form action="{{ route('login') }}" method="POST" class="signin-form">
 								@csrf
-
 			      		        <div class="form-group mt-3">
-			      			        <input type="text" class="form-control @error('not-found') is-invalid @enderror" name="username" value="{{ old('username') }}" required>
+			      			        <input type="text" class="form-control @error('username') is-invalid @enderror" name="username" value="{{ old('username') }}" required>
 			      			        <label class="form-control-placeholder" for="username">Username</label>
+									<div class="invalid-feedback">
+                                        @error('username')
+                                        	<strong>Username atau password salah!</strong>
+                                        @enderror
+                                    </div>
 			      		        </div>
 		                        <div class="form-group">
                                     <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required>
 		                            <label class="form-control-placeholder" for="password">Password</label>
 		                            <span toggle="#password" class="fa fa-fw fa-eye field-icon toggle-password"></span>
-									
-									@error('password')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                	@enderror
-
 		                        </div>
 		                        <div class="form-group">
-		                        	<button type="submit" class="form-control btn btn-primary rounded submit px-3">Login</button>
+		                        	<button type="submit" class="form-control btn btn-primary">Login</button>
 		                        </div>
                             </form>
 		                    <p class="text-center">Belum punya akun? <a href="{{ route('register') }}">Daftar Sekarang</a></p>

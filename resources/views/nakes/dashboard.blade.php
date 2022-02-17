@@ -119,7 +119,7 @@
 @endsection
 
 @section('foto')
-    <img class="img-profile rounded-circle" src="{{ asset('foto_profil/' . Auth::user()->tenkesehatan->foto_tenkes) }}">
+    <img class="img-profile rounded-circle" src="{{ asset('foto_profil/nakes/' . Auth::user()->tenkesehatan->foto_tenkes) }}">
 @endsection
 
 @section('content')
@@ -159,8 +159,31 @@
                                     <div class="col">
                                         <p class="font-weight-bold text-primary">Jam: <span class="text-danger">{{ \Carbon\Carbon::parse($p->rekammedik_created_at)->toTimeString() }}</span></p>
                                         <p class="font-weight-bold text-primary">Diagnosa: <span class="text-danger">{{ $p->diagnosa->nama_diagnosa }}</span></p>
-                                        <p class="font-weight-bold text-primary">Resep Obat: <span class="text-danger"><a class="btn btn-sm border border-dark" href="#viewResep"><i class="fas fa-eye"></i>&nbsp;Lihat</a></span></p>
+                                        <p class="font-weight-bold text-primary">Resep Obat: <span class="text-danger"><a class="btn btn-sm border border-dark" href="#viewResepObat{{ $p->id }}" data-toggle="modal"><i class="fas fa-eye"></i>&nbsp;Lihat</a></span></p>
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="viewResepObat{{ $p->id }}" class="modal fade" role="dialog">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header bg-light">
+                                    
+                                    <h4 class="modal-title font-weight-bold float-left">Resep Obat</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <table class="table table-borderless">
+                                        <?php $resep = \App\Models\ResepObat::where('rekam_medik_id', $p->id)->whereDate('resepobat_created_at', \Carbon\Carbon::parse($p->rekammedik_created_at)->toDateString())->get(); ?>
+                                        @foreach($resep as $rs)
+                                            <tr>
+                                                <td>{{ $rs->obat->nama_obat }} | {{ $rs->keterangan }}</td>
+                                            </tr>
+                                        @endforeach
+                                    </table>
+                                </div>
+                                <div class="modal-footer">
+                                    <button class="btn btn-dark" data-dismiss="modal">Tutup</button>
                                 </div>
                             </div>
                         </div>
