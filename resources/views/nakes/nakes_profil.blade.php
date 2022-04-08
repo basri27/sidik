@@ -144,7 +144,7 @@
                     @endif
                 </div>
                 <div class="detail-col col-md-8">
-                    <h3 class="font-weight-bold">{{ $nakes->nama_tenkes }}</h3 class="font-weight-bold">
+                    <h3 class="font-weight-bold">{{ $nakes->nama_tenkes }} <small>({{ $nakes->kategori_tenkesehatan->nama_kategori_tenkes }})</small></h3 class="font-weight-bold">
                     <div class="row">
                         <div class="col-md-6 col-12">
                             <div class="info-list">

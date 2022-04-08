@@ -25,7 +25,7 @@
 			          		    	<h3 class="mb-4">Login</h3>
 			      	        	</div>
 								<div>
-									<img class="float-right col-4" src="{{ asset('img/klinik.png') }}" alt="">
+									<img class="float-right" src="{{ asset('img/logo-klinik1.png') }}" alt="">
 								</div>
 			      	        </div>
 							<form action="{{ route('login') }}" method="POST" class="signin-form">

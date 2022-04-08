@@ -23,8 +23,7 @@ class Pasien extends Model
         'no_hp_pasien',
         'alamat_pasien',
         'foto_pasien',
-        'pasien_created_at',
-        'pasien_updated_at',
+        'status_pasien',
     ];
 
 	public function user() 
@@ -37,17 +36,33 @@ class Pasien extends Model
         return $this->belongsTo(Category::class);
     }
 
-    public function fakulta() 
-    {
-        return $this->belongsTo(Fakulta::class);
-    }
-
-    public function prodi() 
-    {
-        return $this->belongsTo(Prodi::class);
-    }
-        public function rekammedik()
+    public function rekammedik()
     {
         return $this->hasMany(RekamMedik::class);
+    }
+
+    public function keluargapasien()
+    {
+        return $this->hasMany(Pasien::class);
+    }
+
+    public function mahasiswa()
+    {
+        return $this->hasMany(Mahasiswa::class);
+    }
+
+    public function dosen()
+    {
+        return $this->hasMany(Dosen::class);
+    }
+
+    public function bpjs()
+    {
+        return $this->hasMany(Bpjs::class);
+    }
+
+    public function karyawan()
+    {
+        return $this->hasMany(Karyawan::class);
     }
 }

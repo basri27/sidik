@@ -14,6 +14,8 @@ class Obat extends Model
         'status_obat',
     ];
 
+    public $timestamps = false;
+
     public function resepobat()
     {
         return $this->hasMany(ResepObat::class);

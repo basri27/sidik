@@ -4,10 +4,8 @@
 
 @section('css')
     <link rel="stylesheet" href="{{ asset('css/dashboard/sb-admin-2.min.css') }}"> 
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/dataTables.bootstrap4.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.dataTables.min.css">
-    <!-- <link rel="stylesheet" type="text/css"
-    href="https://github.s3.amazonaws.com/downloads/lafeber/world-flags-sprite/flags32.css" /> -->
+    <link rel="stylesheet" href="{{ asset('css/dashboard/dataTables.bootstrap4.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/dashboard/responsive.dataTables.min.css') }}">
     <style>
         #container {
             min-width: 310px;
@@ -85,16 +83,18 @@
                     <label class="font-weight-bold text-secondary col-3">Start</label>
                     <label class="font-weight-bold text-secondary col-3">End</label>
                 </div>
-                <div class="row pl-3">
-                    <input type="date" class="form-control col-3" id="date-start">
-                    &nbsp;
-                    <input type="date" class="form-control col-3" id="date-end" max="{{ \Carbon\Carbon::now()->toDateString() }}" value="{{ \Carbon\Carbon::now()->toDateString() }}">&nbsp;
-                    <button class="btn btn-info tombol btn-2"><i class="fas fa-folder-open">&nbsp;Lihat</i></button>
-                    <!-- <a class="btn btn-info btn-2" href="#"><i class="fas fa-print"></i>Cetak</a> -->
-                </div>
+                <form method="GET" action="{{ route('filter_rekammedik') }}">
+                    <div class="row pl-3">
+                        <input type="date" class="form-control col-3" id="date-start" name="date-start">
+                        &nbsp;
+                        <input type="date" class="form-control col-3" id="date-end" name="date-end" max="{{ \Carbon\Carbon::now()->toDateString() }}" value="{{ \Carbon\Carbon::now()->toDateString() }}">&nbsp;
+                        <button class="btn btn-info tombol btn-2"><i class="fas fa-folder-open"></i>&nbsp;Lihat</button>&nbsp;
+                        <a class="btn btn-info btn-2" href="{{ route('adm_rekap_rekam_medik') }}"><i class="fas fa-window-close"></i>&nbsp;Reset Filter</a>
+                    </div>
+                </form>
                 <hr>
                 <div class="table-responsive">
-                    <table class="table" id="tabel-pasien" width="100%" cellspacing="0">
+                    <table class="table" id="dataTable" width="100%" cellspacing="0">
                         <thead>
                             <tr>
                                 <th>Nama</th>
@@ -105,7 +105,22 @@
                             </tr>
                         </thead>
                         <tbody>
-                            
+                            @foreach($rekammedik as $rk)
+                            <tr>
+                                @if ($rk->pasien_id != null)
+                                <td>{{ $rk->pasien->nama_pasien }}</td>
+                                <td>{{ $rk->rekammedik_created_at }}</td>
+                                <td>{{ $rk->tenkesehatan->nama_tenkes }}</td>
+                                <td>{{ $rk->pasien->category->nama_kategori }}</td>
+                                @else
+                                <td>{{ $rk->keluarga_pasien->nama_kel_pasien }}</td>
+                                <td>{{ $rk->rekammedik_created_at }}</td>
+                                <td>{{ $rk->tenkesehatan->nama_tenkes }}</td>
+                                <td>{{ $rk->keluarga_pasien->kategori_kel_pasien }}</td>
+                                @endif
+                                <td><a href="#" class="btn btn-info btn-sm">Info</a></td>
+                            </tr>
+                            @endforeach
                         </tbody>
                     </table>
                 </div>
@@ -113,27 +128,6 @@
         </div>
     </div>
     <div class="row">
-        <!-- <div class=" col-lg-8">      
-            <div class="card shadow mb-4">
-                <a href="#collapseCardGrafik" class="d-block card-header py-3" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="collapseCardExample">
-                    <h6 class="m-0 font-weight-bold text-primary">Grafik Jumlah Pasien Berobat Pertahun</h6>
-                </a>
-                <div class="collapse show" id="collapseCardGrafik">
-                    <div class="card-body">
-                        <div class="container row">
-                            <input type="number" class="form-control col-5" id="tahun-grafik" placeholder="Masukkan tahun..." required>&nbsp;
-                            <button class="btn btn-info btn-2 tombol-grafik"><i class="fas fa-folder-open"></i>&nbsp;Lihat</button>
-                        </div>
-                        <hr>
-                        <div class="chart-area">
-                            <canvas id="barChart"></canvas>
-                        </div>
-                        <hr>
-                        <b>*Grafik di atas adalah data pasien tahun <span class="text-info">{{ \Carbon\Carbon::now()->format('Y') }}</span></b>
-                    </div>
-                </div>
-            </div>
-        </div> -->
         <div class="col-lg-8">
             <div class="card shadow mb-4">
                 <a href="#collapseCardHighChart" class="d-block card-header py-3" data-toggle="collapse" role="button" aria-expanderd="true" aria-controls="collapseCardExample">
@@ -141,58 +135,235 @@
                 </a>
                 <div class="collapse show" id="collapseCardHighChart">
                     <div class="card-body">
-                            <div class="buttons">
-                                <button id="2000">2000</button>
-                                <button id="2004">2004</button>
-                                <button id="2008">2008</button>
-                                <button id="2012">2012</button>
-                                <button id="2016" class="active">2016</button>
-                            </div>
-                            <div id="container"></div>            
+                        <div class="buttons">
+                            <button id="2020">2020</button>
+                            <button id="2021">2021</button>
+                            <button id="2022" class="active">2022</button>
+                            <button id="2023">2023</button>
+                            <button id="2024">2024</button>
+                            <button id="2025">2025</button>
+                        </div>
+                        <div id="container"></div>            
                     </div>
                 </div>
-                
+                    
             </div>
         </div>
         <div class="col-lg-4">
             <div class="card shadow mb-4">
                 <a href="#collapseCardData" class="d-block card-header py-3" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="collapseCardExample">
-                    <h6 class="m-0 font-weight-bold text-primary">Data Pasien berdasarkan Kategori</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">Diagram kategori pasien per tahun</h6>
                 </a>
                 <div class="collapse show" id="collapseCardData">
                     <div class="card-body">
-                        <?php 
-                            $month = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'November', 'Desember'];
-                            $i = 0;
-                        ?>
-                        <div class="container row">
-                            <select class="form-control col-7" name="" id="">
-                                <option value="">Pilih Bulan</option>
-                                    @foreach($month as $m)
-                                <option value="{{ $i += 1 }}">{{ $m }}</option>
-                                    @endforeach
-                            </select>
-                            &ensp;
-                            <button type="submit" class="btn btn-info btn-circle btn-4"><i class="fas fa-folder-open"></i></button>
-                            <input type="text" class="form-control" name="" id="" placeholder="Masukkan tahun...">
-                        </div>
-                        <hr>
-                        <div class="char-pie pt-4">
-                            <canvas id="labelChart"></canvas>
-                        </div>
-                        <hr>
-                        <b>*Grafik di atas adalah data pasien berdasarkan kategori <span class="text-info">Dosen, Karyawan, Mahasiswa, <span class="text-dark">dan</span> Umum</span></b>
+                        <div id="pie-grafik"></div>
                     </div>
                 </div>
             </div>
         </div>
-        
     </div>
+    <body onload="diag()">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card shadow mb-4">
+                <a href="#grafikPenyakit" class="d-block card-header py-3" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="collapseCardExample">
+                    <h6 class="m-0 font-weight-bold text-primary">Grafik penyakit</h6>
+                </a>
+                <div class="collapse show" id="grafikPenyakit">
+                    <div class="card-body">
+                        <h5 class="m-0 font-weight-bold text-dark text-center" id="label_penyakit">Daftar 5 penyakit terbanyak di tahun 2022</h5><br>
+                        <?php $month = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember']; ?>
+                        <div id="diag20">
+                            <?php $i = -1; ?>
+                            @foreach ($diagCount20 as $dc)
+                                <?php $i += 1; ?>
+                                <?php $k = 0; ?>
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr class="bg-info">
+                                            <th colspan="3" class="font-weight-bold text-white text-center">{{$month[$i]}}</th>
+                                        </tr>
+                                        <tr>
+                                            <th>No.</th>
+                                            <th>Nama Penyakit</th>
+                                            <th>Jumlah</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($dc as $d)
+                                        <?php $dg = \App\Models\Diagnosa::where('id', $d['diagnosa_id'])->first() ?>
+                                        <?php $k += 1; ?>
+                                            <tr>
+                                                <td>{{$k}}</td>
+                                                <td>{{$dg->nama_diagnosa}}</td>
+                                                <td>{{$d['freq']}}</td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            @endforeach
+                        </div>
+                        <div id="diag21">
+                            <?php $i = -1; ?>
+                            @foreach ($diagCount21 as $dc)
+                                <?php $i += 1; ?>
+                                <?php $k = 0; ?>
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr class="bg-info">
+                                            <th colspan="3" class="font-weight-bold text-white text-center">{{$month[$i]}}</th>
+                                        </tr>
+                                        <tr>
+                                            <th>No.</th>
+                                            <th>Nama Penyakit</th>
+                                            <th>Jumlah</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($dc as $d)
+                                        <?php $dg = \App\Models\Diagnosa::where('id', $d['diagnosa_id'])->first() ?>
+                                        <?php $k += 1; ?>
+                                            <tr>
+                                                <td>{{$k}}</td>
+                                                <td>{{$dg->nama_diagnosa}}</td>
+                                                <td>{{$d['freq']}}</td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            @endforeach
+                        </div>
+                        <div id="diag22">
+                            <?php $i = -1; ?>
+                            @foreach ($diagCount22 as $dc)
+                                <?php $i += 1; ?>
+                                <?php $k = 0; ?>
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr class="bg-info">
+                                            <th colspan="3" class="font-weight-bold text-white text-center">{{$month[$i]}}</th>
+                                        </tr>
+                                        <tr>
+                                            <th>No.</th>
+                                            <th>Nama Penyakit</th>
+                                            <th>Jumlah</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($dc as $d)
+                                        <?php $dg = \App\Models\Diagnosa::where('id', $d['diagnosa_id'])->first() ?>
+                                        <?php $k += 1; ?>
+                                            <tr>
+                                                <td>{{$k}}</td>
+                                                <td>{{$dg->nama_diagnosa}}</td>
+                                                <td>{{$d['freq']}}</td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            @endforeach
+                        </div>
+                        <div id="diag23">
+                            <?php $i = -1; ?>
+                            @foreach ($diagCount23 as $dc)
+                                <?php $i += 1; ?>
+                                <?php $k = 0; ?>
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr class="bg-info">
+                                            <th colspan="3" class="font-weight-bold text-white text-center">{{$month[$i]}}</th>
+                                        </tr>
+                                        <tr>
+                                            <th>No.</th>
+                                            <th>Nama Penyakit</th>
+                                            <th>Jumlah</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($dc as $d)
+                                        <?php $dg = \App\Models\Diagnosa::where('id', $d['diagnosa_id'])->first() ?>
+                                        <?php $k += 1; ?>
+                                            <tr>
+                                                <td>{{$k}}</td>
+                                                <td>{{$dg->nama_diagnosa}}</td>
+                                                <td>{{$d['freq']}}</td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            @endforeach
+                        </div>
+                        <div id="diag24">
+                            <?php $i = -1; ?>
+                            @foreach ($diagCount24 as $dc)
+                                <?php $i += 1; ?>
+                                <?php $k = 0; ?>
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr class="bg-info">
+                                            <th colspan="3" class="font-weight-bold text-white text-center">{{$month[$i]}}</th>
+                                        </tr>
+                                        <tr>
+                                            <th>No.</th>
+                                            <th>Nama Penyakit</th>
+                                            <th>Jumlah</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($dc as $d)
+                                        <?php $dg = \App\Models\Diagnosa::where('id', $d['diagnosa_id'])->first() ?>
+                                        <?php $k += 1; ?>
+                                            <tr>
+                                                <td>{{$k}}</td>
+                                                <td>{{$dg->nama_diagnosa}}</td>
+                                                <td>{{$d['freq']}}</td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            @endforeach
+                        </div>
+                        <div id="diag25">
+                            <?php $i = -1; ?>
+                            @foreach ($diagCount25 as $dc)
+                                <?php $i += 1; ?>
+                                <?php $k = 0; ?>
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr class="bg-info">
+                                            <th colspan="3" class="font-weight-bold text-white text-center">{{$month[$i]}}</th>
+                                        </tr>
+                                        <tr>
+                                            <th>No.</th>
+                                            <th>Nama Penyakit</th>
+                                            <th>Jumlah</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($dc as $d)
+                                        <?php $dg = \App\Models\Diagnosa::where('id', $d['diagnosa_id'])->first() ?>
+                                        <?php $k += 1; ?>
+                                            <tr>
+                                                <td>{{$k}}</td>
+                                                <td>{{$dg->nama_diagnosa}}</td>
+                                                <td>{{$d['freq']}}</td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </body>
 </div>
 @foreach($rekammedik as $rk)
     <div id="viewResep{{ $rk->id }}" class="modal fade" role="dialog">
         <div class="modal-dialog">
-            <!-- konten modal-->
+        <!-- konten modal-->
             <div class="modal-content">
                 <!-- heading modal -->
                 <div class="modal-header bg-light">
@@ -217,533 +388,379 @@
         </div>
     </div>
 @endforeach
-<!-- <script src="{{ asset('vendor/dashboard/Chart.min.js') }}"></script> -->
-<!-- <script type="text/javascript">
-    var _ydata = JSON.parse('{!! json_encode($months) !!}');
-    var _xdata = JSON.parse('{!! json_encode($months) !!}');
-    var _max = JSON.parse('5');
+    <!-- Moment js -->
+    <script src="https://momentjs.com/downloads/moment-with-locales.js"></script>
 
-    var ctxB = document.getElementById("barChart").getContext('2d');
-                var myBarChart = new Chart(ctxB, {
-                    type: 'bar',
-                    data: {
-                        labels: _ydata,
-                        datasets: [{
-                            label: 'Jumlah Pasien',
-                            data: _xdata,
-                            backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                            borderColor: 'rgba(54, 162, 235, 1)',
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        scales: {
-                            yAxes: [{
-                                ticks: {
-                                    beginAtZero: true
-                                }
-                            }]
-                        }
-                    }
-                });
-</script> -->
-<!-- <script type="text/javascript" src="{{ asset('js/dashboard/demo/chart-bar-demo.js') }}"></script> -->
+    <!--Data Table-->
+    <script type="text/javascript"  src=" https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.11.3/js/dataTables.bootstrap4.min.js"></script>
+    <script type="text/javascript"  src=" https://cdn.datatables.net/buttons/1.2.4/js/dataTables.buttons.min.js"></script>
+    <!-- Table rekam medik -->
+    <!-- <script>
+        let start = $('#date-start').val();
+        let end = $('#date-end').val();
 
-<!-- Moment js -->
-<script src="https://momentjs.com/downloads/moment-with-locales.js"></script>
-
-<!--Data Table-->
-<script type="text/javascript"  src=" https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
-<script type="text/javascript" src="https://cdn.datatables.net/1.11.3/js/dataTables.bootstrap4.min.js"></script>
-<script type="text/javascript"  src=" https://cdn.datatables.net/buttons/1.2.4/js/dataTables.buttons.min.js"></script>
-<!-- Table rekam medik -->
-<script>
-    let start = $('#date-start').val();
-    let end = $('#date-end').val();
-
-    const table_pasien = $("#tabel-pasien").DataTable({
-        "pageLength": 25,
-        "lengthMenu": [[5, 10, 25, 50, 100], [5, 10, 25, 50, 100]],
-        "bLengthChange": true,
-        "bFilter": true,
-        "bInfo": true,
-        "processing": true,
-        "bServerSide": true,
-        "order": [[ 0, "asc" ]],
-        "ajax":{
-            url:"{{url('filterrekammedik')}}",
-            type:"POST",
-            data:function(d){
-                d._token = "{{csrf_token()}}";
-                d.mulai = start;
-                d.habis = end;
-            }
-        },
-        columns:[
-            {
-                data: 'nama_pasien',
-            },
-            {
-                "render": function(data, type, row, meta){
-                    moment.locale('id');
-                    return moment(row.rekammedik_created_at).format('LL');
+        const table_pasien = $("#tabel-pasien").DataTable({
+            "pageLength": 25,
+            "lengthMenu": [[5, 10, 25, 50, 100], [5, 10, 25, 50, 100]],
+            "bLengthChange": true,
+            "bFilter": true,
+            "bInfo": true,
+            "processing": true,
+            "bServerSide": true,
+            "order": [[ 0, "asc" ]],
+            "ajax":{
+                url:"{{url('filterrekammedik')}}",
+                type:"POST",
+                data:function(d){
+                    d._token = "{{csrf_token()}}";
+                    d.mulai = start;
+                    d.habis = end;
                 }
             },
-            {
-                data: 'nama_tenkes',
-                orderable: false,
-            },
-            {
-                data: 'nama_kategori',
-                orderable: false,
-            },
-            {
-                className: 'dt-control',
-                orderable: false,
-                data: null,
-                defaultContent: ''
-            }
-        ]
-    });
-
-    function format ( d ) {
-    // `d` is the original data object for the row
-    return '<table class="table table-striped table-bordered" cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+
-            '<thead class="thead-dark">'+
-                '<tr>'+
-                    '<th>Tensi</th>'+
-                    '<th>Suhu</th>'+
-                    '<th>Keluhan</th>'+
-                    '<th>Diagnosa</th>'+
-                    '<th>Obat</th>'+
-                    '<th>Keterangan</th>'+
-                '</tr>'+
-            '</thead>'+
-            '<tbody>'+
-                '<tr>'+
-                    '<td>'+d.tensi+'</td>'+
-                    '<td>'+d.suhu+'</td>'+
-                    '<td>'+d.keluhan+'</td>'+
-                    '<td>'+d.kode_diagnosa+' - '+d.nama_diagnosa+'</td>'+
-                    '<td><a href="#viewResep'+d.id+'" class="btn btn-sm border border-dark" data-toggle="modal"><small><i class="fas fa-eye"></i>&nbsp;Lihat</small></a></td>'+
-                    '<td>'+d.keterangan+'</td>'+
-                '</tr>'+
-            '</tbody>'+
-        '</table>';
-    }
-
-    $('#tabel-pasien tbody').on('click', 'td.dt-control', function () {
-        var tr = $(this).closest('tr');
-        var row = table_pasien.row( tr );
-  
-        if ( row.child.isShown() ) {
-            // This row is already open - close it
-            row.child.hide();
-            tr.find('svg').attr('data-icon', 'plus-circle');    // FontAwesome 5
-        }
-        else {
-            // Open this row
-            row.child( format(row.data()) ).show();
-          tr.find('svg').attr('data-icon', 'minus-circle'); // FontAwesome 5
-        }
-    });
-
-    $('.tombol').on('click', function() {
-        start = $('#date-start').val();
-        end = $('#date-end').val();
-        table_pasien.ajax.reload(null,false)
-    });
-</script>
-
-<!-- High Chart -->
-<script src="https://code.highcharts.com/highcharts.js"></script>
-<script src="https://code.highcharts.com/modules/exporting.js"></script>
-<script src="https://code.highcharts.com/modules/export-data.js"></script>
-<script>
-    var _ydata = JSON.parse('{!! json_encode($months) !!}');
-    var y2022 = JSON.parse('{!! json_encode($y2022) !!}');
-    var y2021 = JSON.parse('{!! json_encode($y2021) !!}');
-    Highcharts.chart('container', {
-        chart:{
-            type:'column'
-        },
-        title:{
-            text:"Grafik Pasien Tahun 2020"
-        },
-        xAxis:{
-            categories: _ydata
-        },
-        yAxis:{
-            title:{
-                text:"Jumlah pasien"
-            }
-        },
-        series:[{
-            name:"Jumlah Pasien",
-            data:y2021
-        }],
-    });
-</script>
-
-<!-- <script>    
-    var dataPrev = {
-        2016: [
-            ['South Korea', 0],
-            ['Japan', 0],
-            ['Australia', 0],
-            ['Germany', 11],
-            ['Russia', 24],
-            ['China', 38],
-            ['Great Britain', 29],
-            ['United States', 46]
-        ],
-        2012: [
-            ['South Korea', 13],
-            ['Japan', 0],
-            ['Australia', 0],
-            ['Germany', 0],
-            ['Russia', 22],
-            ['China', 51],
-            ['Great Britain', 19],
-            ['United States', 36]
-        ],
-        2008: [
-            ['South Korea', 0],
-            ['Japan', 0],
-            ['Australia', 0],
-            ['Germany', 13],
-            ['Russia', 27],
-            ['China', 32],
-            ['Great Britain', 9],
-            ['United States', 37]
-        ],
-        2004: [
-            ['South Korea', 0],
-            ['Japan', 5],
-            ['Australia', 16],
-            ['Germany', 0],
-            ['Russia', 32],
-            ['China', 28],
-            ['Great Britain', 0],
-            ['United States', 36]
-        ],
-        2000: [
-            ['South Korea', 0],
-            ['Japan', 0],
-            ['Australia', 9],
-            ['Germany', 20],
-            ['Russia', 26],
-            ['China', 16],
-            ['Great Britain', 0],
-            ['United States', 44]
-        ]
-    };
-
-    var data = {
-        2016: [
-            ['South Korea', 0],
-            ['Japan', 0],
-            ['Australia', 0],
-            ['Germany', 17],
-            ['Russia', 19],
-            ['China', 26],
-            ['Great Britain', 27],
-            ['USA', 46]
-        ],
-        2012: [
-            ['South Korea', 13],
-            ['Japan', 0],
-            ['Australia', 0],
-            ['Germany', 0],
-            ['Russia', 24],
-            ['China', 38],
-            ['Great Britain', 29],
-            ['United States', 46]
-        ],
-        2008: [
-            ['South Korea', 0],
-            ['Japan', 0],
-            ['Australia', 0],
-            ['Germany', 16],
-            ['Russia', 22],
-            ['China', 51],
-            ['Great Britain', 19],
-            ['United States', 36]
-        ],
-        2004: [
-            ['South Korea', 0],
-            ['Japan', 16],
-            ['Australia', 17],
-            ['Germany', 0],
-            ['Russia', 27],
-            ['China', 32],
-            ['Great Britain', 0],
-            ['United States', 37]
-        ],
-        2000: [
-            ['South Korea', 0],
-            ['Japan', 0],
-            ['Australia', 16],
-            ['Germany', 13],
-            ['Russia', 32],
-            ['China', 28],
-            ['Great Britain', 0],
-            ['United States', 36]
-        ]
-    };
-
-    var countries = [{
-        name: 'South Korea',
-        color: 'rgb(201, 36, 39)'
-        }, {
-        name: 'Japan',
-        color: 'rgb(201, 36, 39)'
-        }, {
-        name: 'Australia',
-        color: 'rgb(0, 82, 180)'
-        }, {
-        name: 'Germany',
-        color: 'rgb(0, 0, 0)'
-        }, {
-        name: 'Russia',
-        color: 'rgb(240, 240, 240)'
-        }, {
-        name: 'China',
-        color: 'rgb(255, 217, 68)'
-        }, {
-        name: 'Great Britain',
-        color: 'rgb(0, 82, 180)'
-        }, {
-        name: 'United States',
-        color: 'rgb(215, 0, 38)'
-    }];
-
-
-    function getData(data) {
-        return data.map(function (country, i) {
-            return {
-                name: country[0],
-                y: country[1],
-                color: countries[i].color
-            };
+            columns:[
+                {
+                    data: 'nama_pasien',
+                },
+                {
+                    "render": function(data, type, row, meta){
+                        moment.locale('id');
+                        return moment(row.rekammedik_created_at).format('LL');
+                    }
+                },
+                {
+                    data: 'nama_tenkes',
+                    orderable: false,
+                },
+                {
+                    data: 'nama_kategori',
+                    orderable: false,
+                },
+                {
+                    className: 'dt-control',
+                    orderable: false,
+                    data: null,
+                    defaultContent: ''
+                }
+            ]
         });
-    }
 
-    var chart = Highcharts.chart('container', {
-        chart: {
-            type: 'column'
-        },
-        title: {
-            text: 'Summer Olympics 2016 - Top 5 countries by Gold medals',
-            align: 'left'
-        },
-        subtitle: {
-            text: 'Comparing to results from Summer Olympics 2012 - Source: <a href="https://en.wikipedia.org/wiki/2016_Summer_Olympics_medal_table">Wikipedia</a>',
-            align: 'left'
-        },
-        plotOptions: {
-            series: {
-                grouping: false,
-                borderWidth: 0
+        function format ( d ) {
+        // `d` is the original data object for the row
+        return '<table class="table table-striped table-bordered" cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+
+                '<thead class="thead-dark">'+
+                    '<tr>'+
+                        '<th>Tensi</th>'+
+                        '<th>Suhu</th>'+
+                        '<th>Keluhan</th>'+
+                        '<th>Diagnosa</th>'+
+                        '<th>Obat</th>'+
+                        '<th>Keterangan</th>'+
+                    '</tr>'+
+                '</thead>'+
+                '<tbody>'+
+                    '<tr>'+
+                        '<td>'+d.tensi+'</td>'+
+                        '<td>'+d.suhu+'</td>'+
+                        '<td>'+d.keluhan+'</td>'+
+                        '<td>'+d.kode_diagnosa+' - '+d.nama_diagnosa+'</td>'+
+                        '<td><a href="#viewResep'+d.id+'" class="btn btn-sm border border-dark" data-toggle="modal"><small><i class="fas fa-eye"></i>&nbsp;Lihat</small></a></td>'+
+                        '<td>'+d.keterangan+'</td>'+
+                    '</tr>'+
+                '</tbody>'+
+            '</table>';
+        }
+
+        $('.tombol').on('click', function() {
+            start = $('#date-start').val();
+            end = $('#date-end').val();
+            table_pasien.ajax.reload(null,false)
+        });
+    </script> -->
+    <!-- <script>
+        $('#datatable tbody').on('click', 'td.dt-control', function () {
+            var tr = $(this).closest('tr');
+            var row = table_pasien.row( tr );
+      
+            if ( row.child.isShown() ) {
+                // This row is already open - close it
+                row.child.hide();
+                tr.find('svg').attr('data-icon', 'plus-circle');    // FontAwesome 5
             }
-        },
-        legend: {
-            enabled: false
-        },
-        tooltip: {
-            shared: true,
-            headerFormat: '<span style="font-size: 15px">{point.point.name}</span><br/>',
-            pointFormat: '<span style="color:{point.color}">\u25CF</span> {series.name}: <b>{point.y} medals</b><br/>'
-        },
-        xAxis: {
-            type: 'category',
-            max: 4,
-        },
-        yAxis: [{
+            else {
+                // Open this row
+                row.child( format(row.data()) ).show();
+              tr.find('svg').attr('data-icon', 'minus-circle'); // FontAwesome 5
+            }
+        });
+
+        function format ( d ) {
+        // `d` is the original data object for the row
+        return '<table class="table table-striped table-bordered" cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+
+                '<thead class="thead-dark">'+
+                    '<tr>'+
+                        '<th>Tensi</th>'+
+                        '<th>Suhu</th>'+
+                        '<th>Keluhan</th>'+
+                        '<th>Diagnosa</th>'+
+                        '<th>Obat</th>'+
+                        '<th>Keterangan</th>'+
+                    '</tr>'+
+                '</thead>'+
+                '<tbody>'+
+                    '<tr>'+
+                        '<td>'+d.tensi+'</td>'+
+                        '<td>'+d.suhu+'</td>'+
+                        '<td>'+d.keluhan+'</td>'+
+                        '<td>'+d.kode_diagnosa+' - '+d.nama_diagnosa+'</td>'+
+                        '<td><a href="#viewResep'+d.id+'" class="btn btn-sm border border-dark" data-toggle="modal"><small><i class="fas fa-eye"></i>&nbsp;Lihat</small></a></td>'+
+                        '<td>'+d.keterangan+'</td>'+
+                    '</tr>'+
+                '</tbody>'+
+            '</table>';
+        }
+    </script> -->
+    <!-- JQuery -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.2/umd/popper.min.js" integrity="sha512-aDciVjp+txtxTJWsp8aRwttA0vR2sJMk/73ZT7ExuEHv7I5E6iyyobpFOlEFkq59mWW8ToYGuVZFnwhwIUisKA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <!-- MDB core JavaScript -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.1/js/mdb.min.js"></script>
+    <!-- High Chart -->
+    <script src="{{ asset('js/high-chart/highchart.js') }}"></script>
+    <script src="{{ asset('js/high-chart/exporting.js') }}"></script>
+    <script src="{{ asset('js/high-chart/export-data.js') }}"></script>
+    <script type="text/javascript">
+        function diag() {
+            $('#diag20').hide()
+            $('#diag21').hide()
+            $('#diag22').show()
+            $('#diag23').hide()
+            $('#diag24').hide()
+            $('#diag25').hide()
+        }
+        var data = {
+            2024: <?php echo json_encode($y2024) ?>,
+            2025: <?php echo json_encode($y2025) ?>,
+            2020: <?php echo json_encode($y2020) ?>,
+            2021: <?php echo json_encode($y2021) ?>,
+            2022: <?php echo json_encode($y2022) ?>,
+            2023: <?php echo json_encode($y2023) ?>,
+        };
+
+        var mhs = {
+            2024: <?php echo json_encode($mhs24) ?>,
+            2025: <?php echo json_encode($mhs25) ?>,
+            2020: <?php echo json_encode($mhs20) ?>,
+            2021: <?php echo json_encode($mhs21) ?>,
+            2022: <?php echo json_encode($mhs22) ?>,
+            2023: <?php echo json_encode($mhs23) ?>,
+        }
+
+        var dosen = {
+            2024: <?php echo json_encode($dosen24) ?>,
+            2025: <?php echo json_encode($dosen25) ?>,
+            2020: <?php echo json_encode($dosen20) ?>,
+            2021: <?php echo json_encode($dosen21) ?>,
+            2022: <?php echo json_encode($dosen22) ?>,
+            2023: <?php echo json_encode($dosen23) ?>,
+        }
+
+        var kary = {
+            2024: <?php echo json_encode($kary24) ?>,
+            2025: <?php echo json_encode($kary25) ?>,
+            2020: <?php echo json_encode($kary20) ?>,
+            2021: <?php echo json_encode($kary21) ?>,
+            2022: <?php echo json_encode($kary22) ?>,
+            2023: <?php echo json_encode($kary23) ?>,
+        }
+
+        var umum = {
+            2024: <?php echo json_encode($umum24) ?>,
+            2025: <?php echo json_encode($umum25) ?>,
+            2020: <?php echo json_encode($umum20) ?>,
+            2021: <?php echo json_encode($umum21) ?>,
+            2022: <?php echo json_encode($umum22) ?>,
+            2023: <?php echo json_encode($umum23) ?>,
+        }
+        
+        var chart = Highcharts.chart('container', {
+            chart: {
+                type: 'column'
+            },
             title: {
-                text: ''
+                text: 'Grafik Jumlah Pasien Tahun 2022'
             },
-            showFirstLabel: false
-        }],
-        series: [{
-            color: 'rgb(158, 159, 163)',
-            pointPlacement: -0.2,
-            linkedTo: 'main',
-            data: dataPrev[2016].slice(),
-            name: '2012'
-        }, {
-            name: '2016',
-            id: 'main',
-            dataSorting: {
-                enabled: true,
-                matchByName: true
+            plotOptions: {
+                series: {
+                    grouping: false,
+                    borderWidth: 0
+                }
             },
-            data: getData(data[2016]).slice()
-        }],
-        exporting: {
-            allowHTML: true
-        }
-    });
-
-    var years = [2016, 2012, 2008, 2004, 2000];
-
-    years.forEach(function (year) {
-        var btn = document.getElementById(year);
-
-        btn.addEventListener('click', function () {
-
-            document.querySelectorAll('.buttons button.active').forEach(function (active) {
-                active.className = '';
-            });
-            btn.className = 'active';
-
-            chart.update({
+            legend: {
+                enabled: false
+            },
+            tooltip: {
+                shared: true,
+                pointFormat: '<span>\u25CF</span> Jumlah: <b>{point.y} pasien</b><br/>'
+            },
+            xAxis:{
+                categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Des']
+            },
+            yAxis: [{
                 title: {
-                    text: 'Summer Olympics ' + year + ' - Top 5 countries by Gold medals'
+                    text: 'Jumlah Pasien'
                 },
-                subtitle: {
-                    text: 'Comparing to results from Summer Olympics ' + (year - 4) + ' - Source: <a href="https://en.wikipedia.org/wiki/' + (year) + '_Summer_Olympics_medal_table">Wikipedia</a>'
-                },
-                series: [{
-                    name: year - 4,
-                    data: dataPrev[year].slice()
+                showFirstLabel: false
+            }],
+            series: [{
+                color: 'rgb(158, 159, 163)',
+                pointPlacement: -0.2,
+                data: <?php echo json_encode($y2022) ?>,
+            }],
+            exporting: {
+                allowHTML: true
+            }
+        });
+        var pieChart = Highcharts.chart('pie-grafik', {
+            chart: {
+                type: 'pie'
+            },
+            title: {
+                text: 'Kategori pasien tahun 2022'
+            },
+            tooltip: {
+                pointFormat: '{series.name}: <b>{point.y:1f} pasien</b>'
+            },
+            accessibility: {
+                point: {
+                    valueSuffix: '%'
+                }
+            },
+            plotOptions: {
+                pie: {
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    dataLabels: {
+                        enabled: true,
+                        format: '<b>{point.name}</b><br>{point.percentage:.1f} %',
+                    },
+                    showInLegend: true
+                }
+            },
+            series: [{
+                name: 'Jumlah',
+                colorByPoint: true,
+                data: [{
+                    name: 'Mahasiswa',
+                    y: {{$mhs22}},
+                    sliced: true,
+                    selected: true
                 }, {
-                    name: year,
-                    data: getData(data[year]).slice()
+                    name: 'Dosen',
+                    y: {{$dosen22}}
+                }, {
+                    name: 'Karyawan',
+                    y: {{$kary22}}
+                }, {
+                    name: 'Umum',
+                    y: {{$umum22}}
                 }]
-            }, true, false, {
-                duration: 800
+            }]
+        });
+
+        var years = [2024, 2025, 2020, 2021, 2022, 2023];
+        
+
+        years.forEach(function (year) {
+            var btn = document.getElementById(year);
+
+            btn.addEventListener('click', function () {
+
+                document.querySelectorAll('.buttons button.active').forEach(function (active) {
+                    active.className = '';
+                });
+
+                btn.className = 'active';
+
+                chart.update({
+                    title:{
+                        text:"Grafik jumlah pasien tahun " + year
+                    },
+                    series: [{
+                        data: data[year]
+                    }]
+                }, true, false, {
+                    duration: 800
+                });
+
+                pieChart.update({
+                    title:{
+                        text:"Kategori pasien tahun " + year
+                    },
+                    series:[{
+                        data:[{
+                            y: mhs[year]
+                        }, {
+                            y: dosen[year]
+                        }, {
+                            y: kary[year]
+                        }, {
+                            y: umum[year]
+                        }]
+                    }]
+                });
+
+                document.getElementById('label_penyakit').innerText = 'Daftar 5 penyakit terbanyak di tahun ' + year
+                
+                if(year == 2020) {
+                    $('#diag20').show()
+                    $('#diag21').hide()
+                    $('#diag22').hide()
+                    $('#diag23').hide()
+                    $('#diag24').hide()
+                    $('#diag25').hide()
+                }
+                else if(year == 2021) {
+                    $('#diag20').hide()
+                    $('#diag21').show()
+                    $('#diag22').hide()
+                    $('#diag23').hide()
+                    $('#diag24').hide()
+                    $('#diag25').hide()
+                }
+                else if(year == 2022) {
+                    $('#diag20').hide()
+                    $('#diag21').hide()
+                    $('#diag22').show()
+                    $('#diag23').hide()
+                    $('#diag24').hide()
+                    $('#diag25').hide()
+                }
+                else if(year == 2023) {
+                    $('#diag20').hide()
+                    $('#diag21').hide()
+                    $('#diag22').hide()
+                    $('#diag23').show()
+                    $('#diag24').hide()
+                    $('#diag25').hide()
+                }
+                else if(year == 2024) {
+                    $('#diag20').hide()
+                    $('#diag21').hide()
+                    $('#diag22').hide()
+                    $('#diag23').hide()
+                    $('#diag24').show()
+                    $('#diag25').hide()
+                }
+                else if(year == 2025) {
+                    $('#diag20').hide()
+                    $('#diag21').hide()
+                    $('#diag22').hide()
+                    $('#diag23').hide()
+                    $('#diag24').hide()
+                    $('#diag25').show()
+                }
             });
         });
-    });
-</script> -->
-<!-- MDB -->
-<!-- JQuery -->
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.2/umd/popper.min.js" integrity="sha512-aDciVjp+txtxTJWsp8aRwttA0vR2sJMk/73ZT7ExuEHv7I5E6iyyobpFOlEFkq59mWW8ToYGuVZFnwhwIUisKA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<!-- MDB core JavaScript -->
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.1/js/mdb.min.js"></script>
-<!-- <script>
-    let tahun = $('tahun-grafik').val();
-    
-    $(document).ready(function() {
-        $.ajax({
-            url: "{{url('filtergrafikbar')}}",
-            type: "post",
-            data: {
-                _token: "{{csrf_token()}}",
-                tahun: moment().format('YYYY')
-            },
-            success: function(d) {
-                var ctxB = document.getElementById("barChart").getContext('2d');
-                var myBarChart = new Chart(ctxB, {
-                    type: 'bar',
-                    data: {
-                        labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dec"],
-                        datasets: [{
-                            label: 'Jumlah Pasien',
-                            data: ['10', '6', '9'],
-                            backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                            borderColor: 'rgba(54, 162, 235, 1)',
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        scales: {
-                            yAxes: [{
-                                ticks: {
-                                    beginAtZero: true
-                                }
-                            }]
-                        }
-                    }
-                });
-            }
-        });
-    });
-
-    $('.tombol-grafik').on('click', function() {
-        tahun = $('#tahun-grafik').val();
-        $.ajax({
-            url: "{{url('filtergrafikbar')}}",
-            type: "post",
-            data: {
-                _token: "{{csrf_token()}}",
-                tahun: tahun
-            },
-            success: function() {
-
-                var ctxB = document.getElementById("barChart").getContext('2d');
-                var myBarChart = new Chart(ctxB, {
-                    type: 'bar',
-                    data: {
-                        labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dec"],
-                        datasets: [{
-                            label: 'Jumlah Pasien',
-                            data: ['userArr.count'],
-                            backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                            borderColor: 'rgba(54, 162, 235, 1)',
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        scales: {
-                            yAxes: [{
-                                ticks: {
-                                    beginAtZero: true
-                                }
-                            }]
-                        }
-                    }
-                });
-            }
-        });
-    });
-</script>
-<script>
-    var ctxP = document.getElementById("labelChart").getContext('2d');
-    var myPieChart = new Chart(ctxP, {
-    plugins: [ChartDataLabels],
-    type: 'pie',
-    data: {
-        labels: ["Mahasiswa", "Dosen", "Karyawan", "Umum"],
-        datasets: [{
-            data: [210, 130, 120, 160],
-            backgroundColor: ["#F7464A", "#46BFBD", "#FDB45C", "#FF00FF"],
-            hoverBackgroundColor: ["#FF5A5E", "#5AD3D1", "#FFC870", "#fa64fa"]
-        }]
-    },
-    options: {
-        responsive: true,
-        legend: {
-        position: 'right',
-        labels: {
-            padding: 20,
-            boxWidth: 10
-        }
-        },
-        plugins: {
-            datalabels: {
-                formatter: (value, ctx) => {
-                    let sum = 0;
-                    let dataArr = ctx.chart.data.datasets[0].data;
-                    dataArr.map(data => {
-                        sum += data;
-                    });
-                    let percentage = (value * 100 / sum).toFixed(2) + "%";
-                    return percentage;
-                },
-                color: 'white',
-                labels: {
-                title: {
-                    font: {
-                    size: '11'
-                    }
-                }
-                }
-            }
-        }
-    }
-    });
-</script> -->
+    </script>
 @endsection

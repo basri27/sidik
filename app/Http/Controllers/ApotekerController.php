@@ -24,11 +24,11 @@ class ApotekerController extends Controller
     {
         $notifications = Notification::where('user_id', $id)->orderBy('id', 'DESC')->get();
         $notifCount = Notification::where('user_id', $id)->count();
-        $pasiens = RekamMedik::whereNotNull('diagnosa_id')->whereDate('rekammedik_created_at', '2022-2-11')->get();
+        $pasiens = RekamMedik::where('status_rekam_medik', 'selesai')->whereDate('rekammedik_created_at', Carbon::now()->toDateString())->get();
         // $resep = ResepObat::whereDate('resepobat_created_at', Carbon::now()->toDateString())->get();
         $pasienCount = $pasiens->count();
 
-        return view('apoteker.dashboard', compact('notifications', 'notifCount', 'pasienCount'));
+        return view('apoteker.dashboard', compact('notifications', 'notifCount', 'pasienCount', 'pasiens'));
     }
 
     public function apotekerObatPasien($id)
@@ -195,5 +195,17 @@ class ApotekerController extends Controller
         ]);
 
         return redirect()->route('apoteker_data_obat', $user_id)->with(['success' => 'Data obat berhasil dihapus!']);
+    }
+    public function pengobatanSelesai($id, $user_id)
+    {
+        $notifs = Notification::where('rekam_medik_id', $id)->get();
+        $rekammedik = RekamMedik::find($id);
+
+        foreach($notifs as $notif) {
+            $notif->delete();
+        }
+        $rekammedik->update(['status_rekam_medik' => 'selesai']);
+
+        return redirect()->route('apoteker_dashboard', $user_id)->with(['success' => 'Pengobatan telah selesai']);
     }
 }

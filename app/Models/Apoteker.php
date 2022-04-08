@@ -20,6 +20,7 @@ class Apoteker extends Model
         'alamat_apoteker',
         'jk_apoteker',
         'foto_apoteker',
+        'status_apoteker',
     ];
 
     public function user()

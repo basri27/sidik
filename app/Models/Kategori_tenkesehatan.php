@@ -10,8 +10,10 @@ class Kategori_tenkesehatan extends Model
     use HasFactory;
 
     protected $fillable = [
-        'nama'
+        'nama_kategori_tenkes'
     ];
+
+    public $timestamps = false;
 
     public function tenkesehatan() {
 		    return $this->hasMany(Tenkesehatan::class);

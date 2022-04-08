@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="{{ asset('css/dashboard/animate.min.css') }}">
     <link rel="stylesheet" href="{{ asset('css/dashboard/dashboard.css') }}">
     <link rel="stylesheet" href="{{ asset('css/bootstrap.css') }}">
+    <link rel="stylesheet" href="{{ asset('CSS/dashboard/select2.min.css') }}">
 @endsection
 
 @section('menu')
@@ -27,99 +28,8 @@
 
 @section('subhead', 'Kirim Data Rekam Medik')
 
-@section('notif')
-    <li class="nav-item dropdown no-arrow mx-1" id="list-notif">
-        <a class="nav-link dropdown-toggle" id="alertsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <i data-count="{{ $notifCount }}" class="fas fa-bell fa-fw"></i>
-            <!-- Counter - Alerts -->
-            @if($notifCount > 0)
-            <span class="badge badge-danger badge-counter">{{ $notifCount }}</span>
-            @endif
-        </a>
-        <!-- Dropdown - Alerts -->
-        <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="alertsDropdown">
-            <h6 class="dropdown-header">
-                Notifikasi
-            </h6>
-            @if($notifCount <= 0)
-            <a class="dropdown-item d-flex align-items-center" href="#">
-                <div>
-                    <span class="text-gray-500">Tidak ada pemberitahuan</span>
-                </div>
-            </a>
-            @else
-            @foreach($notifs as $n)
-            <a class="dropdown-item d-flex align-items-center" href="{{ route('nakes_edit_rekammedik', $n->id) }}">
-                <div class="mr-3">
-                    <div class="icon-circle bg-primary">
-                        <i class="fas fa-notes-medical text-white"></i>
-                    </div>
-                </div>
-                <div>
-                    <div class="small text-gray-500">{{ \Carbon\Carbon::parse($n->notif_created_at)->format('d F y') }} | {{ \Carbon\Carbon::parse($n->notif_created_at)->toTimeString() }}</div>
-                    <span class="font-weight-bold">{{ $n->isi }}</span>
-                </div>
-            </a>
-            @endforeach
-            @endif
-        </div>
-    </li>
-    <script type="text/javascript">
-        var nakes_id = {{Auth::user()->id}};
-        var pusher = new Pusher('c42b033cec5adc3b394c', {
-            cluster: 'ap1'
-        });
-        var notificationWrap = $('#list-notif');
-        var notificationToggle = notificationWrap.find('a[data-toggle]');
-        var notificationCountElem = notificationToggle.find('i[data-count]');
-        var notificationCount = parseInt(notificationCountElem.data('count'));
-        var notification = notificationWrap.find('div.dropdown-list');
-
-        var channel = pusher.subscribe('medical-record-sent');
-        channel.bind('App\\Events\\MedicalRecordSent', function(data) {        
-            var existingNotif = notification.html();
-            var newNotif = `
-            <h6 class="dropdown-header">
-                Notifikasi
-            </h6>
-            <a class="dropdown-item d-flex align-items-center" href="{{url('nakes/data/edit/rekammedik/`+data.notif.id+`')}}">
-                <div class="mr-3">
-                    <div class="icon-circle bg-primary">
-                        <i class="fas fa-notes-medical text-white"></i>
-                    </div>
-                </div>
-                <div>
-                    <div class="small text-gray-500">{{\Carbon\Carbon::parse(`+data.notif.notif_created_at+`)->format('d F y')}} | {{\Carbon\Carbon::parse(`+data.notif.notif_created_at+`)->toTimeString()}}</div>
-                    <span class="font-weight-bold">`+data.notif.isi+`</span>
-                </div>
-            </a>
-            @foreach($notifs as $notif)
-            <a class="dropdown-item d-flex align-items-center" href="{{ route('nakes_edit_rekammedik', $notif->id) }}">
-                <div class="mr-3">
-                    <div class="icon-circle bg-primary">
-                        <i class="fas fa-notes-medical text-white"></i>
-                    </div>
-                </div>
-                <div>
-                    <div class="small text-gray-500">{{ \Carbon\Carbon::parse($notif->notif_created_at)->format('d F y') }} | {{ \Carbon\Carbon::parse($notif->notif_created_at)->toTimeString() }}</div>
-                    <span class="font-weight-bold">{{ $notif->isi }}</span>
-                </div>
-            </a>
-            @endforeach
-            `;
-            if(data.notif.user_id == nakes_id) {
-                notification.html(newNotif);
-                notificationCount += 1;
-                notificationCountElem.attr('data-count', notificationCount);
-                notificationWrap.find('.badge-counter').text(notificationCount);
-                alert("Pasien ingin berobat");
-            }
-        });
-    </script>
-@endsection
-
 @section('foto')
-    <img class="img-profile rounded-circle" src="{{ asset('foto_profil/' . $rekammedik->tenkesehatan->foto_tenkes) }}">
+    <img class="img-profile rounded-circle" src="{{ asset('foto_profil/nakes/' . $rekammedik->tenkesehatan->foto_tenkes) }}">
 @endsection
 
 @section('content')
@@ -136,93 +46,7 @@
                     <div class="detail-col col-md-12">
                         <form method="POST" enctype="multipart/form-data" action="{{ route('nakes_kirim_datarekammedik', $notif->id) }}">
                         @csrf
-                        <div class="row">
-                            <div class="col-md-2 col-12">
-                                <div class="info-list">
-                                    <div class="form-group">
-                                        <label class="font-weight-bold text-primary">Tanggal</label> 
-                                        <input type="text" class="form-control" value="{{ \Carbon\Carbon::parse($rekammedik->rekammedik_created_at)->format('d F Y') }}" readonly>                                   
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-2 col-12">
-                                <div class="info-list">
-                                    <div class="form-group">
-                                        <label class="font-weight-bold text-primary">Waktu</label>
-                                        <input type="text" class="form-control" value="{{ \Carbon\Carbon::parse($rekammedik->rekammedik_created_at)->toTimeString() }}" readonly>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-2"></div>
-                            <div class="col-md-2 col-12">
-                                <div class="info-list">
-                                    <div class="form-group">
-                                        <label class="font-weight-bold text-primary">Biodata pasien</label>
-                                        <a href="#pasienBio" class="btn btn-sm bg-light" data-toggle="modal"><i class="fas fa-info-circle"></i>&nbsp;Detail</a href="#">
-                                    </div>
-                                </div>
-                                <div id="pasienBio" class="modal fade" role="dialog">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-                                            <div class="modal-header bg-light">
-                                                <h4 class="modal-title font-weight-bold float-left">Biodata pasien</h4>
-                                            </div>
-                                            <div class="modal-body">
-                                                <ul>
-                                                    <div class="container row">
-                                                        <li class="col-6">
-                                                            <label class="font-weight-bold text-primary">Nama</label>
-                                                            <input type="text" name="nama" class="form-control" value="{{ $rekammedik->pasien->nama_pasien }}" readonly>
-                                                        </li>
-                                                        <li class="col-6">
-                                                            <label class="font-weight-bold text-primary">Tempat lahir</label>
-                                                            <input type="text" name="tempat_lhr" class="form-control" value="{{ $rekammedik->pasien->tempat_lhr_pasien }}" readonly>
-                                                        </li>
-                                                        <li class="col-6">
-                                                            <label class="font-weight-bold text-primary">Tanggal lahir</label>
-                                                            <input type="date" name="tgl_lhr" class="form-control" value="{{ $rekammedik->pasien->tgl_lhr_pasien }}" readonly>
-                                                        </li>
-                                                        <li class="col-6">
-                                                            <label class="font-weight-bold text-primary">No. Hp</label>
-                                                            <input type="text" name="no_hp" class="form-control" value="{{ $rekammedik->pasien->no_hp_pasien }}" readonly>
-                                                        </li>
-                                                        <li class="col-6">
-                                                            <label class="font-weight-bold text-primary">Alamat</label>
-                                                            <input type="text" name="alamat" class="form-control" value="{{ $rekammedik->pasien->alamat_pasien }}" readonly>
-                                                        </li>
-                                                        <li class="col-6">
-                                                            <label class="font-weight-bold text-primary">Jenis Kelamin</label>
-                                                            <input type="text" name="jk" class="form-control" value="{{ $rekammedik->pasien->jk_pasien }}" readonly>
-                                                        </li>
-                                                        <li class="col-6">
-                                                            <label class="font-weight-bold text-primary">Kategori</label>
-                                                            <input type="text" name="category_id" class="form-control" value="{{ $rekammedik->pasien->category->nama_kategori }}" readonly>
-                                                        </li>
-                                                        @if ($rekammedik->pasien->category_id == '1' or $rekammedik->pasien->category_id == '3')
-                                                        <li class="col-6">
-                                                            <label class="font-weight-bold text-primary" id="label_f">Fakultas</label>
-                                                            <input type="text" name="fakulta_id" class="form-control" value="{{ $rekammedik->pasien->fakulta->nama_fakultas }}" readonly>
-                                                        </li>
-                                                        <li class="col"><center>
-                                                            <label class="font-weight-bold text-primary" id="label_p">Program Studi</label>
-                                                            <input type="text" name="prodi_id" class="form-control col-5" value="{{ $rekammedik->pasien->prodi->nama_prodi }}" readonly>
-                                                        </center></li>
-                                                        @elseif ($rekammedik->pasien->category_id == '2')
-                                                        <li class="col-6">
-                                                            <label class="font-weight-bold text-primary" id="label_f">Fakultas</label>
-                                                            <input type="text" name="fakulta_id" class="form-control" value="{{ $rekammedik->pasien->fakulta->nama_fakultas }}" readonly>
-                                                        </li>
-                                                        @endif
-                                                    </div>
-                                                </ul>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button class="btn" data-dismiss="modal">Tutup</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                        <!-- <div class="row">
                             <div class="col-md-2 col-12">
                                 <div class="info-list">
                                     <div class="form-group">
@@ -297,19 +121,149 @@
                         </div>
                         <div class="row">
                             
-                        </div>
-                        <button type="submit" class="btn btn-success btn-sm">
-                            <span>
-                                <i class="fas fa-check"></i>
-                            </span>    
-                            <span class="text">Simpan</span>
-                        </button>&nbsp;
-                        <a href="{{ route('nakes_dashboard', Auth::user()->id) }}" class="btn btn-secondary btn-sm">
-                            <span>
-                                <i class="fas fa-times"></i>
-                            </span>    
-                            <span class="text">Batal</span>
-                        </a>
+                        </div> -->
+                        <div class="table-responsive">
+                        <table class="table table-borderless">
+                            <tr>
+                                <td><img src="{{ asset('img/logo-ulm1.png') }}"></td>
+                                <td class="text-center">
+                                    <h6>KLINIK PRATAMA LAMBUNG MANGKURAT MEDICAL CENTER (LMMC)</h6>
+                                    <h6>UNIVERSITAS LAMBUNG MANGKURAT</h6>
+                                </td>
+                                <td class="float-right"><img src="{{ asset('img/logo-klinik1.png') }}"></td>
+                            </tr>
+                        </table>
+                        <center><h5><u>KARTU RAWAT JALAN</u></h5></center>
+                        <table class="font-weight-bold">
+                            @if ($rekammedik->pasien_id != null)
+                            <tr>
+                                <td>No. Indeks</td>
+                                <td>&emsp;: {{ $rekammedik->pasien->id }}</td>
+                            </tr>
+                            <tr style="padding: 2px;">
+                                <td>Nama</td>
+                                <td>&emsp;: {{ $rekammedik->pasien->nama_pasien }}</td>
+                            </tr>
+                            <tr>
+                                <td>Jenis Kelamin</td>
+                                <td>&emsp;: {{ $rekammedik->pasien->jk_pasien }}</td>
+                            </tr>
+                            <tr>
+                                <td>TTL</td>
+                                <td>&emsp;: {{ $rekammedik->pasien->tempat_lhr_pasien }}, {{ \Carbon\Carbon::parse($rekammedik->pasien->tgl_lhr_pasien)->format('d F Y') }}</td>
+                            </tr>
+                            <tr>
+                                <?php
+                                    $dosen = \App\Models\Dosen::where('pasien_id', $rekammedik->pasien->id)->first();
+                                    $mhs = \App\Models\Mahasiswa::where('pasien_id', $rekammedik->pasien->id)->first();
+                                    $kary = \App\Models\Karyawan::where('pasien_id', $rekammedik->pasien->id)->first();
+                                    $bpjs = \App\Models\Bpjs::where('pasien_id', $rekammedik->pasien->id)->first();
+                                ?>
+                                <td>Kategori</td>
+                                <td>
+                                    &emsp;: {{ $rekammedik->pasien->category->nama_kategori }}
+                                    @if ($rekammedik->pasien->category_id == 1)
+                                    {{ $dosen->fakulta->nama_fakultas }}
+                                    @elseif ($rekammedik->pasien->category_id == 2)
+                                    {{ $kary->fakulta->nama_fakultas }}
+                                    @elseif ($rekammedik->pasien->category_id == 3)
+                                    ({{ $mhs->fakulta->nama_fakultas }} - {{ $mhs->prodi->nama_prodi }})
+                                    @elseif ($rekammedik->pasien->category_id == 5)
+                                    ({{ $bpjs->no_bpjs }})
+                                    @endif
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Alamat</td>
+                                <td>&emsp;: {{ $rekammedik->pasien->alamat_pasien }}</td>
+                            </tr>
+                            <tr>
+                                <td>No. HP</td>
+                                <td>&emsp;: {{ $rekammedik->pasien->no_hp_pasien }}</td>
+                            </tr></b>
+                            @else
+                            <tr>
+                                <td>No. Indeks</td>
+                                <td>&emsp;: {{ $rekammedik->keluarga_pasien->id }}</td>
+                            </tr>
+                            <tr style="padding: 2px;">
+                                <td>Nama</td>
+                                <td>&emsp;: {{ $rekammedik->keluarga_pasien->nama_kel_pasien }}</td>
+                            </tr>
+                            <tr>
+                                <td>Jenis Kelamin</td>
+                                <td>&emsp;: {{ $rekammedik->keluarga_pasien->jk_kel_pasien }}</td>
+                            </tr>
+                            <tr>
+                                <td>TTL</td>
+                                <td>&emsp;: {{ $rekammedik->keluarga_pasien->tempat_lhr_kel_pasien }}, {{ \Carbon\Carbon::parse($rekammedik->keluarga_pasien->tgl_lhr_kel_pasien)->format('d F Y') }}</td>
+                            </tr>
+                            <tr>
+                                <?php
+                                    $dosen = \App\Models\Dosen::where('pasien_id', $rekammedik->keluarga_pasien->pasien->id)->first();
+                                    $kary = \App\Models\Karyawan::where('pasien_id', $rekammedik->keluarga_pasien->pasien->id)->first();
+                                ?>
+                                <td>Kategori</td>
+                                <td>
+                                    &emsp;: {{ $rekammedik->keluarga_pasien->kategori_kel_pasien }} dari {{ $rekammedik->keluarga_pasien->pasien->nama_pasien }} ({{ $rekammedik->keluarga_pasien->pasien->category->nama_kategori }}
+                                    @if ($rekammedik->keluarga_pasien->pasien->category_id == 1)
+                                    {{ $dosen->fakulta->nama_fakultas }})
+                                    @elseif ($rekammedik->keluarga_pasien->pasien->category_id == 2)
+                                    {{ $kary->fakulta->nama_fakultas }})
+                                    @endif
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Alamat</td>
+                                <td>&emsp;: {{ $rekammedik->keluarga_pasien->alamat_kel_pasien }}</td>
+                            </tr>
+                            <tr>
+                                <td>No. HP</td>
+                                <td>&emsp;: {{ $rekammedik->keluarga_pasien->no_hp_kel_pasien }}</td>
+                            </tr></b>
+                            @endif
+                        </table>
+                        <br>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>TANGGAL</th>
+                                    <th>PEMERIKSAAN/DIAGNOSA</th>
+                                    <th>KETERANGAN</th>
+                                    <th>TENAGA KESEHATAN</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><b>{{ \Carbon\Carbon::parse(\Carbon\Carbon::now())->format('d-m-Y') }}</b></td>
+                                    <td>
+                                        <b>Suhu: <br><input class="form-control-sm col-8" type="number" min="0" max="40" step="0.01" name="suhu" value="{{ $rekammedik->suhu }}"> <small>&#8451;</small> <br>
+                                        Tensi: <br><input class="form-control-sm col-4" type="number" name="tensi1" min="0" max="300" value="{{ $rekammedik->siastol }}">&nbsp;/&nbsp;<input class="form-control-sm col-4" type="number" name="tensi2" min="0" max="300" value="{{ $rekammedik->diastol }}"> <small>mmHg</small><br>
+                                        Pemeriksaan: <br><textarea class="form-control-sm col-12" name="keluhan" placeholder="Keluhan dan lain-lain">{{ $rekammedik->keluhan }}</textarea> <br>
+                                        Diagnosa: <br>
+                                        <select class="form-control-sm col-12" name="diagnosa">
+                                            @if ($rekammedik->diagnosa_id != null)
+                                            <option value="{{ $rekammedik->diagnosa_id }}">{{ $rekammedik->diagnosa->nama_diagnosa }}</option>
+                                            @else
+                                            <option>Pilih Diagnosa</option>
+                                            @foreach($diagnosa as $d)
+                                            <option value="{{ $d->id }}">{{ $d->nama_diagnosa }}</option>
+                                            @endforeach
+                                            @endif
+                                        </select></b>
+                                    </td>
+                                    <td>
+                                        <textarea class="form-control-sm col-12" name="keterangan" placeholder="Keterangan">{{ $rekammedik->keterangan }}</textarea>
+                                    </td>
+                                    <td>
+                                        <b>{{ $rekammedik->tenkesehatan->nama_tenkes }}</b>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                        <button type="submit" class="btn btn-success">Lanjut</button>&nbsp;
+                        <a href="{{ route('nakes_dashboard', Auth::user()->id) }}" class="btn btn-secondary">Batal</a>
                         </form>
                     </div>                    
                 </div>
@@ -322,7 +276,7 @@
             <div class="modal-content">
                 <!-- heading modal -->
                 <div class="modal-header bg-light">
-                    <h4 class="modal-title font-weight-bold float-left">Tambah resep obat</h4>
+                    <h4 class="modal-title font-weight-bold float-left">Tambah Resep Obat</h4>
                 </div>
                 <form method="POST" action={{ route('add_resep_obat', $notif->id) }}>
                     @csrf
@@ -330,7 +284,8 @@
                     <div class="modal-body">        
                         <input type="text" name="rekammedik_id" value={{ $rekammedik->id }} hidden>
                         <label class="font-weight-bold text-dark">Pilih obat:</label>
-                        <select class="form-control" name="obat_id">
+                        <select data-width="100%" class="form-control" id="obat_id" name="obat_id">
+                            <option value="1">Pilih obat</option>
                             @foreach($obat as $o)
                             <option value={{ $o->id }}>{{ $o->nama_obat }}</option>
                             @endforeach
@@ -361,6 +316,8 @@
                                 <option value="saat tidur">Saat tidur</option>
                             </select>
                         </div>
+                        <label class="font-weight-bold">Keterangan resep obat:</label>
+                        <textarea class="form-control" name="keterangan_resep" placeholder="Keterangan resep obat"></textarea>
                     </div>
                     <!-- footer modal -->
                     <div class="modal-footer">
@@ -377,7 +334,7 @@
             <div class="modal-content">
                 <!-- heading modal -->
                 <div class="modal-header bg-light">
-                    <h4 class="modal-title font-weight-bold float-left">Daftar resep obat</h4>
+                    <h4 class="modal-title font-weight-bold float-left">Daftar Resep Obat</h4>
                 </div>
                 <!-- body modal -->
                 <div class="modal-body">        
@@ -401,4 +358,11 @@
             </div>
         </div>
     </div>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="{{ asset('js/dashboard/select2.min.js') }}" defer></script>
+    <script>
+        $(document).ready(function () {
+            $('#obat_id').select2()
+        });
+    </script>
 @endsection

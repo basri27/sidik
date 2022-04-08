@@ -31,7 +31,7 @@
                     <table class="table table-bordered col-12" style="text-align: center; font-size: 70%; color: white;" width="100%" cellspacing="0">
                         <thead>   
                             <tr class="bg-dark">
-                                <th scope="col sm-1">{{ $jadwals->hari}}</th>
+                                <th scope="col sm-1">{{ $jadwals->hari_jadwal}}</th>
                             </tr>
                             <tr class="bg-info">
                                 <th>
@@ -39,10 +39,23 @@
                                     <select name="tenkes1" class="form-control">
                                         <option value="">Kosong</option>
                                         @foreach ($tenkes as $tks)
-                                        <option value="{{ $tks->id }}">{{ $tks->nama_tenkes }}</option>
+                                        <option value="{{ $tks->id }}"
+                                            {{ ($tks->id == $jadwals->tenkes1) ? 'selected' : '' }}>
+                                            {{ $tks->nama_tenkes }}
+                                        </option>
                                         @endforeach
                                     </select>
                                 </th>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <?php $waktu1 = explode(" - ", $jadwals->waktu1);
+                                       $waktu2 = explode(" - ", $jadwals->waktu2);
+                                    ?>
+                                    <label style="color: black"><b>Sesi 1 :</b></label><br>
+                                    <input class="form-control-sm" type="time" name="pagi_s" value={{ $waktu1[0] }}>
+                                    <input class="form-control-sm" type="time" name="pagi_n" value={{ $waktu1[1] }}>
+                                </td>
                             </tr>
                             <tr class="bg-info">
                                 <th>
@@ -50,28 +63,23 @@
                                     <select name="tenkes2" class="form-control">
                                         <option value="">Kosong</option>
                                         @foreach ($tenkes as $tks)
-                                        <option value="{{ $tks->id }}">{{ $tks->nama_tenkes }}</option>
+                                        <option value="{{ $tks->id }}"
+                                            {{ ($tks->id == $jadwals->tenkes2) ? 'selected' : '' }}>
+                                            {{ $tks->nama_tenkes }}
+                                        </option>
                                         @endforeach
                                     </select>
                                 </th>
                             </tr>
+                            <tr>
+                                <td>
+                                    <label style="color: black"><b>Sesi 2 :</b></label><br>
+                                    <input class="form-control-sm" type="time" name="siang_s" value={{ $waktu2[0] }}>
+                                    <input class="form-control-sm" type="time" name="siang_n" value={{ $waktu2[1] }}>
+                                </td>
+                            </tr>
                         </thead>
-                        <tbody>
-                            <tr>
-                                <td>
-                                    <label style="color: black"><b>Pagi:</b></label><br>
-                                    <input class="form-control-sm" type="time" name="pagi_s" value={{ $jadwals->pagi_s }}>
-                                    <input class="form-control-sm" type="time" name="pagi_n" value={{ $jadwals->pagi_n }}>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <label style="color: black"><b>Siang:</b></label><br>
-                                    <input class="form-control-sm" type="time" name="siang_s" value={{ $jadwals->siang_s }}>
-                                    <input class="form-control-sm" type="time" name="siang_n" value={{ $jadwals->siang_n }}>
-                                </td>
-                            </tr>
-                        </tbody>
+                        
                     </table>
                 </div>
                 <button type="submit" class="btn btn-success btn-icon-split btn-sm">

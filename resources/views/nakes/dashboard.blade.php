@@ -146,14 +146,21 @@
                 @foreach($pasiens as $p)
                     <div class="mb-2">
                         <a href="#collapseCardMedik{{$p->id}}" class="d-block card-header py-3" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="collapseCardExample">
-                            <h6 class="m-0 font-weight-bold text-primary">{{ $p->pasien->nama_pasien}}</h6>
+                            <h6 class="m-0 font-weight-bold text-primary">
+                                @if ($p->pasien_id != null)
+                                {{ $p->pasien->nama_pasien}}
+                                @else
+                                {{ $p->keluarga_pasien->nama_kel_pasien }}
+                                @endif
+                                 | {{ \Carbon\Carbon::parse($p->rekammedik_created_at)->toTimeString() }}
+                            </h6>
                         </a>
                         <div class="collapse" id="collapseCardMedik{{$p->id}}">
                             <div class="card-body shadow">
                                 <div class="row">
                                     <div class="col">
                                         <p class="font-weight-bold text-primary">Suhu: <span class="text-danger">{{ $p->suhu }} </span>&#8451;</p>
-                                        <p class="font-weight-bold text-primary">Tensi: <span class="text-danger">{{ $p->tensi }}</span> mmHg</p>
+                                        <p class="font-weight-bold text-primary">Tensi: <span class="text-danger">{{ $p->siastol }}/{{ $p->diastol }}</span> mmHg</p>
                                         <p class="font-weight-bold text-primary">Keluhan: <span class="text-danger">{{ $p->keluhan }}</span> </p>
                                     </div>
                                     <div class="col">

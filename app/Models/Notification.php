@@ -15,6 +15,7 @@ class Notification extends Model
         'user_id',
         'isi',
         'rekam_medik_id',
+        'rekam_medik_keluarga_id',
     ];
 
     public function user()

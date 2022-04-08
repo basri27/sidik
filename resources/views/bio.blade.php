@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="{{ asset('/fonts/material-icon/css/material-design-iconic-font.min.css') }}">
     <link rel="stylesheet" href="{{ asset('/css/bootstrap.css') }}">
     <link rel="stylesheet" href="{{ asset('/css/regist.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <meta name="robots" content="noindex, follow">
 </head>
 <body>
@@ -18,8 +19,8 @@
                 <div class="signup-content">
                     <form method="POST" action="{{ route('add_bio') }}" enctype="multipart/form-data">
                         @csrf
-                        
                         <h2>Isi Biodata</h2>
+                        <input type="text" name="id_user" value="{{ $user->id }}" hidden>
                         <div class="row">
                             <div class="col-md-6 col-12">
                                 <div class="info-list">
@@ -76,9 +77,9 @@
                                 <div class="info-list">
                                     <div class="form-group">
                                         <label class="font-weight-bold text-primary">Kategori:</label>
-                                        <select class="form-control" name="kategori" onChange="kategori(this)" required>
+                                        <select class="form-control" data-width="100%" name="kategori" id="ktg" onChange="category(this)" required>
                                             @foreach ($kategori as $kat)
-                                            <option value="{{ $kat->id }}">{{ $kat->id }}</option>
+                                            <option value="{{ $kat->id }}">{{ $kat->nama_kategori }}</option>
                                             @endforeach
                                         </select>
                                     </div>            
@@ -88,8 +89,7 @@
                                 <div class="info-list">
                                     <div class="form-group">
                                         <label class="font-weight-bold text-primary">Fakultas:</label>
-                                        <select class="form-control" name="fakultas" id="fakultas_id">
-                                            <option value="">Fakultas</option>
+                                        <select class="form-control" data-width="100%" name="fakultas" id="fakultas_id" required>
                                             @foreach ($fakultas as $fak)
                                             <option value="{{ $fak->id }}">{{ $fak->nama_fakultas }}</option>
                                             @endforeach
@@ -101,8 +101,7 @@
                                 <div class="info-list">
                                     <div class="form-group">
                                         <label class="font-weight-bold text-primary">Program studi:</label>
-                                        <select class="form-control" name="prodi" id="prodi_id">
-                                            <option value="">Program Studi</option>
+                                        <select class="form-control" data-width="100%" name="prodi" id="prodi_id" required>
                                             @foreach ($prodi as $pro)
                                             <option value="{{ $pro->id }}">{{ $pro->nama_prodi }}</option>
                                             @endforeach
@@ -114,14 +113,11 @@
                                 <div class="info-list">
                                     <div class="form-group">
                                         <label class="font-weight-bold text-primary">Upload foto</label>
-                                        <input type="file" name="foto">
+                                        <input class="form-control-file" type="file" name="foto_pasien" required>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <!-- <div class="form-group">
-                            <input type="file" class="form-control" name="foto" id="foto">
-                        </div> -->
                         <div class="form-group">
                             <button type="submit" class="form-submit">Simpan</button>
                         </div>
@@ -129,8 +125,16 @@
                 </div>
             </div>
     </div>
-    <script>
-        function kategori(select)
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js" defer></script>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#ktg').select2()
+            $('#fakultas_id').select2()
+            $('#prodi_id').select2()
+        });
+        function category(select)
         {
             var f = document.getElementById('fakultas_id');
             var p = document.getElementById('prodi_id');
@@ -144,10 +148,11 @@
             else if (select.value == '2') {
                 p.disabled = true;
                 p.value = '1';
+                f.disabled = false
             }
             else {
-                f.disabled = "false";
-                p.disabled = "false";
+                f.disabled = false;
+                p.disabled = false;
             }
         }
     </script>
@@ -155,6 +160,6 @@
     <script src="{{ asset('/js/register.js') }}"></script>
 
     
-    <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"rayId":"68f0132ccea7140e","token":"cd0b4b3a733644fc843ef0b185f98241","version":"2021.8.1","si":10}'></script>
+    
 </body>
 </html>

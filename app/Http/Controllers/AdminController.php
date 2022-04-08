@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Requests\UpdatePasswordRequest;
 use App\Models\Admin;
 use App\Models\User;
-use App\Models\Jadwal;
+use App\Models\JadwalPraktek as Jadwal;
 use App\Models\TenKesehatan;
 use App\Models\Pasien;
 use App\Models\Fakulta;
@@ -19,6 +19,12 @@ use App\Models\RekamMedik;
 use App\Models\Notification;
 use App\Models\ResepObat;
 use App\Models\Diagnosa;
+use App\Models\Mahasiswa;
+use App\Models\Dosen;
+use App\Models\Karyawan;
+use App\Models\Umum;
+use App\Models\Bpjs;
+use App\Models\KeluargaPasien;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -34,41 +40,15 @@ class AdminController extends Controller
 
     public function adm_dashboard()
     {
-        $pasiens = DB::table('pasiens')->count();
-        $nakes = DB::table('tenkesehatans')->count();
-        $rekammedik = DB::table('rekam_mediks')->count();
-        $apoteker = DB::table('apotekers')->count();
-        $y2022 = RekamMedik::select(DB::raw("COUNT(*) as count"))
-        ->whereYear('rekammedik_created_at', '2022')
-        ->groupBy(DB::raw("Month(rekammedik_created_at)"))
-        ->pluck('count');
-        $y2021 = RekamMedik::select(DB::raw("COUNT(*) as count"))
-        ->whereYear('rekammedik_created_at', '2021')
-        ->groupBy(DB::raw("Month(rekammedik_created_at)"))
-        ->pluck('count');
-
-        $months = RekamMedik::whereYear('rekammedik_created_at', '2022')
-        ->get()
-        ->groupBy(function($date) {
-            return Carbon::parse($date->rekammedik_created_at)->format('M');
-        });
-
-        $usermcount = [];
-        $userArr = [];
-
-        foreach($months as $key => $value) {
-            $usermcount[(int)$key] = count($value);
-        }
-
-        for($i = 1; $i <= 12; $i++){
-            if(!empty($usermcount[$i])){
-                $userArr[$i] = $usermcount[$i];
-            }else {
-                $userArr[$i] = 0;
-            }
-        }
-        
-        return view('admin.dashboard', compact('pasiens', 'nakes', 'rekammedik', 'apoteker', 'y2022', 'y2021', 'months', 'userArr', 'usermcount'));
+        $pasienCount = Pasien::count();
+        $nakesCount = Tenkesehatan::count();
+        $rekammedikCount = RekamMedik::count();
+        $apotekerCount = Apoteker::count();
+        $pasiens = RekamMedik::whereDate('rekammedik_created_at', Carbon::now()->toDateString())
+            ->where('status_rekam_medik', 'selesai')
+            ->get();
+        $pCount = $pasiens->count();
+        return view('admin.dashboard', compact('pasienCount', 'nakesCount', 'rekammedikCount', 'apotekerCount', 'pasiens', 'pCount'));
     }
 
     public function adm_profil($user_id)
@@ -140,6 +120,47 @@ class AdminController extends Controller
         return view('admin.manajemen.edit.edit_userpw', compact('admins'));
     }
 
+    public function updateUsername(UpdatePasswordRequest $request, $user_id)
+    {
+        $user = User::find($user_id);
+        if($request->input('username') != $user->username) {
+            Request()->validate([
+                'username' => 'unique:users,username',
+            ], [
+                'username.unique' => 'Username ' . $request->input('username') . ' telah digunakan',
+            ]);
+        }
+        else {
+            Request()->validate([
+                'username' => 'required',
+            ], [
+                'username.required' => 'Username wajib diisi',
+            ]);
+        }
+        $user->update([
+            'username' => $request->input('username')
+        ]);
+
+        return redirect()->route('adm_profil', $user->id)->with(['success' => 'Username berhasil diganti!']); 
+    }
+
+    public function updatePassword(UpdatePasswordRequest $request, $user_id)
+    {
+        $user = User::find($user_id);
+        Request()->validate([
+            'current_password' => 'required',
+            'password' => 'required|min:8|confirmed',
+            'password_confirmation' => 'required',
+        ], [
+            'current_password.required' => 'Password wajib diisi !',
+            'password.required' => 'Password wajib diisi !',
+            'password.confirmed' => 'Password konfirmasi tidak sesuai',
+        ]);
+        $user->update(['password' => Hash::make($request->get('password'))]);
+
+        return redirect()->route('adm_profil', $user->id)->with(['success' => 'Password berhasil diganti!']); 
+    }
+
     public function adm_update_userpw(UpdatePasswordRequest $request, $user_id)
     {
         $user = User::where('id', $user_id)->first();
@@ -197,11 +218,82 @@ class AdminController extends Controller
         return redirect()->route('adm_profil', $user->id)->with(['success' => 'Username atau password berhasil diganti!']);    
     }
 
+    // public function adm_jadwal()
+    // {
+    //     $jadwals = Jadwal::get();
+        
+    //     return view('admin.admin_jadwal', compact('jadwals'));
+    // }
+
+    // public function adm_jadwal_edit($id)
+    // {
+    //     $jadwals = Jadwal::where('id', $id)->first();
+    //     $tenkes = Tenkesehatan::all();
+        
+    //     return view('admin.manajemen.edit.edit_jadwal', compact('jadwals', 'tenkes'));
+    // }
+
+    // public function adm_jadwal_update(Request $request, $id)
+    // {
+    //     $jadwals = Jadwal::find($id);
+    //     $tenkes = ('jadwal_tenkesehatan')->where('jadwal_id', $id)->get();
+        
+    //     if(Request()->tenkes1) {
+    //         if(Request()->tenkes2) {
+    //             $tenkes1 = Request()->tenkes1;
+    //             $tenkes2 = Request()->tenkes2;
+                
+    //             foreach ($tenkes as $t) {
+    //                 $jadwals->tenkesehatan()->detach($t);
+    //             }
+    //             $jadwals->tenkesehatan()->attach([$tenkes1, $tenkes2]);
+    //         }
+    //         else {
+    //             $tenkes1 = Request()->tenkes1;
+    //             $tenkes2 = null;
+    //             foreach ($tenkes as $t) {
+    //                 $jadwals->tenkesehatan()->detach($t);
+    //             }
+    //             $jadwals->tenkesehatan()->attach([$tenkes1, $tenkes2]);
+    //         }
+    //     }
+    //     else {
+    //         if(Request()->tenkes2) {
+    //             $tenkes1 = null;
+    //             $tenkes2 = Request()->tenkes2;
+    //             foreach ($tenkes as $t) {
+    //                 $jadwals->tenkesehatan()->detach($t);
+    //             }
+    //             $jadwals->tenkesehatan()->attach([$tenkes1, $tenkes2]);
+    //         }
+    //         else {
+    //             $tenkes1 = null;
+    //             $tenkes2 = null;
+    //             foreach ($tenkes as $t) {
+    //                 $jadwals->tenkesehatan()->detach($t);
+    //             }
+    //             $jadwals->tenkesehatan()->attach([$tenkes1, $tenkes2]);
+    //         }
+    //     }
+
+    //     $jadwal = Jadwal::where('id', $id)->first();
+    //     $jadwal->update([
+    //         'pagi_s' => $request->input('pagi_s'),
+    //         'pagi_n' => $request->input('pagi_n'),
+    //         'siang_s' => $request->input('siang_s'),
+    //         'siang_n' => $request->input('siang_n'),
+    //     ]);
+
+    //     #dd($jadwals, $id);
+    //     return redirect()->route('adm_jadwal', $id);
+    // }
+
     public function adm_jadwal()
     {
-        $jadwals = Jadwal::get();
+        $jadwals = Jadwal::with('tenkesehatan')->get();
+        $tenkes = TenKesehatan::all();
         
-        return view('admin.admin_jadwal', compact('jadwals'));
+        return view('admin.admin_jadwal', compact('jadwals', 'tenkes'));
     }
 
     public function adm_jadwal_edit($id)
@@ -215,52 +307,55 @@ class AdminController extends Controller
     public function adm_jadwal_update(Request $request, $id)
     {
         $jadwals = Jadwal::find($id);
-        $tenkes = DB::table('jadwal_tenkesehatan')->where('jadwal_id', $id)->get();
+        // $tenkes = Jadwal::with('tenkesehatan')->where('id', $id)->get();
+        // $tenkes = 
         
-        if(Request()->tenkes1) {
-            if(Request()->tenkes2) {
-                $tenkes1 = Request()->tenkes1;
-                $tenkes2 = Request()->tenkes2;
+        // if(Request()->tenkes1) {
+        //     if(Request()->tenkes2) {
+        //         $tenkes1 = Request()->tenkes1;
+        //         $tenkes2 = Request()->tenkes2;
                 
-                foreach ($tenkes as $t) {
-                    $jadwals->tenkesehatan()->detach($t);
-                }
-                $jadwals->tenkesehatan()->attach([$tenkes1, $tenkes2]);
-            }
-            else {
-                $tenkes1 = Request()->tenkes1;
-                $tenkes2 = null;
-                foreach ($tenkes as $t) {
-                    $jadwals->tenkesehatan()->detach($t);
-                }
-                $jadwals->tenkesehatan()->attach([$tenkes1, $tenkes2]);
-            }
-        }
-        else {
-            if(Request()->tenkes2) {
-                $tenkes1 = null;
-                $tenkes2 = Request()->tenkes2;
-                foreach ($tenkes as $t) {
-                    $jadwals->tenkesehatan()->detach($t);
-                }
-                $jadwals->tenkesehatan()->attach([$tenkes1, $tenkes2]);
-            }
-            else {
-                $tenkes1 = null;
-                $tenkes2 = null;
-                foreach ($tenkes as $t) {
-                    $jadwals->tenkesehatan()->detach($t);
-                }
-                $jadwals->tenkesehatan()->attach([$tenkes1, $tenkes2]);
-            }
-        }
+        //         foreach ($tenkes as $t) {
+        //             $jadwals->tenkesehatan()->detach($t);
+        //         }
+        //         $jadwals->tenkesehatan()->attach([$tenkes1, $tenkes2]);
+        //     }
+        //     else {
+        //         $tenkes1 = Request()->tenkes1;
+        //         $tenkes2 = null;
+        //         foreach ($tenkes as $t) {
+        //             $jadwals->tenkesehatan()->detach($t);
+        //         }
+        //         $jadwals->tenkesehatan()->attach([$tenkes1, $tenkes2]);
+        //     }
+        // }
+        // else {
+        //     if(Request()->tenkes2) {
+        //         $tenkes1 = null;
+        //         $tenkes2 = Request()->tenkes2;
+        //         foreach ($tenkes as $t) {
+        //             $jadwals->tenkesehatan()->detach($t);
+        //         }
+        //         $jadwals->tenkesehatan()->attach([$tenkes1, $tenkes2]);
+        //     }
+        //     else {
+        //         $tenkes1 = null;
+        //         $tenkes2 = null;
+        //         foreach ($tenkes as $t) {
+        //             $jadwals->tenkesehatan()->detach($t);
+        //         }
+        //         $jadwals->tenkesehatan()->attach([$tenkes1, $tenkes2]);
+        //     }
+        // }
 
         $jadwal = Jadwal::where('id', $id)->first();
+        $waktu1 = $request->input('pagi_s')." - ".$request->input('pagi_n');
+        $waktu2 = $request->input('siang_s')." - ".$request->input('siang_n');
         $jadwal->update([
-            'pagi_s' => $request->input('pagi_s'),
-            'pagi_n' => $request->input('pagi_n'),
-            'siang_s' => $request->input('siang_s'),
-            'siang_n' => $request->input('siang_n'),
+            'tenkes1' => $request->input('tenkes1'),
+            'waktu1' => $waktu1,
+            'tenkes2' => $request->input('tenkes2'),
+            'waktu2' => $waktu2
         ]);
 
         #dd($jadwals, $id);
@@ -270,29 +365,154 @@ class AdminController extends Controller
     //------------rekap rekam medik-------------//
     public function adm_rekap_rekam_medik()
     {
-        $pasien = Pasien::all();
-        $rekammedik = RekamMedik::all();
-        $y2022 = RekamMedik::select(DB::raw("COUNT(*) as count"))
-        ->whereYear('rekammedik_created_at', '2022')
-        ->groupBy(DB::raw("Month(rekammedik_created_at)"))
-        ->pluck('count');
-        $y2021 = RekamMedik::select(DB::raw("COUNT(*) as count"))
-        ->whereYear('rekammedik_created_at', '2021')
-        ->groupBy(DB::raw("Month(rekammedik_created_at)"))
-        ->pluck('count');
-        
-        $data = RekamMedik::whereYear('rekammedik_created_at', '2022')
-        ->get()
-        ->groupBy(function($date) {
-            return Carbon::parse($date->rekammedik_created_at)->format('M');
-        });
-        $months = [];
-        foreach($data as $key => $value){
-            $months[$key] = count($value);
+        $rekammedik = RekamMedik::where('status_rekam_medik', 'selesai')->get();
+        $diagnosa = Diagnosa::all();
+        $i = 0;
+        foreach($diagnosa as $r) {
+            $i += 1;
+            $diag[$i] = RekamMedik::where('diagnosa_id', $r->id)->orderBy('diagnosa_id', 'DESC')->count();
+            $namediag[$i] = RekamMedik::where('diagnosa_id', $r->id)->first();
         }
-        //$months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
 
-        return view('admin.rekap_rekam_medik', compact('rekammedik'), ['y2022' => $y2022, 'y2021' => $y2021, 'months' => $months]);
+        foreach($diag as $dg) {
+            if($dg != 0) {
+                $dgn[] = $dg;
+            }
+        }
+
+        foreach($namediag as $r) {
+            if($r != null) {
+                $listdiag[] = $r->diagnosa->nama_diagnosa; 
+            }
+        }
+
+        for($i = 1; $i <= 12; $i++) {
+            $diagCount20[$i] = RekamMedik::fromQuery('SELECT diagnosa_id, COUNT(diagnosa_id) AS freq FROM rekam_mediks WHERE YEAR (rekammedik_created_at) = 2020 AND MONTH (rekammedik_created_at) = ' . $i . ' GROUP BY diagnosa_id ORDER BY freq DESC LIMIT 5');
+            $diagCount21[$i] = RekamMedik::fromQuery('SELECT diagnosa_id, COUNT(diagnosa_id) AS freq FROM rekam_mediks WHERE YEAR (rekammedik_created_at) = 2021 AND MONTH (rekammedik_created_at) = ' . $i . ' GROUP BY diagnosa_id ORDER BY freq DESC LIMIT 5');
+            $diagCount22[$i] = RekamMedik::fromQuery('SELECT diagnosa_id, COUNT(diagnosa_id) AS freq FROM rekam_mediks WHERE YEAR (rekammedik_created_at) = 2022 AND MONTH (rekammedik_created_at) = ' . $i . ' GROUP BY diagnosa_id ORDER BY freq DESC LIMIT 5');
+            $diagCount23[$i] = RekamMedik::fromQuery('SELECT diagnosa_id, COUNT(diagnosa_id) AS freq FROM rekam_mediks WHERE YEAR (rekammedik_created_at) = 2023 AND MONTH (rekammedik_created_at) = ' . $i . ' GROUP BY diagnosa_id ORDER BY freq DESC LIMIT 5');
+            $diagCount24[$i] = RekamMedik::fromQuery('SELECT diagnosa_id, COUNT(diagnosa_id) AS freq FROM rekam_mediks WHERE YEAR (rekammedik_created_at) = 2024 AND MONTH (rekammedik_created_at) = ' . $i . ' GROUP BY diagnosa_id ORDER BY freq DESC LIMIT 5');
+            $diagCount25[$i] = RekamMedik::fromQuery('SELECT diagnosa_id, COUNT(diagnosa_id) AS freq FROM rekam_mediks WHERE YEAR (rekammedik_created_at) = 2025 AND MONTH (rekammedik_created_at) = ' . $i . ' GROUP BY diagnosa_id ORDER BY freq DESC LIMIT 5');
+            $data24[$i] = RekamMedik::whereYear('rekammedik_created_at', 2024)->whereMonth('rekammedik_created_at', $i)->where('status_rekam_medik', 'selesai')->count();
+            $data25[$i] = RekamMedik::whereYear('rekammedik_created_at', 2025)->whereMonth('rekammedik_created_at', $i)->where('status_rekam_medik', 'selesai')->count();
+            $data20[$i] = RekamMedik::whereYear('rekammedik_created_at', 2020)->whereMonth('rekammedik_created_at', $i)->where('status_rekam_medik', 'selesai')->count();
+            $data21[$i] = RekamMedik::whereYear('rekammedik_created_at', 2021)->whereMonth('rekammedik_created_at', $i)->where('status_rekam_medik', 'selesai')->count();
+            $data22[$i] = RekamMedik::whereYear('rekammedik_created_at', 2022)->whereMonth('rekammedik_created_at', $i)->where('status_rekam_medik', 'selesai')->count();
+            $data23[$i] = RekamMedik::whereYear('rekammedik_created_at', 2023)->whereMonth('rekammedik_created_at', $i)->where('status_rekam_medik', 'selesai')->count();
+        }
+        // dd($diagCount);
+        $dosen24 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Dosen')->whereYear('rekammedik_created_at', 2024)->count();
+        $dosen25 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Dosen')->whereYear('rekammedik_created_at', 2025)->count();
+        $dosen20 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Dosen')->whereYear('rekammedik_created_at', 2020)->count();
+        $dosen21 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Dosen')->whereYear('rekammedik_created_at', 2021)->count();
+        $dosen22 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Dosen')->whereYear('rekammedik_created_at', 2022)->count();
+        $dosen23 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Dosen')->whereYear('rekammedik_created_at', 2023)->count();
+
+        $mhs24 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Mahasiswa')->whereYear('rekammedik_created_at', 2024)->count();
+        $mhs25 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Mahasiswa')->whereYear('rekammedik_created_at', 2025)->count();
+        $mhs20 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Mahasiswa')->whereYear('rekammedik_created_at', 2020)->count();
+        $mhs21 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Mahasiswa')->whereYear('rekammedik_created_at', 2021)->count();
+        $mhs22 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Mahasiswa')->whereYear('rekammedik_created_at', 2022)->count();
+        $mhs23 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Mahasiswa')->whereYear('rekammedik_created_at', 2023)->count();
+
+        $kary24 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Karyawan')->whereYear('rekammedik_created_at', 2024)->count();
+        $kary25 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Karyawan')->whereYear('rekammedik_created_at', 2025)->count();
+        $kary20 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Karyawan')->whereYear('rekammedik_created_at', 2020)->count();
+        $kary21 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Karyawan')->whereYear('rekammedik_created_at', 2021)->count();
+        $kary22 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Karyawan')->whereYear('rekammedik_created_at', 2022)->count();
+        $kary23 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Karyawan')->whereYear('rekammedik_created_at', 2023)->count();
+
+        $umum24 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Umum')->whereYear('rekammedik_created_at', 2024)->count();
+        $umum25 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Umum')->whereYear('rekammedik_created_at', 2025)->count();
+        $umum20 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Umum')->whereYear('rekammedik_created_at', 2020)->count();
+        $umum21 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Umum')->whereYear('rekammedik_created_at', 2021)->count();
+        $umum22 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Umum')->whereYear('rekammedik_created_at', 2022)->count();
+        $umum23 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Umum')->whereYear('rekammedik_created_at', 2023)->count();
+        
+        foreach($data24 as $r) {
+            $y2024[] = $r;
+        }
+        foreach($data25 as $r) {
+            $y2025[] = $r;
+        }
+        foreach($data20 as $r) {
+            $y2020[] = $r;
+        }
+        foreach($data21 as $r) {
+            $y2021[] = $r;
+        }
+        foreach($data22 as $r) {
+            $y2022[] = $r;
+        }
+        foreach($data23 as $r) {
+            $y2023[] = $r;
+        }
+        
+        return view('admin.rekap_rekam_medik', compact('rekammedik', 'diagCount20', 'diagCount21', 'diagCount22', 'diagCount23', 'diagCount24', 'diagCount25', 'y2024', 'y2025', 'y2020', 'y2021', 'y2022', 'y2023', 'mhs24', 'mhs25', 'mhs20', 'mhs21', 'mhs22', 'mhs23', 'dosen24', 'dosen25', 'dosen20', 'dosen21', 'dosen22', 'dosen23', 'kary24', 'kary25', 'kary20', 'kary21', 'kary22', 'kary23', 'umum24', 'umum25', 'umum20', 'umum21', 'umum22', 'umum23'));
+    }
+    public function filterRekamMedikPasien(Request $request)
+    {
+        $rekammedik = RekamMedik::where('status_rekam_medik', 'selesai')->whereBetween('rekammedik_created_at', [$request->input('date-start'), $request->input('date-end')])
+            ->orWhereDate('rekammedik_created_at', $request->input('date-end'))->get();
+
+        for($i = 1; $i <= 12; $i++) {
+            $data24[$i] = RekamMedik::whereYear('rekammedik_created_at', 2024)->whereMonth('rekammedik_created_at', $i)->where('status_rekam_medik', 'selesai')->count();
+            $data25[$i] = RekamMedik::whereYear('rekammedik_created_at', 2025)->whereMonth('rekammedik_created_at', $i)->where('status_rekam_medik', 'selesai')->count();
+            $data20[$i] = RekamMedik::whereYear('rekammedik_created_at', 2020)->whereMonth('rekammedik_created_at', $i)->where('status_rekam_medik', 'selesai')->count();
+            $data21[$i] = RekamMedik::whereYear('rekammedik_created_at', 2021)->whereMonth('rekammedik_created_at', $i)->where('status_rekam_medik', 'selesai')->count();
+            $data22[$i] = RekamMedik::whereYear('rekammedik_created_at', 2022)->whereMonth('rekammedik_created_at', $i)->where('status_rekam_medik', 'selesai')->count();
+            $data23[$i] = RekamMedik::whereYear('rekammedik_created_at', 2023)->whereMonth('rekammedik_created_at', $i)->where('status_rekam_medik', 'selesai')->count();
+        }
+
+        $civitas24 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Dosen')->orWhere('nama_kategori', 'Karyawan')->whereYear('rekammedik_created_at', 2024)->count();
+        $dosen24 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Dosen')->whereYear('rekammedik_created_at', 2024)->count();
+        $dosen25 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Dosen')->whereYear('rekammedik_created_at', 2025)->count();
+        $dosen20 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Dosen')->whereYear('rekammedik_created_at', 2020)->count();
+        $dosen21 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Dosen')->whereYear('rekammedik_created_at', 2021)->count();
+        $dosen22 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Dosen')->whereYear('rekammedik_created_at', 2022)->count();
+        $dosen23 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Dosen')->whereYear('rekammedik_created_at', 2023)->count();
+
+        $mhs24 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Mahasiswa')->whereYear('rekammedik_created_at', 2024)->count();
+        $mhs25 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Mahasiswa')->whereYear('rekammedik_created_at', 2025)->count();
+        $mhs20 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Mahasiswa')->whereYear('rekammedik_created_at', 2020)->count();
+        $mhs21 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Mahasiswa')->whereYear('rekammedik_created_at', 2021)->count();
+        $mhs22 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Mahasiswa')->whereYear('rekammedik_created_at', 2022)->count();
+        $mhs23 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Mahasiswa')->whereYear('rekammedik_created_at', 2023)->count();
+
+        $kary24 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Karyawan')->whereYear('rekammedik_created_at', 2024)->count();
+        $kary25 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Karyawan')->whereYear('rekammedik_created_at', 2025)->count();
+        $kary20 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Karyawan')->whereYear('rekammedik_created_at', 2020)->count();
+        $kary21 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Karyawan')->whereYear('rekammedik_created_at', 2021)->count();
+        $kary22 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Karyawan')->whereYear('rekammedik_created_at', 2022)->count();
+        $kary23 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Karyawan')->whereYear('rekammedik_created_at', 2023)->count();
+
+        $umum24 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Umum')->whereYear('rekammedik_created_at', 2024)->count();
+        $umum25 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Umum')->whereYear('rekammedik_created_at', 2025)->count();
+        $umum20 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Umum')->whereYear('rekammedik_created_at', 2020)->count();
+        $umum21 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Umum')->whereYear('rekammedik_created_at', 2021)->count();
+        $umum22 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Umum')->whereYear('rekammedik_created_at', 2022)->count();
+        $umum23 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Umum')->whereYear('rekammedik_created_at', 2023)->count();
+        
+        foreach($data24 as $r) {
+            $y2024[] = $r;
+        }
+        foreach($data25 as $r) {
+            $y2025[] = $r;
+        }
+        foreach($data20 as $r) {
+            $y2020[] = $r;
+        }
+        foreach($data21 as $r) {
+            $y2021[] = $r;
+        }
+        foreach($data22 as $r) {
+            $y2022[] = $r;
+        }
+        foreach($data23 as $r) {
+            $y2023[] = $r;
+        }
+        
+        return view('admin.rekap_rekam_medik', compact('rekammedik', 'y2024', 'y2025', 'y2020', 'y2021', 'y2022', 'y2023', 'mhs24', 'mhs25', 'mhs20', 'mhs21', 'mhs22', 'mhs23', 'dosen24', 'dosen25', 'dosen20', 'dosen21', 'dosen22', 'dosen23', 'kary24', 'kary25', 'kary20', 'kary21', 'kary22', 'kary23', 'umum24', 'umum25', 'umum20', 'umum21', 'umum22', 'umum23'));
     }
     public function filterRekamMedik()
     {
@@ -304,11 +524,12 @@ class AdminController extends Controller
             ''
         ];
         $orderBy = $columns[request()->input("order.0.column")];
-        $data = DB::table('rekam_mediks as rk')
+        $data = (DB::table('rekam_mediks as rk'))
         ->join('tenkesehatans as t', 't.id', 'rk.tenkesehatan_id')
         ->join('pasiens as p', 'p.id', 'rk.pasien_id')
         ->join('categories as c', 'c.id', 'p.category_id')
         ->join('diagnosas as d', 'rk.diagnosa_id', 'd.id')
+        ->where('status_rekam_medik', 'selesai')
         ->select('rk.id', 'rk.pasien_id', 'rk.tenkesehatan_id', 'rk.diagnosa_id', 'rk.suhu', 'rk.tensi', 'rk.keluhan', 'rk.keterangan', 'rk.rekammedik_created_at',
             't.nama_tenkes',
             'p.nama_pasien', 
@@ -346,55 +567,33 @@ class AdminController extends Controller
         ]);
     }
 
-    //-----------filter grafik bar--------------//
-    public function filterGrafikBar()
-    {
-        $data = DB::table('rekam_mediks')
-        ->whereYear('rekammedik_created_at', request()->input('tahun'))
-        ->get()
-        ->groupBy(function($date) {
-            return Carbon::parse($date->rekammedik_created_at)->format('m');
-        });
-
-        $usermcount = [];
-        $userArr = [];
-
-        foreach ($data as $key => $value) {
-            $usermcount[(int)$key] = count($value);
-        }
-
-        for ($i=1; $i <= 12 ; $i++) { 
-            if(!empty($usermcount[$i])) {
-                $userArr[$i] = $usermcount[$i];
-            }
-            else {
-                $userArr[$i] = 0;
-            }
-        }
-
-        // return view('admin.rekap_rekam_medik', ['userArr' => $userArr]);
-        //return json_encode(compact('userArr'));
-        return response()->json(['data' => $userArr]);
-    }
-
     //-----------function manajemen----------//
     public function adm_man_datapasien()
     {
-        $pasiens = Pasien::all();
+        $pasiens = Pasien::where('status_pasien', 'aktif')->get();
+        $dosen = Dosen::all();
+        $mhs = Mahasiswa::all();
+        $kary = Karyawan::all();
+        $bpjs = Bpjs::all();
+        $users = User::all()->last();
+        $fakultas = Fakulta::all();
+        $prodis = Prodi::all();
+        $category = Category::all();
         
-        return view('admin.manajemen.man_datapasien', compact('pasiens'));
+        return view('admin.manajemen.man_datapasien', compact('pasiens', 'fakultas', 'prodis', 'category', 'dosen', 'mhs', 'kary', 'bpjs'));
     }
     public function adm_man_dataapoteker()
     {
-        $apotekers = Apoteker::all();
+        $apotekers = Apoteker::where('status_apoteker', 'aktif')->get();
 
         return view('admin.manajemen.man_dataapoteker', compact('apotekers'));
     }
     public function adm_man_datanakes()
     {
-        $tenkes = Tenkesehatan::all();
+        $tenkes = Tenkesehatan::where('status_tenkes', 'aktif')->get();
+        $kakes = Kategori_tenkesehatan::all();
         
-        return view('admin.manajemen.man_datanakes', compact('tenkes'));
+        return view('admin.manajemen.man_datanakes', compact('tenkes', 'kakes'));
     }
     public function admManDataDiagnosa()
     {
@@ -404,9 +603,13 @@ class AdminController extends Controller
     }
     public function adm_man_datarekammedik()
     {
-        $pasiens = Pasien::get();
+        $pasiens = Pasien::where('status_pasien', 'aktif')->get();
+        $dosen = Dosen::all();
+        $mhs = Mahasiswa::all();
+        $kary = Karyawan::all();
+        $bpjs = Bpjs::all();
 
-        return view('admin.manajemen.man_rekammedik', compact('pasiens'));
+        return view('admin.manajemen.man_rekammedik', compact('pasiens', 'dosen', 'mhs', 'kary', 'bpjs'));
     }
 
     //------------Tambah data------------//
@@ -422,77 +625,56 @@ class AdminController extends Controller
     }
     public function adm_man_datapasien_add(Request $request)
     {
-        $validated = $request->validate([
-            'nama' => 'required',
-            'tempat_lhr' => 'required',
-            'tgl_lhr' => 'required',
-            'no_hp' => 'required',
-            'alamat' => 'required',
-            'jk' => 'required',
-            'category_id' => 'required',
-        ]);
-
-        if($validated)
-        {
             User::create([
                 'role_id' => '2',
-                'username' => Str::lower(Str::random(6)),
+                'username' => Str::lower($request->input('username')),
                 'password' => Hash::make(12345678),
                 'user_created_at' => Carbon::now(),
                 'user_updated_at' => Carbon::now(),
             ]);
+
+            $user = User::where('username', $request->input('username'))->first();
             
-            if(Request()->fakulta_id <> ""){
-                if(Request()->prodi_id <> ""){
-                    Pasien::create([
-                        'user_id' => $request->input('user_id'),
-                        'category_id' => $request->input('category_id'),
-                        'fakulta_id' => $request->input('fakulta_id'),
-                        'prodi_id' => $request->input('prodi_id'),
-                        'nama_pasien' => $request->input('nama'),
-                        'tempat_lhr_pasien' => $request->input('tempat_lhr'),
-                        'tgl_lhr_pasien' => $request->input('tgl_lhr'),
-                        'no_hp_pasien' => $request->input('no_hp'),
-                        'alamat_pasien' => $request->input('alamat'),
-                        'jk_pasien' => $request->input('jk'),
-                        'pasien_created_at' => Carbon::now(),
-                        'pasien_updated_at' => Carbon::now(),
-                    ]);
-                }
-                else {
-                    Pasien::create([
-                        'user_id' => $request->input('user_id'),
-                        'category_id' => $request->input('category_id'),
-                        'fakulta_id' => $request->input('fakulta_id'),
-                        'prodi_id' => '1',
-                        'nama_pasien' => $request->input('nama'),
-                        'tempat_lhr_pasien' => $request->input('tempat_lhr'),
-                        'tgl_lhr_pasien' => $request->input('tgl_lhr'),
-                        'no_hp_pasien' => $request->input('no_hp'),
-                        'alamat_pasien' => $request->input('alamat'),
-                        'jk_pasien' => $request->input('jk'),
-                        'pasien_created_at' => Carbon::now(),
-                        'pasien_updated_at' => Carbon::now(),
-                    ]);
-                }
-            }
-            else {
-                Pasien::create([
-                    'user_id' => $request->input('user_id'),
-                    'category_id' => $request->input('category_id'),
-                    'fakulta_id' => '1',
-                    'prodi_id' => '1',
-                    'nama_pasien' => $request->input('nama'),
-                    'tempat_lhr_pasien' => $request->input('tempat_lhr'),
-                    'tgl_lhr_pasien' => $request->input('tgl_lhr'),
-                    'no_hp_pasien' => $request->input('no_hp'),
-                    'alamat_pasien' => $request->input('alamat'),
-                    'jk_pasien' => $request->input('jk'),
-                    'pasien_created_at' => Carbon::now(),
-                    'pasien_updated_at' => Carbon::now(),
+            Pasien::create([
+                'user_id' => $user->id,
+                'category_id' => $request->input('category_id'),
+                'nama_pasien' => $request->input('nama'),
+                'tempat_lhr_pasien' => $request->input('tempat_lhr'),
+                'tgl_lhr_pasien' => $request->input('tgl_lhr'),
+                'no_hp_pasien' => $request->input('no_hp'),
+                'alamat_pasien' => $request->input('alamat'),
+                'jk_pasien' => $request->input('jk'),
+                'foto_pasien' => 'default.jpg',
+                'status_pasien' => 'aktif'
+            ]);
+
+            $pasien = Pasien::where('user_id', $user->id)->first();
+
+            if ($request->input('category_id') == 1) {
+                Dosen::create([
+                    'pasien_id' => $pasien->id,
+                    'fakulta_id' => $request->input('fakulta_id'),
                 ]);
             }
-        }
+            elseif ($request->input('category_id') == 2) {
+                Karyawan::create([
+                    'pasien_id' => $pasien->id,
+                    'fakulta_id' => $request->input('fakulta_id'),
+                ]);
+            }
+            elseif ($request->input('category_id') == 3) {
+                Mahasiswa::create([
+                    'pasien_id' => $pasien->id,
+                    'fakulta_id' => $request->input('fakulta_id'),
+                    'prodi_id' => $request->input('prodi_id'),
+                ]);
+            }
+            elseif ($request->input('category_id') == 5) {
+                Bpjs::create([
+                    'pasien_id' => $pasien->id,
+                    'no_bpjs' => $request->input('no_bpjs')
+                ]);
+            }
 
         return redirect()->route('adm_man_datapasien')->with(['success' => 'Data berhasil ditambahkan!']);
     }
@@ -506,34 +688,26 @@ class AdminController extends Controller
     }
     public function adm_man_dataapoteker_add(Request $request)
     {
-        $validated = $request->validate([
-            'nama' => 'required',
-            'tempat_lhr' => 'required',
-            'tgl_lhr' => 'required',
-            'no_hp' => 'required',
-            'alamat' => 'required',
-            'jk' => 'required',
-        ]);
-
-        if($validated)
-        {
+        
             User::create([
                 'role_id' => '4',
-                'username' => Str::lower(Str::random(6)),
+                'username' => Str::lower($request->input('username')),
                 'password' => Hash::make(12345678),
             ]);
+
+            $user = User::where('username', $request->input('username'))->first();
+
             Apoteker::create([
-                'user_id' => $request->input('user_id'),
+                'user_id' => $user->id,
                 'nama_apoteker' => $request->input('nama'),
                 'tempat_lhr_apoteker' => $request->input('tempat_lhr'),
                 'tgl_lhr_apoteker' => $request->input('tgl_lhr'),
                 'nohp_apoteker' => $request->input('no_hp'),
                 'alamat_apoteker' => $request->input('alamat'),
                 'jk_apoteker' => $request->input('jk'),
-                'apoteker_created_at' => Carbon::now(),
-                'apoteker_updated_at' => Carbon::now(),
+                'foto_apoteker' => 'default.jpg',
+                'status_apoteker' => 'aktif'
             ]);
-        }
 
         return redirect()->route('adm_man_dataapoteker')->with(['success' => 'Data berhasil ditambahkan!']);
     }
@@ -547,34 +721,26 @@ class AdminController extends Controller
     }
     public function adm_man_datanakes_add(Request $request)
     {
-        $validated = $request->validate([
-            'nama' => 'required',
-            'tempat_lhr' => 'required',
-            'tgl_lhr' => 'required',
-            'no_hp' => 'required',
-            'alamat' => 'required',
-            'jk' => 'required',
-        ]);
-
-        if($validated)
-        {
             User::create([
                 'role_id' => '3',
-                'username' => Str::lower(Str::random(6)),
+                'username' => Str::lower($request->input('username')),
                 'password' => Hash::make(12345678),
             ]);
+
+            $user = User::where('username', $request->input('username'))->first();
+
             Tenkesehatan::create([
-                'user_id' => $request->input('user_id'),
+                'user_id' => $user->id,
+                'kategori_tenkesehatan_id' => $request->input('kakes'),
                 'nama_tenkes' => $request->input('nama'),
                 'tempat_lhr_tenkes' => $request->input('tempat_lhr'),
                 'tgl_lhr_tenkes' => $request->input('tgl_lhr'),
                 'nohp_tenkes' => $request->input('no_hp'),
                 'alamat_tenkes' => $request->input('alamat'),
                 'jk_tenkes' => $request->input('jk'),
-                'tenkes_created_at' => Carbon::now(),
-                'tenkes_updated_at' => Carbon::now(),
+                'foto_tenkes' => 'default.jpg',
+                'status_tenkes' => 'aktif'
             ]);
-        }
 
         return redirect()->route('adm_man_datanakes')->with(['success' => 'Data berhasil ditambahkan!']);
     }
@@ -593,58 +759,178 @@ class AdminController extends Controller
     #Edit data pasien
     public function adm_man_datapasien_edit($id)
     {
-        $pasiens = Pasien::where('id', $id)->first();
+        $pasien = Pasien::find($id);
         $fakultas = Fakulta::all();
         $prodis = Prodi::all();
         $category = Category::all();
         
-        return view('admin.manajemen.edit.edit_datapasien', compact('pasiens', 'fakultas', 'prodis', 'category'));
+        return view('admin.manajemen.edit.edit_datapasien', compact('pasien', 'fakultas', 'prodis', 'category'));
     }
     public function adm_man_datapasien_update(Request $request, $id)
     {
-        $pasiens = Pasien::where('id', $id);
+        $pasien = Pasien::find($id);
 
-        if(Request()->fakulta_id <> ""){
-            if(Request()->prodi_id <> ""){
-                $pasiens->update([
-                    'category_id' => $request->input('category_id'),
-                    'fakulta_id' => $request->input('fakulta_id'),
-                    'prodi_id' => $request->input('prodi_id'),
-                    'nama_pasien' => $request->input('nama'),
-                    'tempat_lhr_pasien' => $request->input('tempat_lhr'),
-                    'tgl_lhr_pasien' => $request->input('tgl_lhr'),
-                    'no_hp_pasien' => $request->input('no_hp'),
-                    'alamat_pasien' => $request->input('alamat'),
-                    'jk_pasien' => $request->input('jk'),
+        if ($request->input('category_id') == $pasien->category_id) {
+            if ($pasien->category_id == 1) {
+                $dosen = Dosen::where('pasien_id', $pasien->id)->first();
+                $dosen->update([
+                    'fakulta_id' => $request->input('fakulta_id')
                 ]);
             }
-            else {
-                $pasiens->update([
-                    'category_id' => $request->input('category_id'),
+            else if ($pasien->category_id == 2) {
+                $kary = Karyawan::where('pasien_id', $pasien->id)->first();
+                $kary->update([
+                    'fakulta_id' => $request->input('fakulta_id')
+                ]);
+            }
+            else if ($pasien->category_id == 3) {
+                $mhs = Mahasiswa::where('pasien_id', $pasien->id)->first();
+                $mhs->update([
                     'fakulta_id' => $request->input('fakulta_id'),
-                    'prodi_id' => '1',
-                    'nama_pasien' => $request->input('nama'),
-                    'tempat_lhr_pasien' => $request->input('tempat_lhr'),
-                    'tgl_lhr_pasien' => $request->input('tgl_lhr'),
-                    'no_hp_pasien' => $request->input('no_hp'),
-                    'alamat_pasien' => $request->input('alamat'),
-                    'jk_pasien' => $request->input('jk'),
+                    'prodi_id' => $request->input('prodi_id')
+                ]);
+            }
+            else if ($pasien->category_id == 5) {
+                $bpjs = Bpjs::where('pasien_id', $pasien->id)->first();
+                $bpjs->update([
+                    'no_bpjs' => $request->input('no_bpjs')
                 ]);
             }
         }
         else {
-            $pasiens->update([
-                    'category_id' => $request->input('category_id'),
-                    'fakulta_id' => '1',
-                    'prodi_id' => '1',
-                    'nama_pasien' => $request->input('nama'),
-                    'tempat_lhr_pasien' => $request->input('tempat_lhr'),
-                    'tgl_lhr_pasien' => $request->input('tgl_lhr'),
-                    'no_hp_pasien' => $request->input('no_hp'),
-                    'alamat_pasien' => $request->input('alamat'),
-                    'jk_pasien' => $request->input('jk'),
-                ]);
+            if ($pasien->category_id == 1) {
+                $dosen = Dosen::where('pasien_id', $pasien->id)->first();
+                if ($request->input('category_id') == 2) {
+                    $bagian = Fakulta::find($request->input('fakulta_id'));
+                    Karyawan::create([
+                        'pasien_id' => $pasien->id,
+                        'fakulta_id' => $request->input('fakulta_id')
+                    ]);
+                }
+                else if ($request->input('category_id') == 3) {
+                    Mahasiswa::create([
+                        'pasien_id' => $pasien->id,
+                        'fakulta_id' => $request->input('fakulta_id'),
+                        'prodi_id' => $request->input('prodi_id'),
+                    ]);
+                }
+                else if ($request->input('category_id') == 5) {
+                    Bpjs::create([
+                        'pasien_id' => $pasien->id,
+                        'no_bpjs' => $request->input('no_bpjs')
+                    ]);
+                }
+                $dosen->delete();
+            }
+            else if ($pasien->category_id == 2) {
+                $kary = Karyawan::where('pasien_id', $pasien->id)->first();
+                if ($request->input('category_id') == 1) {
+                    Dosen::create([
+                        'pasien_id' => $pasien->id,
+                        'fakulta_id' => $request->input('fakulta_id')
+                    ]);
+                }
+                else if ($request->input('category_id') == 3) {
+                    Mahasiswa::create([
+                        'pasien_id' => $pasien->id,
+                        'fakulta_id' => $request->input('fakulta_id'),
+                        'prodi_id' => $request->input('prodi_id'),
+                    ]);
+                }
+                else if ($request->input('category_id') == 5) {
+                    Bpjs::create([
+                        'pasien_id' => $pasien->id,
+                        'no_bpjs' => $request->input('no_bpjs')
+                    ]);
+                }
+                $kary->delete();
+            }
+            else if ($pasien->category_id == 3) {
+                $mhs = Mahasiswa::where('pasien_id', $pasien->id)->first();
+                if ($request->input('category_id') == 1) {
+                    Dosen::create([
+                        'pasien_id' => $pasien->id,
+                        'fakulta_id' => $request->input('fakulta_id')
+                    ]);
+                }
+                else if ($request->input('category_id') == 2) {
+                    Karyawan::create([
+                        'pasien_id' => $pasien->id,
+                        'fakulta_id' => $request->input('fakulta_id'),
+                    ]);
+                }
+                else if ($request->input('category_id') == 5) {
+                    Bpjs::create([
+                        'pasien_id' => $pasien->id,
+                        'no_bpjs' => $request->input('no_bpjs')
+                    ]);
+                }
+                $mhs->delete();
+            }
+            else if ($pasien->category_id == 4) {
+                if ($request->input('category_id') == 1) {
+                    Dosen::create([
+                        'pasien_id' => $pasien->id,
+                        'fakulta_id' => $request->input('fakulta_id')
+                    ]);
+                }
+                else if ($request->input('category_id') == 2) {
+                    Karyawan::create([
+                        'pasien_id' => $pasien->id,
+                        'fakulta_id' => $request->input('fakulta_id'),
+                    ]);
+                }
+                else if ($request->input('category_id') == 3) {
+                    Mahasiswa::create([
+                        'pasien_id' => $pasien->id,
+                        'fakulta_id' => $request->input('fakulta_id'),
+                        'prodi_id' => $request->input('prodi_id'),
+                    ]);
+                }
+                else if ($request->input('category_id') == 5) {
+                    Bpjs::create([
+                        'pasien_id' => $pasien->id,
+                        'no_bpjs' => $request->input('no_bpjs')
+                    ]);
+                }
+            }
+            else if ($pasien->category_id == 5) {
+                $bpjs = Bpjs::where('pasien_id', $pasien->id)->first();
+                if ($request->input('category_id') == 1) {
+                    Dosen::create([
+                        'pasien_id' => $pasien->id,
+                        'fakulta_id' => $request->input('fakulta_id')
+                    ]);
+                }
+                else if ($request->input('category_id') == 2) {
+                    Karyawan::create([
+                        'pasien_id' => $pasien->id,
+                        'fakulta_id' => $request->input('fakulta_id'),
+                    ]);
+                }
+                else if ($request->input('category_id') == 3) {
+                    Mahasiswa::create([
+                        'pasien_id' => $pasien->id,
+                        'fakulta_id' => $request->input('fakulta_id'),
+                        'prodi_id' => $request->input('prodi_id')
+                    ]);
+                }
+                $bpjs->delete();
+            }
         }
+
+        $pasien->update([
+            'category_id' => $request->input('category_id'),
+            'nama_pasien' => $request->input('nama'),
+            'tempat_lhr_pasien' => $request->input('tempat_lhr'),
+            'tgl_lhr_pasien' => $request->input('tgl_lhr'),
+            'no_hp_pasien' => $request->input('no_hp'),
+            'alamat_pasien' => $request->input('alamat'),
+            'jk_pasien' => $request->input('jk'),
+            'foto_pasien' => 'default.jpg',
+            'status_pasien' => 'aktif'
+        ]);
+        
         return redirect()->route('adm_man_datapasien')->with(['success' => 'Data berhasil diubah!']);
     }
 
@@ -684,7 +970,7 @@ class AdminController extends Controller
         $tenkes = Tenkesehatan::where('id', $id)->first();
         $tenkes->update([
             'nama_tenkes' => $request->input('nama'),
-            'kategori_tenkesehatan_id_tenkes' => $request->input('kts'),
+            'kategori_tenkesehatan_id' => $request->input('kakes'),
             'tempat_lhr_tenkes' => $request->input('tempat_lhr'),
             'tgl_lhr_tenkes' => $request->input('tgl_lhr'),
             'nohp_tenkes' => $request->input('no_hp'),
@@ -699,9 +985,19 @@ class AdminController extends Controller
     public function edit_datarekammedik($id)
     {
         $pasien = Pasien::find($id);
-        $nakes = Tenkesehatan::all();
+        $diagnosas = Diagnosa::all();
+        $tenkes = Tenkesehatan::all();
 
-        return view('admin.manajemen.edit.edit_datarekammedik', compact('pasien', 'nakes'));
+        return view('admin.manajemen.edit.edit_datarekammedik', compact('pasien', 'diagnosas', 'tenkes'));
+    }
+    public function editRekamMedikKeluarga($id)
+    {
+        $pasien = KeluargaPasien::find($id);
+        $tenkes = Tenkesehatan::all();
+        $diagnosas = Diagnosa::all();
+
+        return view('admin.manajemen.edit.edit_datarekammedik_keluarga', compact('pasien', 'tenkes', 'diagnosas'));
+
     }
     public function kirim_datarekammedik(Request $request, $id)
     {
@@ -716,7 +1012,9 @@ class AdminController extends Controller
                 'pasien_id' => $id,
                 'tenkesehatan_id' => Request()->nakes_id,
                 'suhu' => Request()->suhu,
-                'tensi' => Request()->tensi,
+                'siastol' => Request()->tensi1,
+                'diastol' => Request()->tensi2,
+                'status_rekam_medik' => 'dalam proses',
             ]);
 
             $rkm = RekamMedik::all()->last();
@@ -726,8 +1024,30 @@ class AdminController extends Controller
                 'isi' => 'Pasien ingin berobat!',
             ]);
 
-            MedicalRecordSent::dispatch($rekammedik, $notif);
+            // MedicalRecordSent::dispatch($rekammedik, $notif);
         }
+
+        return redirect()->route('adm_man_datarekammedik')->with(['success' => 'Data berhasil dikirim!']);
+    }
+    public function kirimRekamMedikKeluarga(Request $request, $id)
+    {
+        $tenkes = Tenkesehatan::find(Request()->nakes_id);
+        $rekammedik = RekamMedik::create([
+            'keluarga_pasien_id' => $id,
+            'tenkesehatan_id' => Request()->nakes_id,
+            'suhu' => Request()->suhu,
+            'siastol' => Request()->tensi1,
+            'diastol' => Request()->tensi2,
+            'status_rekam_medik' => 'dalam proses',
+        ]);
+
+        $notif = Notification::create([
+            'rekam_medik_id' => $rekammedik->id,
+            'user_id' => $tenkes->user->id,
+            'isi' => 'Pasien ingin berobat!',
+        ]);
+
+        // MedicalRecordSent::dispatch($rekammedik, $notif);
 
         return redirect()->route('adm_man_datarekammedik')->with(['success' => 'Data berhasil dikirim!']);
     }
@@ -746,34 +1066,33 @@ class AdminController extends Controller
     public function delete_datapasien($id)
     {
         $pasiens = Pasien::where('id', $id)->first();
-        $users = User::where('id', $pasiens->user_id)->first();
-        $pasiens->delete();
-        $users->delete();
+        $pasiens->update([
+            'status_pasien' => 'non-aktif'
+        ]);
 
         return redirect()->route('adm_man_datapasien')->with(['success' => 'Data berhasil dihapus!']);
     }
     public function delete_dataapoteker($id)
     {
         $apoteker = Apoteker::where('id', $id)->first();
-        $users = User::where('id', $apoteker->user_id)->first();
-        $apoteker->delete();
-        $users->delete();
+        $apoteker->update([
+            'status_apoteker' => 'non-aktif'
+        ]);
 
         return redirect()->route('adm_man_dataapoteker')->with(['success' => 'Data berhasil dihapus!']);
     }
     public function delete_datanakes($id)
     {
         // $jadwal = Jadwal::where('tenkesehatan_id', $id)->get();
-        $jadwal = DB::table('jadwal_tenkesehatan')->where('tenkesehatan_id', $id)->update(['tenkesehatan_id' => null]);
+        $jadwal = (DB::table('jadwal_tenkesehatan'))->where('tenkesehatan_id', $id)->update(['tenkesehatan_id' => null]);
         $tenkes = Tenkesehatan::where('id', $id)->first();
-        $users = User::where('id', $tenkes->user_id)->first();
-
-        $tenkes->delete();
-        $users->delete();
+        $tenkes->update([
+            'status_tenkes' => 'non-aktif'
+        ]);
 
         return redirect()->route('adm_man_datanakes')->with(['success' => 'Data berhasil dihapus!']);
     }
-    public function admDeleteDiagnosa(Request $request, $id)
+    public function admDeleteDiagnosa($id)
     {
         $diagnosa = Diagnosa::find($id);
         $diagnosa->update([

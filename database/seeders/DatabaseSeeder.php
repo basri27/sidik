@@ -95,73 +95,73 @@ class DatabaseSeeder extends Seeder
             'status_apoteker' => 'aktif',
         ]);
 
-        $days = ['Senin', 'Selasa', 'Rabu', 'Kamis', "Jum'at"];
-        foreach ($days as $day) {
-            DB::table('jadwals')->insert([
-                'hari' => $day,
-                'pagi_s' => '10:00',
-                'pagi_n' => '12:00',
-                'siang_s' => '13:00',
-                'siang_n' => '16:00',
-            ]);
-        }
+        // $days = ['Senin', 'Selasa', 'Rabu', 'Kamis', "Jum'at"];
+        // foreach ($days as $day) {
+        //     DB::table('jadwal_prakteks')->insert([
+        //         'hari' => $day,
+        //         'pagi' => '10:00 sd 12:00',
+        //         'siang' => '14:00 sd 16:00',
+        //         'nakes_1' => random_int(1,6),
+        //         'nakes_2' => random_int(1,6),
+        //     ]);
+        // }
 
-        $categories = ['Dosen', 'Karyawan', 'Mahasiswa', 'Umum'];
+        $categories = ['Dosen', 'Karyawan', 'Mahasiswa', 'Umum', 'BPJS'];
         foreach ($categories as $category) {
             DB::table('categories')->insert(['nama_kategori' => $category]);
         }
 
-        $fakultas = [
-            'Tidak ada',
-            'Teknik',
-            'Matematika dan Ilmu Pengetahuan', 
-            'Keguruan dan Ilmu Pengetahuan', 
-            'Ilmu Sosial dan Ilmu Pemerintahan',
-            'Perikanan dan Kelautan',
-            'Pertanian'
-        ];
-        foreach ($fakultas as $fak) {
-            DB::table('fakultas')->insert(['nama_fakultas' => $fak]);
-        }
+        // $fakultas = [
+        //     'Tidak ada',
+        //     'Teknik',
+        //     'Matematika dan Ilmu Pengetahuan', 
+        //     'Keguruan dan Ilmu Pengetahuan', 
+        //     'Ilmu Sosial dan Ilmu Pemerintahan',
+        //     'Perikanan dan Kelautan',
+        //     'Pertanian'
+        // ];
+        // foreach ($fakultas as $fak) {
+        //     DB::table('fakultas')->insert(['nama_fakultas' => $fak]);
+        // }
 
-        $prodi = [
-            'Tidak ada',
-            'Teknologi Informasi',
-            'Teknik Sipil',
-            'Teknik Kimia',
-            'Teknik Mesin',
-            'Teknik Lingkungan',
-            'Arsitektur',
-            'Matematika',
-            'Fisika',
-            'Sastra Indonesia'
-        ];
-        foreach ($prodi as $pro) {
-            DB::table('prodis')->insert(['nama_prodi' => $pro]);
-        } 
+        // $prodi = [
+        //     'Tidak ada',
+        //     'Teknologi Informasi',
+        //     'Teknik Sipil',
+        //     'Teknik Kimia',
+        //     'Teknik Mesin',
+        //     'Teknik Lingkungan',
+        //     'Arsitektur',
+        //     'Matematika',
+        //     'Fisika',
+        //     'Sastra Indonesia'
+        // ];
+        // foreach ($prodi as $pro) {
+        //     DB::table('prodis')->insert(['nama_prodi' => $pro]);
+        // } 
 
-        for ($k = 0; $k < 2; $k++) {
-            for ($t = 1; $t < 6; $t++) {
-                DB::table('jadwal_tenkesehatan')->insert([
-                    'jadwal_id' => $t,
-                    'tenkesehatan_id' => $t,
-                ]);
-            }
-        }
+        // for ($k = 0; $k < 2; $k++) {
+        //     for ($t = 1; $t < 6; $t++) {
+        //         DB::table('jadwal_tenkesehatan')->insert([
+        //             'jadwal_id' => $t,
+        //             'tenkesehatan_id' => $t,
+        //         ]);
+        //     }
+        // }
 
-        $diagnosa = array(
-            array('nama_diagnosa' => 'Acute Nasopharyngitis (common cold)', 'kode_diagnosa' => 'J00', 'status_diagnosa' => 'aktif'),
-            array('nama_diagnosa' => 'Essential (primary) hypertension', 'kode_diagnosa' => 'I10', 'status_diagnosa' => 'aktif'),
-            array('nama_diagnosa' => 'Non-insulin-dependent diabetes mellitus', 'kode_diagnosa' => 'E11', 'status_diagnosa' => 'aktif'),
-            array('nama_diagnosa' => 'Pure Hypercholesterolaemia', 'kode_diagnosa' => 'E78.0', 'status_diagnosa' => 'aktif'), 
-            array('nama_diagnosa' => 'Dyspepsia', 'kode_diagnosa' => 'K30', 'status_diagnosa' => 'aktif'), 
-            array('nama_diagnosa' => 'Necrosis of pulp', 'kode_diagnosa' => 'K04.1', 'status_diagnosa' => 'aktif'), 
-            array('nama_diagnosa' => 'Myalgia', 'kode_diagnosa' => 'M79.1', 'status_diagnosa' => 'aktif'), 
-            array('nama_diagnosa' => 'Astigmatism', 'kode_diagnosa' => 'H52.2', 'status_diagnosa' => 'aktif'), 
-            array('nama_diagnosa' => 'Myopia', 'kode_diagnosa' => 'H52.1', 'status_diagnosa' => 'aktif'), 
-            array('nama_diagnosa' => 'Hypermetropia', 'kode_diagnosa' => 'H52.0', 'status_diagnosa' => 'aktif')
-        );
-        DB::table('diagnosas')->insert($diagnosa);
+        // $diagnosa = array(
+        //     array('nama_diagnosa' => 'Acute Nasopharyngitis (common cold)', 'status_diagnosa' => 'aktif'),
+        //     array('nama_diagnosa' => 'Essential (primary) hypertension', 'status_diagnosa' => 'aktif'),
+        //     array('nama_diagnosa' => 'Non-insulin-dependent diabetes mellitus', 'status_diagnosa' => 'aktif'),
+        //     array('nama_diagnosa' => 'Pure Hypercholesterolaemia', 'status_diagnosa' => 'aktif'), 
+        //     array('nama_diagnosa' => 'Dyspepsia', 'status_diagnosa' => 'aktif'), 
+        //     array('nama_diagnosa' => 'Necrosis of pulp', 'status_diagnosa' => 'aktif'), 
+        //     array('nama_diagnosa' => 'Myalgia', 'status_diagnosa' => 'aktif'), 
+        //     array('nama_diagnosa' => 'Astigmatism', 'status_diagnosa' => 'aktif'), 
+        //     array('nama_diagnosa' => 'Myopia', 'status_diagnosa' => 'aktif'), 
+        //     array('nama_diagnosa' => 'Hypermetropia', 'status_diagnosa' => 'aktif')
+        // );
+        // DB::table('diagnosas')->insert($diagnosa);
 
         $obat = ['Hydrocodone', 'Simvastatin', 'Lisinopril', 'Levothyroxine Sodium', 'Amlodipine Besylate', 'Omeprazole', 'Azithromycin', 'Amoxicillin', 'Metformin'];
         foreach($obat as $o) {

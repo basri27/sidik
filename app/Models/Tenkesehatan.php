@@ -21,8 +21,7 @@ class Tenkesehatan extends Model
         'nohp_tenkes',
         'alamat_tenkes',
         'foto_tenkes',
-        'tenkes_created_at',
-        'tenkes_updated_at',
+        'status_tenkes',
     ];
 
     public function kategori_tenkesehatan()
@@ -37,12 +36,17 @@ class Tenkesehatan extends Model
 
     public function jadwal()
     {
-        return $this->belongsToMany(Jadwal::class, 'jadwal_tenkesehatan', 'jadwal_id', 'tenkesehatan_id');
+        return $this->belongsToMany(JadwalPraktek::class);
     }
     
     public function rekammedik()
     {
         return $this->hasMany(RekamMedik::class);
     }
+
+    // public function jadwal_praktek()
+    // {
+    //     return $this->hasMany(JadwalPraktek::class);
+    // }
 
 }

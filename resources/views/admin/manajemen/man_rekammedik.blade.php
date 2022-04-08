@@ -8,6 +8,11 @@
     <link rel="stylesheet" href="{{ asset('css/dashboard/animate.min.css') }}">
     <link rel="stylesheet" href="{{ asset('css/bootstrap.css') }}">
     <link rel="stylesheet" href="{{ asset('vendor/dashboard/datatables/dataTables.bootstrap4.css') }}">
+    <style type="text/css">
+        .modal-dialog {
+            max-width: 65%;
+        }
+    </style>
 @endsection
 
 @section('menu')
@@ -42,7 +47,6 @@
                         <tr>
                             <th>Index</th>
                             <th>Nama</th>
-                            <th>Alamat</th>
                             <th>Umur</th>
                             <th>Kategori</th>
                             <th>Jenis Kelamin</th>
@@ -53,7 +57,6 @@
                         <tr>
                             <th>Index</th>
                             <th>Nama</th>
-                            <th>Alamat</th>
                             <th>Umur</th>
                             <th>Kategori</th>
                             <th>Jenis Kelamin</th>
@@ -65,15 +68,33 @@
                         <tr>
                             <td>{{ $p->id }}</td>
                             <td>{{ $p->nama_pasien }}</td>
-                            <td>{{ $p->alamat_pasien }}</td>
-                            <td>{{ \Carbon\Carbon::parse($p->tgl_lhr_pasien)->diff(\Carbon\Carbon::now())->y}}</td>
-                            <td>{{ $p->category->nama_kategori }}</td>
+                            <td>{{ \Carbon\Carbon::parse($p->tgl_lhr_pasien)->age }} tahun</td>
+                            <td>
+                                {{ $p->category->nama_kategori }}
+                                @if ($p->category_id == 1)
+                                    @foreach($dosen as $d)
+                                        {{ ($d->pasien_id == $p->id) ? $d->fakulta->nama_fakultas : '' }}
+                                    @endforeach
+                                @elseif ($p->category_id == 2)
+                                    @foreach($kary as $k)
+                                        {{ ($k->pasien_id == $p->id) ? $k->fakulta->nama_fakultas : '' }}
+                                    @endforeach
+                                @elseif ($p->category_id == 3)
+                                    @foreach($mhs as $m)
+                                        {{ ($m->pasien_id == $p->id) ? $m->fakulta->nama_fakultas." - ".$m->prodi->nama_prodi : '' }}
+                                    @endforeach
+                                @elseif ($p->category_id == 5)
+                                <br>
+                                ({{ $bpjs->no_bpjs }})
+                                @endif
+                            </td>
                             <td>{{ $p->jk_pasien }}</td>
                             <td>
-                                <center>
-                                    <a class="btn btn-success btn-sm" href="{{ route('detail_datarekammedik', $p->id) }}"><i class="fas fa-info-circle"></i></a> 
-                                    <a class="btn btn-primary btn-sm" href="{{ route('edit_datarekammedik', $p->id) }}"><i class="fas fa-plus-circle"></i></a>
-                                </center>
+                                <a class="btn btn-success btn-sm" href="{{ route('detail_datarekammedik', $p->id) }}"><i class="fas fa-info-circle"></i></a> 
+                                <a class="btn btn-primary btn-sm" href="{{ route('edit_datarekammedik', $p->id) }}"><i class="fas fa-plus-circle"></i></a>
+                                @if ($p->category_id == 1 or $p->category_id == 2)
+                                <a class="btn btn-secondary btn-sm" href="#viewKeluarga{{ $p->id }}" data-toggle="modal"><i class="fas fa-users"></i></a>
+                                @endif
                             </td>
                         </tr>
                         @endforeach
@@ -83,6 +104,56 @@
         </div>
     </div>
 </div>
+@foreach($pasiens as $p)
+    <div id="viewKeluarga{{ $p->id }}" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+        <!-- konten modal-->
+            <div class="modal-content">
+                <!-- heading modal -->
+                <div class="modal-header bg-light">
+                    <h4 class="modal-title font-weight-bold float-left">Daftar Keluarga</h4>
+                </div>
+                <!-- body modal -->
+                <div class="modal-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <?php $keluarga = \App\Models\KeluargaPasien::where('pasien_id', $p->id)->get(); ?>
+                            <thead>
+                                <tr>
+                                    <th>Nama</th>
+                                    <th>Hubungan</th>
+                                    <th>Umur</th>
+                                    <!-- <th>Jenis Kelamin</th> -->
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($keluarga as $kp)
+                                <tr>
+                                    <td>{{ $kp->nama_kel_pasien }}</td>
+                                    <td>{{ $kp->kategori_kel_pasien }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($kp->tgl_lhr_kel_pasien)->age }} tahun</td>
+                                    <!-- <td>{{ $kp->jk_kel_pasien }}</td> -->
+                                    <td>
+                                        <center>
+                                            <a class="btn btn-success btn-sm" href="#"><i class="fas fa-info-circle"></i></a>
+                                            <a class="btn btn-primary btn-sm" href="{{ route('edit_datarekammedikkeluarga', $kp->id) }}"><i class="fas fa-plus-circle"></i></a>
+                                        </center>
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- footer modal -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-dark" data-dismiss="modal">Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
+@endforeach
 <script>
     var msg = '{{Session::get('alert')}}';
     var exist = '{{Session::has('alert')}}';

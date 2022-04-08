@@ -9,6 +9,8 @@ class Category extends Model
 {
     use HasFactory;
 
+    public $timestamps = false;
+
     public function pasien() {
 		return $this->hasMany(Pasiens::class);
     }

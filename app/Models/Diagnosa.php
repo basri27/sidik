@@ -15,6 +15,8 @@ class Diagnosa extends Model
         'status_diagnosa',
     ];
 
+    public $timestamps = false;
+
     public function rekammedik()
     {
         return $this->hasMany(RekamMedik::class);

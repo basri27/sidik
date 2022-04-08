@@ -61,7 +61,7 @@
                                 
                             </div>
                         </div>
-                        <div class="col-md-3 col-12">
+                        <div class="col-md-3 col-12" id="new-password" >
                             <div class="info-list">
                                 <ul>
                                     <li>
@@ -77,7 +77,7 @@
                                 
                             </div>
                         </div>
-                        <div class="col-md-3 col-12">
+                        <div class="col-md-3 col-12" id="password-confirm" >
                             <div class="info-list">
                                 <ul>
                                     <li>
@@ -93,7 +93,7 @@
                             <input type="checkbox" class="form-control-input" onclick="showPassword()"> Tampilkan password
                         </div>
                         <div class="col-md-3">
-                            <input type="checkbox" class="form-control-input" onclick="updateOnlyUsername()"> Hanya ganti <b>username</b>
+                            <input type="checkbox" class="form-control-input" id="edit-username" onclick="updateOnlyUsername()"> Hanya ganti <b>username</b>
                         </div>
                     </div><br>
                     <button type="submit" class="btn btn-success btn-sm">
@@ -135,15 +135,22 @@
         var y = document.getElementById('password-baru');
         var z = document.getElementById('password-baru-confirm');
         
-        if(y.disabled == false) {
-            y.disabled = true;
-            z.disabled = true;
+        // if(y.disabled == false) {
+        //     y.disabled = true;
+        //     z.disabled = true;
+        // }
+        // else {
+        //     y.disabled = false;
+        //     z.disabled = false;
+        // }
+        if($('#edit-username').checked = true) {
+            $('#new-password').hide()
+            $('#password-confirm').hide()
         }
         else {
-            y.disabled = false;
-            z.disabled = false;
+            $('#new-password').hide()
+            $('#password-confirm').hide()
         }
-        
     }
 </script>
 @endsection

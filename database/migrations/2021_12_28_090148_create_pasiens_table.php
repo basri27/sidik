@@ -16,8 +16,6 @@ class CreatePasiensTable extends Migration
         Schema::create('pasiens', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained();
-            $table->foreignId('fakulta_id')->constrained();
-            $table->foreignId('prodi_id')->constrained();
             $table->foreignId('category_id')->constrained();
             $table->string('nama_pasien')->nullable();
             $table->string('jk_pasien')->nullable();
@@ -27,8 +25,6 @@ class CreatePasiensTable extends Migration
             $table->string('alamat_pasien')->nullable();
             $table->string('foto_pasien')->nullable();
             $table->string('status_pasien')->nullable();
-            $table->timestamp('pasien_created_at')->useCurrent();
-            $table->timestamp('pasien_updated_at')->useCurrent();
         });
     }
 

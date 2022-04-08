@@ -119,7 +119,7 @@
 @endsection
 
 @section('foto')
-<img class="img-profile rounded-circle" src="{{ asset('foto_profil/' . $nakes->tenkesehatan->foto_tenkes) }}">
+<img class="img-profile rounded-circle" src="{{ asset('foto_profil/nakes/' . $nakes->tenkesehatan->foto_tenkes) }}">
 @endsection
 
 @section('content')

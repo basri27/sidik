@@ -31,10 +31,9 @@ class NakesController extends Controller
         $notifCount = Notification::where('user_id', $id)->count();
         $tenkes = Tenkesehatan::where('user_id', $id)->first();
         $pasiens = RekamMedik::where('tenkesehatan_id', $tenkes->id)
-            ->whereDate('rekammedik_created_at', Carbon::now()->toDateString())
-            ->whereNotNull('keluhan')
-            ->get()
-        ;
+            ->whereDate('rekammedik_created_at', Carbon::now())
+            ->where('status_rekam_medik', 'selesai')
+            ->get();
         $pasienCount = $pasiens->count();
         
         return view('nakes.dashboard', compact('notifs', 'notifCount', 'pasiens', 'pasienCount'));
@@ -55,7 +54,7 @@ class NakesController extends Controller
         $notifs = Notification::where('user_id', $id)->orderBy('id', 'DESC')->get();
         $notifCount = Notification::where('user_id', $id)->count();
         $nakes = Tenkesehatan::where('user_id', $id)->first();
-        $age = Carbon::parse($nakes->tgl_lhr_tenkes)->diff(Carbon::now())->y;
+        $age = Carbon::parse($nakes->tgl_lhr_tenkes)->age;
 
         return view('nakes.edit.nakes_edit_profil', compact('notifs', 'notifCount', 'nakes', 'age'));
     }
@@ -178,26 +177,39 @@ class NakesController extends Controller
         $notif = Notification::where('id', $id)->first();
         $notifs = Notification::where('user_id', $notif->user_id)->orderBy('id', 'DESC')->get();
         $notifCount = $notifs->count();
-        $rekammedik = RekamMedik::find($notif->rekam_medik_id);
+        $rekammedik = RekamMedik::where('id', $notif->rekam_medik_id)->first();
+        //dd($rekammedik);
         $resep = ResepObat::where('rekam_medik_id', $rekammedik->id)->get();
+        //dd($resep);
         $diagnosa = Diagnosa::all();
         $obat = Obat::all();
-
+        
         return view('nakes.edit.nakes_edit_rekammedik', compact('notif', 'notifs', 'notifCount', 'rekammedik', 'resep', 'diagnosa', 'obat'));
     }
 
     public function addResepObat(Request $request, $id)
     {   
-        $keterangan = $request->input('resep').' x '.$request->input('hari').' hari | '.$request->input('takaran').' '.$request->input('kuantitas').' ('.$request->input('waktu').')';
+        $keterangan = $request->input('resep').' x '.$request->input('hari').' hari | '.$request->input('takaran').' '.$request->input('kuantitas').' ('.$request->input('waktu').') | Keterangan: ' . $request->input('keterangan_resep');
         ResepObat::create([
             'obat_id' => $request->input('obat_id'),
             'rekam_medik_id' => $request->input('rekammedik_id'),
-            'keterangan' => $keterangan,
+            'keterangan' => $request->input('keterangan_resep'),
             'resepobat_created_at' => Carbon::now(),
             'resepobat_updated_at' => Carbon::now(),
         ]);
 
-        return redirect()->route('nakes_edit_rekammedik', $id)->with(['success' => 'Resep obat berhasil ditambah!']);
+        return redirect()->route('nakes_edit_rekammedik_last', $id)->with(['success' => 'Resep obat berhasil ditambah!']);
+    }
+
+    public function editRekamMedikLast($id)
+    {
+        $diagnosa = Diagnosa::all();
+        $obat = Obat::all();
+        $currentNotif = Notification::where('id', $id)->first();
+        $rekammedik = RekamMedik::find($currentNotif->rekam_medik_id);
+        $resep = ResepObat::where('rekam_medik_id', $rekammedik->id)->get();
+
+        return view('nakes.edit.resepobat', compact('rekammedik', 'currentNotif', 'diagnosa', 'obat', 'resep'));
     }
 
     public function deleteResepObat($id, $notif_id)
@@ -210,17 +222,47 @@ class NakesController extends Controller
 
     public function nakesKirimDataRekamMedik(Request $request, $id)
     {
+        $diagnosa = Diagnosa::all();
+        $obat = Obat::all();
+        
         $currentNotif = Notification::where('id', $id)->first();
         $rekammedik = RekamMedik::find($currentNotif->rekam_medik_id);
         $rekammedik->update([
             'suhu' => $request->input('suhu'),
-            'tensi' => $request->input('tensi'),
+            'siastol' => $request->input('tensi1'),
+            'diastol' => $request->input('tensi2'),
             'diagnosa_id' => $request->input('diagnosa'),
             'keluhan' => $request->input('keluhan'),
             'keterangan' => $request->input('keterangan'),
             'rekammedik_updated_at' => Carbon::now(),
         ]);
 
+        $resep = ResepObat::where('rekam_medik_id', $rekammedik->id)->get();
+        // $apotekers = Apoteker::all();
+        // foreach ($apotekers as $key) {
+        //     $notif = Notification::create([
+        //         'rekam_medik_id' => $rekammedik->id,
+        //         'user_id' => $key->user->id,
+        //         'isi' => 'Obat pasien',
+        //     ]);
+        // }
+
+        return redirect()->route('nakes_edit_rekammedik_last', $id)->with(['success' => 'Pemeriksaan berhasil diperbarui!']);
+        // $currentNotif->delete();
+
+        // ObatSent::dispatch($rekammedik, $notif);
+
+        
+        // return redirect()->route('nakes_dashboard', $rekammedik->tenkesehatan->user->id)->with(['success' => 'Rekam Medik berhasil dikirim!']);
+
+        // return view('nakes.edit.resepobat', compact('rekammedik', 'currentNotif', 'diagnosa', 'obat', 'resep'));
+    }
+
+    public function kirimRekamMedik(Request $request, $id)
+    {
+        $currentNotif = Notification::where('id', $id)->first();
+        $rekammedik = RekamMedik::find($currentNotif->rekam_medik_id);
+        
         $apotekers = Apoteker::all();
         foreach ($apotekers as $key) {
             $notif = Notification::create([
@@ -231,8 +273,6 @@ class NakesController extends Controller
         }
 
         $currentNotif->delete();
-
-        ObatSent::dispatch($rekammedik, $notif);
 
         return redirect()->route('nakes_dashboard', $rekammedik->tenkesehatan->user->id)->with(['success' => 'Rekam Medik berhasil dikirim!']);
     }

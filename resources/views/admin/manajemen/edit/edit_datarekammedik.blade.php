@@ -28,137 +28,104 @@
                 <div class="detail-col col-md-12">
                     <form method="POST" enctype="multipart/form-data" action="{{ route('kirim_datarekammedik', $pasien->id) }}">
                     @csrf
-                    <div class="row">
-                        <div class="col-md-4 col-12">
-                            <div class="info-list">
-                                <div class="form-group">
-                                    <label class="font-weight-bold text-primary">Tanggal</label> 
-                                    <input type="text" class="form-control" value="{{ \Carbon\Carbon::now()->format('d F Y') }}" readonly>                                   
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4 col-12">
-                            <div class="info-list">
-                                <div class="form-group">
-                                    <label class="font-weight-bold text-primary">Waktu</label>
-                                    <input type="text" class="form-control" value="{{ \Carbon\Carbon::now()->toTimeString() }}" readonly>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <hr>
-                    <div class="row">
-                        <div class="col-md-4 col-12">
-                            <div class="info-list">
-                                <div class="form-group">
-                                <ul>
-                                    <li>
-                                        <label class="font-weight-bold text-primary">Nama</label>
-                                        <input type="text" name="nama" class="form-control" value="{{ $pasien->nama_pasien }}" readonly>
-                                    </li>
-                                    <li>
-                                        <label class="font-weight-bold text-primary">Tempat lahir</label>
-                                        <input type="text" name="tempat_lhr" class="form-control" value="{{ $pasien->tempat_lhr_pasien }}" readonly>
-                                    </li>
-                                    <li>
-                                        <label class="font-weight-bold text-primary">Tanggal lahir</label>
-                                        <input type="date" name="tgl_lhr" class="form-control" value="{{ $pasien->tgl_lhr_pasien }}" readonly>
-                                    </li>
-                                </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4 col-12">
-                            <div class="info-list">
-                                <div class="form-group">
-                                <ul>
-                                    <li>
-                                        <label class="font-weight-bold text-primary">No. Hp</label>
-                                        <input type="text" name="no_hp" class="form-control" value="{{ $pasien->no_hp_pasien }}" readonly>
-                                    </li>
-                                    <li>
-                                        <label class="font-weight-bold text-primary">Alamat</label>
-                                        <input type="text" name="alamat" class="form-control" value="{{ $pasien->alamat_pasien }}" readonly>
-                                    </li>
-                                    <li>
-                                        <label class="font-weight-bold text-primary">Jenis Kelamin</label>
-                                        <input type="text" name="jk" class="form-control" value="{{ $pasien->jk_pasien }}" readonly>
-                                    </li>
-                                </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4 col-12">
-                            <div class="info-list">
-                                <div class="form-group">
-                                    <ul>
-                                        <li>
-                                            <label class="font-weight-bold text-primary">Kategori</label>
-                                            <input type="text" name="category_id" class="form-control" value="{{ $pasien->category->nama_kategori }}" readonly>
-                                        </li>
-                                        @if ($pasien->category_id == '1' or $pasien->category_id == '3')
-                                        <li>
-                                            <label class="font-weight-bold text-primary" id="label_f">Fakultas</label>
-                                            <input type="text" name="fakulta_id" class="form-control" value="{{ $pasien->fakulta->nama_fakultas }}" readonly>
-                                        </li>
-                                        <li>
-                                            <label class="font-weight-bold text-primary" id="label_p">Program Studi</label>
-                                            <input type="text" name="prodi_id" class="form-control" value="{{ $pasien->prodi->nama_prodi }}" readonly>
-                                        </li>
-                                        @elseif ($pasien->category_id == '2')
-                                        <li>
-                                            <label class="font-weight-bold text-primary" id="label_f">Fakultas</label>
-                                            <input type="text" name="fakulta_id" class="form-control" value="{{ $pasien->fakulta->nama_fakultas }}" readonly>
-                                        </li>
-                                        @endif
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <hr>                                    
-                    <div class="row">
-                        <div class="col-md-4 col-12">
-                            <div class="info-list">
-                                <div class="form-group">
-                                    <ul>
-                                        <li>
-                                            <label class="font-weight-bold text-primary" id="label_f">Suhu</label>
-                                            <input type="number" step="0.01" name="suhu" class="form-control">
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4 col-12">
-                            <div class="info-list">
-                                <div class="form-group">
-                                    <ul>
-                                        <li>
-                                            <label class="font-weight-bold text-primary" id="label_f">Tensi</label>
-                                            <input type="text" name="tensi" class="form-control">
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4 col-12">
-                            <div class="info-list">
-                                <div class="form-group">
-                                    <ul>
-                                        <li>
-                                            <label class="font-weight-bold text-primary" id="label_f">Tenaga Kesehatan</label>
-                                            <select name="nakes_id" class="form-control">
-                                                <option value="">Pilih Tenaga Kesehatan</option>
-                                                @foreach($nakes as $n)
-                                                <option value="{{ $n->id }}">{{ $n->nama_tenkes }}</option>
-                                                @endforeach
-                                            </select>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="table-responsive">
+                        <table class="table table-borderless">
+                            <tr>
+                                <td><img src="{{ asset('img/logo-ulm1.png') }}"></td>
+                                <td class="text-center">
+                                    <h6>KLINIK PRATAMA LAMBUNG MANGKURAT MEDICAL CENTER (LMMC)</h6>
+                                    <h6>UNIVERSITAS LAMBUNG MANGKURAT</h6>
+                                </td>
+                                <td><img src="{{ asset('img/logo-klinik1.png') }}"></td>
+                            </tr>
+                        </table>
+                        <center><h5><u>KARTU RAWAT JALAN</u></h5></center>
+                        <table class="font-weight-bold">
+                            <tr>
+                                <td>No. Indeks</td>
+                                <td>&emsp;: {{ $pasien->id }}</td>
+                            </tr>
+                            <tr style="padding: 2px;">
+                                <td>Nama</td>
+                                <td>&emsp;: {{ $pasien->nama_pasien }}</td>
+                            </tr>
+                            <tr>
+                                <td>Jenis Kelamin</td>
+                                <td>&emsp;: {{ $pasien->jk_pasien }}</td>
+                            </tr>
+                            <tr>
+                                <td>TTL</td>
+                                <td>&emsp;: {{ $pasien->tempat_lhr_pasien }}, {{ \Carbon\Carbon::parse($pasien->tgl_lhr_pasien)->format('d F Y') }}</td>
+                            </tr>
+                            <tr>
+                                <?php
+                                    $dosen = \App\Models\Dosen::where('pasien_id', $pasien->id)->first();
+                                    $mhs = \App\Models\Mahasiswa::where('pasien_id', $pasien->id)->first();
+                                    $kary = \App\Models\Karyawan::where('pasien_id', $pasien->id)->first();
+                                    $bpjs = \App\Models\Bpjs::where('pasien_id', $pasien->id)->first();
+                                ?>
+                                <td>Kategori</td>
+                                <td>
+                                    &emsp;: {{ $pasien->category->nama_kategori }}
+                                    @if ($pasien->category_id == 1)
+                                    {{ $dosen->fakulta->nama_fakultas }}
+                                    @elseif ($pasien->category_id == 2)
+                                    {{ $kary->fakulta->nama_fakultas }}
+                                    @elseif ($pasien->category_id == 3)
+                                    ({{ $mhs->fakulta->nama_fakultas }} - {{ $mhs->prodi->nama_prodi }})
+                                    @elseif ($pasien->category_id == 5)
+                                    ({{ $bpjs->no_bpjs }})
+                                    @endif
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Alamat</td>
+                                <td>&emsp;: {{ $pasien->alamat_pasien }}</td>
+                            </tr>
+                            <tr>
+                                <td>No. HP</td>
+                                <td>&emsp;: {{ $pasien->no_hp_pasien }}</td>
+                            </tr></b>
+                        </table>
+                        <br>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>TGL PEMERIKSAAN</th>
+                                    <th>PEMERIKSAAN/DIAGNOSA</th>
+                                    <th>KETERANGAN</th>
+                                    <th>TENAGA KESEHATAN</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><b>{{ \Carbon\Carbon::parse(\Carbon\Carbon::now())->format('d-m-Y') }}</b></td>
+                                    <td>
+                                        <b>Suhu: <br><input class="form-control-sm col-8" type="number" min="25" max="40" step="0.01" name="suhu"> <small>&#8451;</small> <br>
+                                        Tensi: <br><input class="form-control-sm col-4" type="number" name="tensi1">&nbsp;/&nbsp;<input class="form-control-sm col-4" type="number" name="tensi2"> <small>mmHg</small><br>
+                                        Pemeriksaan: <br><textarea class="form-control-sm col-12" placeholder="Keluhan dan lain-lain" disabled></textarea> <br>
+                                        Diagnosa: <br>
+                                        <select class="form-control-sm col-12" disabled>
+                                            <option>Pilih Diagnosa</option>
+                                            @foreach($diagnosas as $d)
+                                            <option value="{{ $d->id }}">{{ $d->nama_diagnosa }}</option>
+                                            @endforeach
+                                        </select></b>
+                                    </td>
+                                    <td>
+                                        <textarea class="form-control-sm col-12" placeholder="Keterangan" disabled></textarea>
+                                    </td>
+                                    <td>
+                                        <select class="form-control-sm col-12" name="nakes_id">
+                                            <option>Pilih Tenaga Kesehatan</option>
+                                            @foreach($tenkes as $t)
+                                            <option value="{{ $t->id }}">{{ $t->nama_tenkes }}</option>
+                                            @endforeach
+                                        </select>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                     <button type="submit" class="btn btn-success btn-sm">
                         <span>

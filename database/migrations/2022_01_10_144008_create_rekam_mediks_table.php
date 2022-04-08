@@ -23,13 +23,16 @@ class CreateRekamMediksTable extends Migration
     {
         Schema::create('rekam_mediks', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('pasien_id')->constrained();
+            $table->foreignId('pasien_id')->nullable()->constrained();
+            $table->foreignId('keluarga_pasien_id')->nullable()->constrained();
             $table->foreignId('tenkesehatan_id')->nullable()->constrained();
             $table->foreignId('diagnosa_id')->nullable()->constrained();
             $table->string('suhu')->nullable();
-            $table->string('tensi')->nullable();
+            $table->string('siastol')->nullable();
+            $table->string('diastol')->nullable();
             $table->string('keterangan')->nullable();
             $table->string('keluhan')->nullable();
+            $table->string('status_rekam_medik')->nullable();
             $table->timestamp('rekammedik_created_at')->useCurrent();
             $table->timestamp('rekammedik_updated_at')->useCurrent();
         });

@@ -9,7 +9,15 @@ class Prodi extends Model
 {
     use HasFactory;
 
-    public function pasien() {
-		return $this->hasMany(Pasiens::class);
+    public $timestamps = false;
+
+    public function fakulta() 
+    {
+        return $this->belongsTo(Fakulta::class);
+    }
+
+    public function mahasiswa()
+    {
+        return $this->hasMany(Mahasiswa::class);
     }
 }

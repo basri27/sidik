@@ -29,28 +29,38 @@
                     <thead>
                         <tr class="bg-dark">
                             @foreach ($jadwals as $jadwal)
-                            <th scope="col sm-1">{{ $jadwal->hari }}</th>
-                            @endforeach
-                        </tr>
-                        <tr class="bg-info">
-                            @foreach ($jadwals as $j)
-                                <th>
-                                @foreach ($j->tenkesehatan as $t)
-                                    ({{ $t->nama_tenkes }}) <br>
-                                @endforeach
-                                </th>
+                            <th scope="col sm-1">{{ $jadwal->hari_jadwal }}</th>
                             @endforeach
                         </tr>
                     </thead>
+                        <tr class="bg-info">
+                            @foreach ($jadwals as $jadwal)
+                                <th>
+                                    @foreach ($tenkes as $tks)
+                                        {{ ($tks->id == $jadwal->tenkes1) ?  $tks->nama_tenkes : '' }}
+                                    @endforeach
+                                </th>
+                            @endforeach
+                        </tr>
                     <tbody style="color: black">
                         <tr>
                             @foreach ($jadwals as $jadwal)
-                            <td>{{ \Carbon\Carbon::parse($jadwal->pagi_s)->format('H:i') }} - {{ \Carbon\Carbon::parse($jadwal->pagi_n)->format('H:i') }}</td>
+                            {{-- <td>{{ \Carbon\Carbon::parse($jadwal->pagi_s)->format('H:i') }} - {{ \Carbon\Carbon::parse($jadwal->pagi_n)->format('H:i') }}</td> --}}
+                            <td>{{ $jadwal->waktu1 }}</td>
+                            @endforeach
+                        </tr>
+                        <tr class="bg-info" style="color: white">
+                            @foreach ($jadwals as $jadwal)
+                                <th>
+                                    @foreach ($tenkes as $tks)
+                                    {{ ($tks->id == $jadwal->tenkes2) ?  $tks->nama_tenkes : '' }}
+                                    @endforeach
+                                </th>
                             @endforeach
                         </tr>
                         <tr>
                             @foreach ($jadwals as $jadwal)
-                            <td>{{ \Carbon\Carbon::parse($jadwal->siang_s)->format('H:i') }} - {{ \Carbon\Carbon::parse($jadwal->siang_n)->format('H:i') }}</td>
+                            <td>{{ $jadwal->waktu2 }}</td>
                             @endforeach
                         </tr>
                         <tr>

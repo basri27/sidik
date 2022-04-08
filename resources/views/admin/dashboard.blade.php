@@ -4,7 +4,6 @@
 
 @section('css')
     <link rel="stylesheet" href="{{ asset('css/dashboard/sb-admin-2.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/bootstrap.css') }}">
     <style>
         #container {
             min-width: 310px;
@@ -74,7 +73,7 @@
                         <div class="row no-gutters align-items-center">
                             <div class="col mr-2">
                                 <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Jumlah Pasien</div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $pasiens }}</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $pasienCount }}</div>
                             </div>
                             <div class="col-auto">
                                 <i class="fas fa-user-md fa-2x text-gray-500"></i>
@@ -89,7 +88,7 @@
                         <div class="row no-gutters align-items-center">
                             <div class="col mr-2">
                                 <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Jumlah Tenaga Kesehatan</div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $nakes }}</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $nakesCount }}</div>
                             </div>
                             <div class="col-auto">
                                 <i class="fas fa-user-nurse fa-2x text-gray-500"></i>
@@ -104,7 +103,7 @@
                         <div class="row no-gutters align-items-center">
                             <div class="col mr-2">
                                 <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Jumlah Data Rekam Medik</div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $rekammedik }}</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $rekammedikCount }}</div>
                             </div>
                             <div class="col-auto">
                                 <i class="fas fa-notes-medical fa-2x text-gray-500"></i>
@@ -119,7 +118,7 @@
                         <div class="row no-gutters align-items-center">
                             <div class="col mr-2">
                                 <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Jumlah Apoteker</div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $apoteker }}</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $apotekerCount }}</div>
                             </div>
                             <div class="col-auto">
                                 <i class="fas fa-capsules fa-2x text-gray-500"></i>
@@ -129,7 +128,7 @@
                 </div>
             </div>
         </div>
-        <div class="row">
+        <!-- <div class="row">
             <div class="col-lg-8">
                 <div class="card shadow mb-4">
                     <a href="#collapseCardHighChart" class="d-block card-header py-3" data-toggle="collapse" role="button" aria-expanderd="true" aria-controls="collapseCardExample">
@@ -137,14 +136,15 @@
                     </a>
                     <div class="collapse show" id="collapseCardHighChart">
                         <div class="card-body">
-                                <!-- <div class="buttons">
-                                    <button id="2000">2000</button>
-                                    <button id="2004">2004</button>
-                                    <button id="2008">2008</button>
-                                    <button id="2012">2012</button>
-                                    <button id="2016" class="active">2016</button>
-                                </div> -->
-                                <div id="container"></div>            
+                            <div class="buttons">
+                                <button id="2018">2018</button>
+                                <button id="2019">2019</button>
+                                <button id="2020">2020</button>
+                                <button id="2021">2021</button>
+                                <button id="2022" class="active">2022</button>
+                                <button id="2023">2023</button>
+                            </div>
+                            <div id="container"></div>            
                         </div>
                     </div>
                     
@@ -158,111 +158,71 @@
                     <div class="collapse show" id="collapseCardData">
                         <div class="card-body">
                             <div id="pie-grafik"></div>
-                            <!-- <b>*Grafik di atas adalah data pasien berdasarkan kategori <span class="text-info">Dosen, Karyawan, Mahasiswa, <span class="text-dark">dan</span> Umum</span></b> -->
                         </div>
                     </div>
                 </div>
             </div>
+        </div> -->
+        <div class="card shadow p-3">
+            <div class="row">
+                <p class="font-weight-bold text-primary col-3">Tanggal: <span class="text-success">{{ \Carbon\Carbon::now()->format('d F Y') }}</span></p>
+                <p class="font-weight-bold text-primary col">Waktu: <span class="text-success">{{ \Carbon\Carbon::now()->toTimeString() }}</span></p>
+            </div>
+            <p class="font-weight-bold text-primary ">Jumlah pasien hari ini: <span class="text-success">{{ $pCount }} orang</span></p>
+            <form action="{{ route('adm_dashboard') }}">
+                <button class="btn btn-success btn-sm pl-2 pr-2" id="refresh"><i class="fas fa-sync-alt"></i> Refresh</button>
+            </form><br>
+            <h5 class="font-weight-bold text-primary">Daftar pasien hari ini:</h5>
+            @if($pCount == 0)
+                <center><br><h5 class="text-info">Belum ada pasien hari ini</h5><br></center>
+            @else
+                @foreach($pasiens as $p)
+                    <div class="mb-2">
+                        <a href="#collapseCardMedik{{$p->id}}" class="d-block card-header py-3" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="collapseCardExample">
+                            <h6 class="m-0 font-weight-bold text-primary">{{ $p->pasien->nama_pasien}}</h6>
+                        </a>
+                        <div class="collapse" id="collapseCardMedik{{$p->id}}">
+                            <div class="card-body shadow">
+                                <div class="row">
+                                    <div class="col">
+                                        <p class="font-weight-bold text-primary">Suhu: <span class="text-danger">{{ $p->suhu }} </span>&#8451;</p>
+                                        <p class="font-weight-bold text-primary">Tensi: <span class="text-danger">{{ $p->tensi }}</span> mmHg</p>
+                                        <p class="font-weight-bold text-primary">Keluhan: <span class="text-danger">{{ $p->keluhan }}</span> </p>
+                                    </div>
+                                    <div class="col">
+                                        <p class="font-weight-bold text-primary">Jam: <span class="text-danger">{{ \Carbon\Carbon::parse($p->rekammedik_created_at)->toTimeString() }}</span></p>
+                                        <p class="font-weight-bold text-primary">Diagnosa: <span class="text-danger">{{ $p->diagnosa->nama_diagnosa }}</span></p>
+                                        <p class="font-weight-bold text-primary">Resep Obat: <span class="text-danger"><a class="btn btn-sm border border-dark" href="#viewResepObat{{ $p->id }}" data-toggle="modal"><i class="fas fa-eye"></i>&nbsp;Lihat</a></span></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="viewResepObat{{ $p->id }}" class="modal fade" role="dialog">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header bg-light">
+                                    
+                                    <h4 class="modal-title font-weight-bold float-left">Resep Obat</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <table class="table table-borderless">
+                                        <?php $resep = \App\Models\ResepObat::where('rekam_medik_id', $p->id)->whereDate('resepobat_created_at', \Carbon\Carbon::parse($p->rekammedik_created_at)->toDateString())->get(); ?>
+                                        @foreach($resep as $rs)
+                                            <tr>
+                                                <td>{{ $rs->obat->nama_obat }} | {{ $rs->keterangan }}</td>
+                                            </tr>
+                                        @endforeach
+                                    </table>
+                                </div>
+                                <div class="modal-footer">
+                                    <button class="btn btn-dark" data-dismiss="modal">Tutup</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            @endif
         </div>
     </div>
-    <!-- High Chart -->
-    <script src="https://code.highcharts.com/highcharts.js"></script>
-    <script src="https://code.highcharts.com/modules/exporting.js"></script>
-    <script src="https://code.highcharts.com/modules/export-data.js"></script>
-    <script>
-        var _ydata = <?php echo json_encode($months) ?>;
-        var y2022 = <?php echo json_encode($y2022) ?>;
-        var y2021 = <?php echo json_encode($y2021) ?>;
-        var userArr = <?php echo json_encode($userArr) ?>;
-        
-        Highcharts.chart('container', {
-            chart:{
-                type:'column'
-            },
-            title:{
-                text:"Grafik Pasien Tahun 2022"
-            },
-            xAxis:{
-                categories: _ydata
-            },
-            yAxis:{
-                title:{
-                    text:"Jumlah pasien"
-                }
-            },
-            series:[{
-                name:"Jumlah Pasien",
-                data:y2022
-            }],
-        });
-        Highcharts.chart('pie-grafik', {
-            chart: {
-                
-                type: 'pie'
-            },
-            title: {
-                text: 'Kategori pasien tahun 2022'
-            },
-            tooltip: {
-                pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
-            },
-            accessibility: {
-                point: {
-                    valueSuffix: '%'
-                }
-            },
-            plotOptions: {
-                pie: {
-                    allowPointSelect: true,
-                    cursor: 'pointer',
-                    dataLabels: {
-                        enabled: false
-                    },
-                    showInLegend: true
-                }
-            },
-            series: [{
-                name: 'Jumlah pasien',
-                colorByPoint: true,
-                data: [{
-                    name: 'Chrome',
-                    y: 61.41,
-                    sliced: true,
-                    selected: true
-                }, {
-                    name: 'Internet Explorer',
-                    y: 11.84
-                }, {
-                    name: 'Firefox',
-                    y: 10.85
-                }, {
-                    name: 'Edge',
-                    y: 4.67
-                }, {
-                    name: 'Safari',
-                    y: 4.18
-                }, {
-                    name: 'Other',
-                    y: 7.05
-                }]
-            }]
-        });
-    </script>
-
-    <!-- /**Tidak terpakai */ -->
-
-<!-- Charting library
-<script src="https://unpkg.com/echarts/dist/echarts.min.js"></script>
-<script src="https://unpkg.com/@chartisan/echarts/dist/chartisan_echarts.js"></script>
-
-<script>
-      const chart = new Chartisan({
-        el: '#chart',
-        url: "{{ route('adm_dashboard') }}",
-        hooks: new ChartisanHooks()
-            .colors(['#4299E1'])
-            
-            .axis(true)
-      });
-</script> -->
 @endsection

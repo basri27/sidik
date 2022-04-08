@@ -43,7 +43,6 @@
                     <thead id="dataTable">
                         <tr>
                             <th>No</th>
-                            <th>Kode</th>
                             <th>Nama</th>
                             <th>Aksi</th>
                         </tr>
@@ -51,7 +50,6 @@
                     <tfoot>
                         <tr>
                             <th>No</th>
-                            <th>Kode</th>
                             <th>Nama</th>
                             <th>Aksi</th>
                         </tr>
@@ -61,7 +59,6 @@
                         @foreach ($diagnosa as $diag)
                         <tr>
                             <td>{{ $i++ }}</td>
-                            <td>{{ $diag->kode_diagnosa }}</td>
                             <td>{{ $diag->nama_diagnosa }}</td>
                             <td>
                                 <center>
@@ -92,8 +89,8 @@
             <form action={{ route('adm_add_diagnosa') }} method="post">
                 @csrf
                 <div class="modal-body">
-                    <label class="font-weight-bold text-dark">Kode diagnosa:</label>
-                    <input type="text" name="kode_diagnosa" class="form-control" required>
+                    <!-- <label class="font-weight-bold text-dark">Kode diagnosa:</label>
+                    <input type="text" name="kode_diagnosa" class="form-control" required> -->
                     <label class="font-weight-bold text-dark">Nama diagnosa:</label>
                     <input type="text" name="diagnosa" class="form-control" required>
                 </div>
@@ -116,8 +113,8 @@
                     @method('PATCH')
                     @csrf
                     <div class="modal-body">
-                        <label class="font-weight-bold text-dark">Kode diagnosa:</label>
-                        <input type="text" name="kode_diagnosa" class="form-control" value="{{ $diag->kode_diagnosa}}" required>
+                        <!-- <label class="font-weight-bold text-dark">Kode diagnosa:</label>
+                        <input type="text" name="kode_diagnosa" class="form-control" value="{{ $diag->kode_diagnosa}}" required> -->
                         <label class="font-weight-bold text-dark">Nama diagnosa:</label>
                         <input type="text" name="diagnosa" class="form-control" value="{{ $diag->nama_diagnosa }}" required>
                     </div>
@@ -140,8 +137,8 @@
                     @csrf
                     <div class="modal-body">
                         <h5 class="font-weight-bold">Anda yakin ingin menghapus data ini?</h5>
-                        <label class="font-weight-bold text-dark">Kode diagnosa:</label>
-                        <input type="text" name="kode_diagnosa" class="form-control" value="{{ $diag->kode_diagnosa}}" readonly>
+                        <!-- <label class="font-weight-bold text-dark">Kode diagnosa:</label>
+                        <input type="text" name="kode_diagnosa" class="form-control" value="{{ $diag->kode_diagnosa}}" readonly> -->
                         <label class="font-weight-bold text-dark">Nama diagnosa:</label>
                         <input type="text" name="diagnosa" class="form-control" value="{{ $diag->nama_diagnosa }}" readonly>
                     </div>

@@ -16,8 +16,7 @@ class CreateProdisTable extends Migration
         Schema::create('prodis', function (Blueprint $table) {
             $table->id();
             $table->string('nama_prodi');
-            $table->timestamp('prodi_created_at')->useCurrent();
-            $table->timestamp('prodi_updated_at')->useCurrent();
+            $table->foreignId('fakulta_id')->constrained();
         });
     }
 

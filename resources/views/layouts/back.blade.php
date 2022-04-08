@@ -99,7 +99,15 @@
                                 @if (Auth::user()->role_id == 1)
                                     {{ Auth::user()->admin->nama_admin }}
                                 @elseif (Auth::user()->role_id == 2)
-                                    {{ Auth::user()->pasien->nama_pasien }}
+                                    <?php 
+                                        $p = \App\Models\Pasien::where('user_id', Auth::user()->id)->first();
+                                        $kp = \App\Models\KeluargaPasien::where('user_id', Auth::user()->id)->first();
+                                    ?>
+                                    @if ($p != null)
+                                    {{ $p->nama_pasien }}
+                                    @else
+                                    {{ $kp->nama_kel_pasien }}
+                                    @endif
                                 @elseif (Auth::user()->role_id == 3)
                                     {{ Auth::user()->tenkesehatan->nama_tenkes }}
                                 @elseif (Auth::user()->role_id == 4)

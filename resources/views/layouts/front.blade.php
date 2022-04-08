@@ -15,7 +15,7 @@
   <link rel="stylesheet" href="{{ asset('/vendor/animate/animate.css') }}">
   <link rel="stylesheet" href="{{ asset('/css/theme.css') }}">
   <link rel="stylesheet" href="{{ asset('/fonts/icomoon/style.css') }}">
-  @yield('css')<!-- <link rel="stylesheet" href="{{ asset('css/owl.carousel.min.css') }}"> -->
+  @yield('css')
   <link rel="stylesheet" href="{{ asset('/css/style.css') }}">
 
 </head>
@@ -43,20 +43,22 @@
 			@else
         <li class="nav-item">
         @if (Auth::user()->role_id == 1)
-					<a class="btn btn-primary ml-sm-3" href={{ route('adm_dashboard', Auth::user()->admin->id) }}>Dashboard</a>
+					<a class="btn btn-info" href={{ route('adm_dashboard', Auth::user()->admin->id) }}>Dashboard</a>
+        @elseif(Auth::user()->role->id == 2)
+          <a class="btn btn-info" href={{ route('profil_pasien', Auth::user()->id) }}>Dashboard</a>
         @elseif (Auth::user()->role_id == 3)
-          <a class="btn btn-primary ml-sm-3" href={{ route('nakes_dashboard', Auth::user()->id) }}>Dashboard</a>
+          <a class="btn btn-info" href={{ route('nakes_dashboard', Auth::user()->id) }}>Dashboard</a>
         @elseif (Auth::user()->role_id == 4)
-          <a class="btn btn-primary ml-sm-3" href={{ route('apoteker_dashboard', Auth::user()->id) }}>Dashboard</a>        
+          <a class="btn btn-info" href={{ route('apoteker_dashboard', Auth::user()->id) }}>Dashboard</a>        
         @endif
         </li>
-        <li>
-        <form action="{{ route('logout') }}" method="POST">
-        @csrf
-          <button class="btn btn-primary ml-sm-1" type="submit">
-              Logout
-          </button>
-        </form>
+        <li class="nav-item">
+          <form action="{{ route('logout') }}" method="POST">
+          @csrf
+            <button class="btn btn-info" type="submit">
+                Logout
+            </button>
+          </form>
         </li>
 			@endif
 			</ul>

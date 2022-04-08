@@ -36,6 +36,39 @@
             </div>
         </div>
     </li>
+    @foreach($notifications as $notif)
+    <div id="viewResep{{ $notif->id }}" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-light">
+                    <h4 class="modal-title font-weight-bold float-left">Resep Obat</h4>
+                </div>
+                <div class="modal-body">
+                    @if ($notif->rekam_medik->pasien_id != null)
+                    <h5 class="font-weight-bold">{{ $notif->rekam_medik->pasien->nama_pasien }}</h5>
+                    @else
+                    <h5 class="font-weight-bold">{{ $notif->rekam_medik->keluarga_pasien->nama_kel_pasien }}</h5>
+                    @endif
+                    <ul>
+                        <?php $resep = \App\Models\ResepObat::where('rekam_medik_id', $notif->rekam_medik_id)->get(); ?>
+                        @foreach($resep as $rs)
+                        <li>
+                            {{ $rs->obat->nama_obat }} | {{ $rs->keterangan }}
+                        </li>
+                        @endforeach
+                    </ul>
+                </div>
+                <div class="modal-footer">
+                    <form method="POST" action="{{ route('pengobatan_selesai', [$notif->rekam_medik_id, Auth::user()->id]) }}">
+                        @method('PATCH')
+                        @csrf
+                        <button class="btn btn-dark" type="submit">Selesai</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endforeach
     <script type="text/javascript">
         var apoteker_id = {{Auth::user()->id}};
         var pusher = new Pusher('c42b033cec5adc3b394c', {
@@ -55,7 +88,7 @@
                 <h6 class="dropdown-header">
                     Notifikasi
                 </h6>
-                <a class="dropdown-item d-flex align-items-center" href="{{url('apoteker/obat/`+data.rekammedik.id+`')}}">
+                <a class="dropdown-item d-flex align-items-center" href="#viewResep`+data.notif.id+`" data-toggle="modal">
                     <div class="mr-3">
                         <div class="icon-circle bg-primary">
                             <i class="fas fa-notes-medical text-white"></i>
@@ -67,7 +100,7 @@
                     </div>
                 </a>
                 @foreach($notifications as $notif)
-                <a class="dropdown-item d-flex align-items-center" href="{{ route('apoteker_obat_pasien', $notif->rekam_medik_id) }}">
+                <a class="dropdown-item d-flex align-items-center" href="#viewResep{{$notif->id}}" data-toggle="modal">
                     <div class="mr-3">
                         <div class="icon-circle bg-primary">
                             <i class="fas fa-notes-medical text-white"></i>
@@ -81,9 +114,14 @@
                 @endforeach
             </div>
             `;
-                notification.html(newNotif);
-                notificationCount += 1;
-                notificationCountElem.attr('data-count', notificationCount);
-                notificationWrap.find('.badge-counter').text(notificationCount);
+            
+            if(!alert('Resep obat pasien diterima!')){window.location.reload();}
+            
+            // notification.html(newNotif);
+            // notificationCount += 1;
+            // notificationCountElem.attr('data-count', notificationCount);
+            // notificationWrap.find('.badge-counter').text(notificationCount);
+            // resepObat.html(newResep);
+
         });
     </script>

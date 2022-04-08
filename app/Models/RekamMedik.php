@@ -13,12 +13,15 @@ class RekamMedik extends Model
     
     protected $fillable = [
         'pasien_id',
+        'keluarga_pasien_id',
         'tenkesehatan_id',
         'diagnosa_id',
         'suhu',
-        'tensi',
+        'siastol',
+        'diastol',
         'keterangan',
         'keluhan',
+        'status_rekam_medik',
         'rekammedik_created_at',
         'rekammedik_updated_at',
     ];
@@ -26,6 +29,11 @@ class RekamMedik extends Model
     public function pasien()
     {
         return $this->belongsTo(Pasien::class);
+    }
+
+    public function keluarga_pasien()
+    {
+        return $this->belongsTo(KeluargaPasien::class);
     }
 
     public function tenkesehatan()
