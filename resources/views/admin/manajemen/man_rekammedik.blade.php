@@ -90,7 +90,7 @@
                             </td>
                             <td>{{ $p->jk_pasien }}</td>
                             <td>
-                                <a class="btn btn-success btn-sm" href="{{ route('detail_datarekammedik', $p->id) }}"><i class="fas fa-info-circle"></i></a> 
+                                <a class="btn btn-success btn-sm" href="{{ route('detail_datarekammedik', $p->user_id) }}"><i class="fas fa-info-circle"></i></a> 
                                 <a class="btn btn-primary btn-sm" href="{{ route('edit_datarekammedik', $p->id) }}"><i class="fas fa-plus-circle"></i></a>
                                 @if ($p->category_id == 1 or $p->category_id == 2)
                                 <a class="btn btn-secondary btn-sm" href="#viewKeluarga{{ $p->id }}" data-toggle="modal"><i class="fas fa-users"></i></a>

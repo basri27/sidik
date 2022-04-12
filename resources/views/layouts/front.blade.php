@@ -79,11 +79,17 @@
 
   <footer class="page-footer">
     <div class="container">
-      <p id="copyright">Copyright &copy; 2020 <a href="https://macodeid.com/" target="_blank">MACode ID</a>. All right reserved</p>
+      <h4>Kontak kami:</h4>
+      <p href="#"><i class="fa-solid fa-house-chimney-medical"></i>&ensp;Jl. Brigjen H. Hasan Basri, Pangeran, Kec. Banjarmasin Utara, Kota Banjarmasin, Kalimantan Selatan 70123</p>
+      <p><a href="https://goo.gl/maps/RiJCCKqAJxgu7U5Z6" target="_blank"><i class="fa-solid fa-location-dot"></i>&ensp;LMMC Banjarmasin</a>&emsp;|&emsp;
+      <a href="https://www.instagram.com/kliniklmmc_ulm" target="_blank"><i class="fa-brands fa-instagram"></i>&ensp;LMMC Banjarmasin</a>&emsp;|&emsp;
+      <a href="http://wa.me/+6282175757549" target="_blank"><i class="fa-brands fa-whatsapp"></i>&ensp;LMMC Banjarmasin</a></p>
+      <p id="copyright">Copyright &copy; 2022 <a href="{{ route('home') }}">SIDIK</a>. All right reserved</p>
     </div>
   </footer>
 
   @yield('js')
+  <script src="https://kit.fontawesome.com/0a4cdb924d.js" crossorigin="anonymous"></script>
   <!-- <script src="{{ asset('/js/jquery-3.5.1.min.js') }}"></script>
   <script src="{{ asset('/js/bootstrap.bundle.min.js') }}"></script>
   <script src="{{ asset('/vendor/owl-carousel/js/owl.carousel.min.js') }}"></script>

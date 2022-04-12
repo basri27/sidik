@@ -367,6 +367,10 @@ class AdminController extends Controller
     {
         $rekammedik = RekamMedik::where('status_rekam_medik', 'selesai')->get();
         $diagnosa = Diagnosa::all();
+        $dosen = Dosen::all();
+        $kary = Karyawan::all();
+        $mhs = Mahasiswa::all();
+        $bpjs = Bpjs::all();
         $i = 0;
         foreach($diagnosa as $r) {
             $i += 1;
@@ -387,12 +391,13 @@ class AdminController extends Controller
         }
 
         for($i = 1; $i <= 12; $i++) {
-            $diagCount20[$i] = RekamMedik::fromQuery('SELECT diagnosa_id, COUNT(diagnosa_id) AS freq FROM rekam_mediks WHERE YEAR (rekammedik_created_at) = 2020 AND MONTH (rekammedik_created_at) = ' . $i . ' GROUP BY diagnosa_id ORDER BY freq DESC LIMIT 5');
-            $diagCount21[$i] = RekamMedik::fromQuery('SELECT diagnosa_id, COUNT(diagnosa_id) AS freq FROM rekam_mediks WHERE YEAR (rekammedik_created_at) = 2021 AND MONTH (rekammedik_created_at) = ' . $i . ' GROUP BY diagnosa_id ORDER BY freq DESC LIMIT 5');
-            $diagCount22[$i] = RekamMedik::fromQuery('SELECT diagnosa_id, COUNT(diagnosa_id) AS freq FROM rekam_mediks WHERE YEAR (rekammedik_created_at) = 2022 AND MONTH (rekammedik_created_at) = ' . $i . ' GROUP BY diagnosa_id ORDER BY freq DESC LIMIT 5');
-            $diagCount23[$i] = RekamMedik::fromQuery('SELECT diagnosa_id, COUNT(diagnosa_id) AS freq FROM rekam_mediks WHERE YEAR (rekammedik_created_at) = 2023 AND MONTH (rekammedik_created_at) = ' . $i . ' GROUP BY diagnosa_id ORDER BY freq DESC LIMIT 5');
-            $diagCount24[$i] = RekamMedik::fromQuery('SELECT diagnosa_id, COUNT(diagnosa_id) AS freq FROM rekam_mediks WHERE YEAR (rekammedik_created_at) = 2024 AND MONTH (rekammedik_created_at) = ' . $i . ' GROUP BY diagnosa_id ORDER BY freq DESC LIMIT 5');
-            $diagCount25[$i] = RekamMedik::fromQuery('SELECT diagnosa_id, COUNT(diagnosa_id) AS freq FROM rekam_mediks WHERE YEAR (rekammedik_created_at) = 2025 AND MONTH (rekammedik_created_at) = ' . $i . ' GROUP BY diagnosa_id ORDER BY freq DESC LIMIT 5');
+            $diagCount20[$i] = RekamMedik::fromQuery('SELECT nama_diagnosa, diagnosa_id, COUNT(diagnosa_id) AS freq FROM rekam_mediks as rk JOIN diagnosas as d ON rk.diagnosa_id = d.id WHERE YEAR (rekammedik_created_at) = 2020 AND MONTH (rekammedik_created_at) = ' . $i . ' GROUP BY diagnosa_id ORDER BY freq DESC LIMIT 5');
+            $diagCount21[$i] = RekamMedik::fromQuery('SELECT nama_diagnosa, diagnosa_id, COUNT(diagnosa_id) AS freq FROM rekam_mediks as rk JOIN diagnosas as d ON rk.diagnosa_id = d.id WHERE YEAR (rekammedik_created_at) = 2021 AND MONTH (rekammedik_created_at) = ' . $i . ' GROUP BY diagnosa_id ORDER BY freq DESC LIMIT 5');
+            $diagCount22[$i] = RekamMedik::fromQuery('SELECT nama_diagnosa, diagnosa_id, COUNT(diagnosa_id) AS freq FROM rekam_mediks as rk JOIN diagnosas as d ON rk.diagnosa_id = d.id WHERE YEAR (rekammedik_created_at) = 2022 AND MONTH (rekammedik_created_at) = ' . $i . ' GROUP BY diagnosa_id ORDER BY freq DESC LIMIT 5');
+            $diagCount23[$i] = RekamMedik::fromQuery('SELECT nama_diagnosa, diagnosa_id, COUNT(diagnosa_id) AS freq FROM rekam_mediks as rk JOIN diagnosas as d ON rk.diagnosa_id = d.id WHERE YEAR (rekammedik_created_at) = 2023 AND MONTH (rekammedik_created_at) = ' . $i . ' GROUP BY diagnosa_id ORDER BY freq DESC LIMIT 5');
+            $diagCount24[$i] = RekamMedik::fromQuery('SELECT nama_diagnosa, diagnosa_id, COUNT(diagnosa_id) AS freq FROM rekam_mediks as rk JOIN diagnosas as d ON rk.diagnosa_id = d.id WHERE YEAR (rekammedik_created_at) = 2024 AND MONTH (rekammedik_created_at) = ' . $i . ' GROUP BY diagnosa_id ORDER BY freq DESC LIMIT 5');
+            $diagCount25[$i] = RekamMedik::fromQuery('SELECT nama_diagnosa, diagnosa_id, COUNT(diagnosa_id) AS freq FROM rekam_mediks as rk JOIN diagnosas as d ON rk.diagnosa_id = d.id WHERE YEAR (rekammedik_created_at) = 2025 AND MONTH (rekammedik_created_at) = ' . $i . ' GROUP BY diagnosa_id ORDER BY freq DESC LIMIT 5');
+            $m20[$i] = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Mahasiswa')->whereYear('rekammedik_created_at', 2020)->whereMonth('rekammedik_created_at', $i)->count();
             $data24[$i] = RekamMedik::whereYear('rekammedik_created_at', 2024)->whereMonth('rekammedik_created_at', $i)->where('status_rekam_medik', 'selesai')->count();
             $data25[$i] = RekamMedik::whereYear('rekammedik_created_at', 2025)->whereMonth('rekammedik_created_at', $i)->where('status_rekam_medik', 'selesai')->count();
             $data20[$i] = RekamMedik::whereYear('rekammedik_created_at', 2020)->whereMonth('rekammedik_created_at', $i)->where('status_rekam_medik', 'selesai')->count();
@@ -400,7 +405,7 @@ class AdminController extends Controller
             $data22[$i] = RekamMedik::whereYear('rekammedik_created_at', 2022)->whereMonth('rekammedik_created_at', $i)->where('status_rekam_medik', 'selesai')->count();
             $data23[$i] = RekamMedik::whereYear('rekammedik_created_at', 2023)->whereMonth('rekammedik_created_at', $i)->where('status_rekam_medik', 'selesai')->count();
         }
-        // dd($diagCount);
+
         $dosen24 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Dosen')->whereYear('rekammedik_created_at', 2024)->count();
         $dosen25 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Dosen')->whereYear('rekammedik_created_at', 2025)->count();
         $dosen20 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Dosen')->whereYear('rekammedik_created_at', 2020)->count();
@@ -448,7 +453,7 @@ class AdminController extends Controller
             $y2023[] = $r;
         }
         
-        return view('admin.rekap_rekam_medik', compact('rekammedik', 'diagCount20', 'diagCount21', 'diagCount22', 'diagCount23', 'diagCount24', 'diagCount25', 'y2024', 'y2025', 'y2020', 'y2021', 'y2022', 'y2023', 'mhs24', 'mhs25', 'mhs20', 'mhs21', 'mhs22', 'mhs23', 'dosen24', 'dosen25', 'dosen20', 'dosen21', 'dosen22', 'dosen23', 'kary24', 'kary25', 'kary20', 'kary21', 'kary22', 'kary23', 'umum24', 'umum25', 'umum20', 'umum21', 'umum22', 'umum23'));
+        return view('admin.rekap_rekam_medik', compact('rekammedik', 'dosen', 'kary', 'mhs', 'bpjs', 'diagCount20', 'diagCount21', 'diagCount22', 'diagCount23', 'diagCount24', 'diagCount25', 'y2024', 'y2025', 'y2020', 'y2021', 'y2022', 'y2023', 'mhs24', 'mhs25', 'mhs20', 'mhs21', 'mhs22', 'mhs23', 'dosen24', 'dosen25', 'dosen20', 'dosen21', 'dosen22', 'dosen23', 'kary24', 'kary25', 'kary20', 'kary21', 'kary22', 'kary23', 'umum24', 'umum25', 'umum20', 'umum21', 'umum22', 'umum23', 'm20'));
     }
     public function filterRekamMedikPasien(Request $request)
     {
@@ -1100,5 +1105,11 @@ class AdminController extends Controller
         ]);
 
         return redirect()->route('adm_man_datadiagnosa')->with(['success' => 'Data berhasil dihapus!']);
+    }
+    public function detail_datarekammedik($id)
+    {
+        $user = User::find($id);
+
+        return view('admin.detail_datarekammedik', compact('user'));
     }
 }

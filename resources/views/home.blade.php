@@ -9,6 +9,7 @@
 <li class="nav-item">
     <a class="nav-link" href="{{ route('jadwal') }}">Jadwal Praktek</a>
 </li>
+
 @endsection
 
 @section('awal')
@@ -81,7 +82,7 @@
         <div class="card-blog">
             <div class="header">
             <div class="post-thumb">
-                <img src="{{ asset('/img/blog/blog_1.jpg') }}" alt="">
+                <img src="{{ asset('/img/dokter-umum.jpeg') }}" alt="">
             </div>
             </div>
             <div class="body">
@@ -93,7 +94,7 @@
         <div class="card-blog">
             <div class="header">
             <div class="post-thumb">
-                <img src="{{ asset('/img/blog/blog_1.jpg') }}" alt="">
+                <img src="{{ asset('/img/dokter-gigi.jpeg') }}" alt="">
             </div>
             </div>
             <div class="body">
@@ -105,7 +106,7 @@
         <div class="card-blog">
             <div class="header">
             <div class="post-thumb">
-                <img src="{{ asset('/img/blog/blog_1.jpg') }}" alt="">
+                <img src="{{ asset('/img/apoteker.jpeg') }}" alt="">
             </div>
             </div>
             <div class="body">
@@ -117,7 +118,7 @@
         <div class="card-blog">
             <div class="header">
             <div class="post-thumb">
-                <img src="{{ asset('/img/blog/blog_1.jpg') }}" alt="">
+                <img src="{{ asset('/img/gawat-darurat.jpeg') }}" alt="">
             </div>
             </div>
             <div class="body">
@@ -129,7 +130,7 @@
         <div class="card-blog">
             <div class="header">
             <div class="post-thumb">
-                <img src="{{ asset('/img/blog/blog_1.jpg') }}" alt="">
+                <img src="{{ asset('/img/lab.jpeg') }}" alt="">
             </div>
             </div>
             <div class="body">
@@ -141,7 +142,7 @@
         <div class="card-blog">
             <div class="header">
             <div class="post-thumb">
-                <img src="{{ asset('/img/blog/blog_1.jpg') }}" alt="">
+                <img src="{{ asset('/img/psikolog.jpeg') }}" alt="">
             </div>
             </div>
             <div class="body">
@@ -153,7 +154,7 @@
         <div class="card-blog">
             <div class="header">
             <div class="post-thumb">
-                <img src="{{ asset('/img/blog/blog_1.jpg') }}" alt="">
+                <img src="{{ asset('/img/medical-check.jpeg') }}" alt="">
             </div>
             </div>
             <div class="body">

@@ -53,6 +53,9 @@
             background-color: #0051b4;
             color: white;
         }
+        .modal-dialog {
+            max-width: 75%;
+        }
     </style>
 @endsection
 
@@ -100,7 +103,7 @@
                                 <th>Nama</th>
                                 <th>Tanggal Periksa</th>
                                 <th>Pemeriksa</th>
-                                <th>Kategori</th>
+                                <!-- <th>Kategori</th> -->
                                 <th>Detail</th>
                             </tr>
                         </thead>
@@ -111,14 +114,16 @@
                                 <td>{{ $rk->pasien->nama_pasien }}</td>
                                 <td>{{ $rk->rekammedik_created_at }}</td>
                                 <td>{{ $rk->tenkesehatan->nama_tenkes }}</td>
-                                <td>{{ $rk->pasien->category->nama_kategori }}</td>
+                                <!-- <td>{{ $rk->pasien->category->nama_kategori }}</td> -->
                                 @else
                                 <td>{{ $rk->keluarga_pasien->nama_kel_pasien }}</td>
                                 <td>{{ $rk->rekammedik_created_at }}</td>
                                 <td>{{ $rk->tenkesehatan->nama_tenkes }}</td>
-                                <td>{{ $rk->keluarga_pasien->kategori_kel_pasien }}</td>
+                                <!-- <td>{{ $rk->keluarga_pasien->kategori_kel_pasien }}</td> -->
                                 @endif
-                                <td><a href="#" class="btn btn-info btn-sm">Info</a></td>
+                                <td>
+                                    <a href="#info-rekam-medik{{$rk->id}}" class="btn btn-info btn-sm" data-toggle="modal">Info</a>
+                                </td>
                             </tr>
                             @endforeach
                         </tbody>
@@ -128,7 +133,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-lg-8">
+        <div class="col-lg-12">
             <div class="card shadow mb-4">
                 <a href="#collapseCardHighChart" class="d-block card-header py-3" data-toggle="collapse" role="button" aria-expanderd="true" aria-controls="collapseCardExample">
                     <h6 class="m-0 font-weight-bold text-primary">Grafik jumlah pasien per tahun</h6>
@@ -145,18 +150,34 @@
                         </div>
                         <div id="container"></div>            
                     </div>
-                </div>
-                    
+                </div>   
             </div>
         </div>
-        <div class="col-lg-4">
+        <div class="col-lg-12">
             <div class="card shadow mb-4">
                 <a href="#collapseCardData" class="d-block card-header py-3" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="collapseCardExample">
                     <h6 class="m-0 font-weight-bold text-primary">Diagram kategori pasien per tahun</h6>
                 </a>
                 <div class="collapse show" id="collapseCardData">
                     <div class="card-body">
-                        <div id="pie-grafik"></div>
+                        <div class="buttons">
+                            <button id="Januari" class="active">Januari</button>
+                            <button id="Februari">Februari</button>
+                            <button id="Maret">Maret</button>
+                            <button id="April">April</button>
+                            <button id="Mei">Mei</button>
+                            <button id="Juni">Juni</button>
+                            <button id="Juli">Juli</button>
+                            <button id="Agustus">Agustus</button>
+                            <button id="September">September</button>
+                            <button id="Oktober">Oktober</button>
+                            <button id="November">November</button>
+                            <button id="Desember">Desember</button>
+                        </div>
+                        <div class="row">
+                            <div id="pie-grafik" class="col-6"></div>
+                            <div id="pie-grafik-penyakit" class="col-6"></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -361,6 +382,167 @@
     </body>
 </div>
 @foreach($rekammedik as $rk)
+    <div id="info-rekam-medik{{$rk->id}}" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-light">
+                    <h4 class="modal-title font-weight-bold float-left">Info rekam medik pasien</h4>
+                </div>
+                <div class="modal-body">
+                     <div class="table-responsive">
+                                    <table class="table table-borderless">
+                                        <tr>
+                                            <td><img src="{{ asset('img/logo-ulm1.png') }}"></td>
+                                            <td class="text-center">
+                                                <h6>KLINIK PRATAMA LAMBUNG MANGKURAT MEDICAL CENTER (LMMC)</h6>
+                                                <h6>UNIVERSITAS LAMBUNG MANGKURAT</h6>
+                                            </td>
+                                            <td class="float-right"><img src="{{ asset('img/logo-klinik1.png') }}"></td>
+                                        </tr>
+                                    </table>
+                                    <center><h5><u>KARTU RAWAT JALAN</u></h5></center>
+                                    @if ($rk->pasien_id != null)
+                                    <table class="font-weight-bold">
+                                        <tr>
+                                            <td>No. Indeks</td>
+                                            <td>&emsp;: {{ $rk->pasien->id }}</td>
+                                        </tr>
+                                        <tr style="padding: 2px;">
+                                            <td>Nama</td>
+                                            <td>&emsp;: {{ $rk->pasien->nama_pasien }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Jenis Kelamin</td>
+                                            <td>&emsp;: {{ $rk->pasien->jk_pasien }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>TTL</td>
+                                            <td>&emsp;: {{ $rk->pasien->tempat_lhr_pasien }}, {{ \Carbon\Carbon::parse($rk->pasien->tgl_lhr_pasien)->format('d F Y') }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Kategori</td>
+                                            <td>
+                                                &emsp;: {{ $rk->pasien->category->nama_kategori }}
+                                                @if ($rk->pasien->category_id == 1)
+                                                    @foreach($dosen as $d)
+                                                        {{ ($d->pasien_id == $rk->pasien->id) ? $d->fakulta->nama_fakultas : '' }}
+                                                    @endforeach
+                                                @elseif ($rk->pasien->category_id == 2)
+                                                    @foreach($kary as $k)
+                                                        {{ ($k->pasien_id == $rk->pasien->id) ? $k->fakulta->nama_fakultas : '' }}
+                                                    @endforeach
+                                                @elseif ($rk->pasien->category_id == 3)
+                                                    @foreach($mhs as $m)
+                                                        {{ ($m->pasien_id == $rk->pasien->id) ? $m->fakulta->nama_fakultas." - ".$m->prodi->nama_prodi : '' }}
+                                                    @endforeach
+                                                @elseif ($rk->pasien->category_id == 5)
+                                                <br>
+                                                ({{ $bpjs->no_bpjs }})
+                                                @endif
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Alamat</td>
+                                            <td>&emsp;: {{ $rk->pasien->alamat_pasien }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>No. HP</td>
+                                            <td>&emsp;: {{ $rk->pasien->no_hp_pasien }}</td>
+                                        </tr>
+                                    </table>
+                                    @else
+                                    <table class="font-weight-bold">
+                                        <tr>
+                                            <td>No. Indeks</td>
+                                            <td>&emsp;: {{ $rk->keluarga_pasien->id }}</td>
+                                        </tr>
+                                        <tr style="padding: 2px;">
+                                            <td>Nama</td>
+                                            <td>&emsp;: {{ $rk->keluarga_pasien->nama_kel_pasien }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Jenis Kelamin</td>
+                                            <td>&emsp;: {{ $rk->keluarga_pasien->jk_kel_pasien }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>TTL</td>
+                                            <td>&emsp;: {{ $rk->keluarga_pasien->tempat_lhr_kel_pasien }}, {{ \Carbon\Carbon::parse($rk->keluarga_pasien->tgl_lhr_kel_pasien)->format('d F Y') }}</td>
+                                        </tr>
+                                        <tr>
+                                            <?php
+                                                $dosen = \App\Models\Dosen::where('pasien_id', $rk->keluarga_pasien->pasien->id)->first();
+                                                $kary = \App\Models\Karyawan::where('pasien_id', $rk->keluarga_pasien->pasien->id)->first();
+                                            ?>
+                                            <td>Kategori</td>
+                                            <td>
+                                                &emsp;: {{ $rk->keluarga_pasien->kategori_kel_pasien }} dari {{ $rk->keluarga_pasien->pasien->nama_pasien }} ({{ $rk->keluarga_pasien->pasien->category->nama_kategori }}
+                                                @if ($rk->keluarga_pasien->pasien->category_id == 1)
+                                                {{ $dosen->fakulta->nama_fakultas }})
+                                                @elseif ($rk->keluarga_pasien->pasien->category_id == 2)
+                                                {{ $kary->fakulta->nama_fakultas }})
+                                                @endif
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Alamat</td>
+                                            <td>&emsp;: {{ $rk->keluarga_pasien->alamat_kel_pasien }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>No. HP</td>
+                                            <td>&emsp;: {{ $rk->keluarga_pasien->no_hp_kel_pasien }}</td>
+                                        </tr>
+                                    </table>
+                                    @endif
+                                    <br>
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>TANGGAL PEMERIKSAAN</th>
+                                                <th>PEMERIKSAAN/DIAGNOSA</th>
+                                                <th>PENGOBATAN</th>
+                                                <th>KETERANGAN</th>
+                                                <th>PARAF</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            
+                                            <tr>
+                                                <td>{{ \Carbon\Carbon::parse($rk->rekammedik_created_at)->format('d-m-Y') }}</td>
+                                                <td>
+                                                    Suhu: {{ $rk->suhu }} &#8451; <br>
+                                                    Tensi: {{ $rk->siastol }}/{{ $rk->diastol }} mmHg <br>
+                                                    Pemeriksaan: {{ $rk->keluhan }} <br>
+                                                    Diagnosa: {{ $rk->diagnosa->nama_diagnosa }}
+
+                                                </td>
+                                                <td>
+                                                    <ul>
+                                                        <?php $resep = \App\Models\ResepObat::where('rekam_medik_id', $rk->id)->get(); ?>
+                                                        @foreach($resep as $rs)
+                                                        <li>
+                                                            {{ $rs->obat->nama_obat }} | {{ $rs->keterangan }}
+                                                        </li>
+                                                        @endforeach
+                                                    </ul>
+                                                </td>
+                                                <td>
+                                                    {{ $rk->keterangan }}
+                                                </td>
+                                                <td>
+                                                    {{ $rk->tenkesehatan->nama_tenkes}}
+                                                </td>
+                                            </tr>
+                                            
+                                        </tbody>
+                                    </table>
+                                </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-dark" data-dismiss="modal">Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <div id="viewResep{{ $rk->id }}" class="modal fade" role="dialog">
         <div class="modal-dialog">
         <!-- konten modal-->
@@ -538,6 +720,7 @@
             $('#diag24').hide()
             $('#diag25').hide()
         }
+        
         var data = {
             2024: <?php echo json_encode($y2024) ?>,
             2025: <?php echo json_encode($y2025) ?>,
@@ -613,7 +796,7 @@
                 showFirstLabel: false
             }],
             series: [{
-                color: 'rgb(158, 159, 163)',
+                color: 'rgb(101, 163, 247)',
                 pointPlacement: -0.2,
                 data: <?php echo json_encode($y2022) ?>,
             }],
@@ -623,52 +806,92 @@
         });
         var pieChart = Highcharts.chart('pie-grafik', {
             chart: {
-                type: 'pie'
-            },
-            title: {
-                text: 'Kategori pasien tahun 2022'
-            },
-            tooltip: {
-                pointFormat: '{series.name}: <b>{point.y:1f} pasien</b>'
-            },
-            accessibility: {
-                point: {
-                    valueSuffix: '%'
-                }
-            },
-            plotOptions: {
-                pie: {
-                    allowPointSelect: true,
-                    cursor: 'pointer',
-                    dataLabels: {
-                        enabled: true,
-                        format: '<b>{point.name}</b><br>{point.percentage:.1f} %',
-                    },
-                    showInLegend: true
-                }
-            },
-            series: [{
-                name: 'Jumlah',
-                colorByPoint: true,
-                data: [{
-                    name: 'Mahasiswa',
-                    y: {{$mhs22}},
-                    sliced: true,
-                    selected: true
-                }, {
-                    name: 'Dosen',
-                    y: {{$dosen22}}
-                }, {
-                    name: 'Karyawan',
-                    y: {{$kary22}}
-                }, {
-                    name: 'Umum',
-                    y: {{$umum22}}
+                    type: 'pie'
+                },
+                title: {
+                    text: 'Jumlah kategori pasien di bulan Januari 2022'
+                },
+                tooltip: {
+                    pointFormat: '{series.name}: <b>{point.y:1f} pasien</b>'
+                },
+                accessibility: {
+                    point: {
+                        valueSuffix: '%'
+                    }
+                },
+                plotOptions: {
+                    pie: {
+                        allowPointSelect: true,
+                        cursor: 'pointer',
+                        dataLabels: {
+                            enabled: true,
+                            format: '<b>{point.name}</b><br>{point.y:1f} pasien ({point.percentage:.1f} %)',
+                        },
+                        showInLegend: true
+                    }
+                },
+                series: [{
+                    name: 'Jumlah',
+                    colorByPoint: true,
+                    data: [{
+                        name: 'Mahasiswa',
+                        y: {{$mhs22}},
+                        sliced: true,
+                        selected: true
+                    }, {
+                        name: 'Dosen',
+                        y: {{$dosen22}}
+                    }, {
+                        name: 'Karyawan',
+                        y: {{$kary22}}
+                    }, {
+                        name: 'Umum',
+                        y: {{$umum22}}
+                    }]
                 }]
-            }]
-        });
+            });
+        var pieChartPenyakit = Highcharts.chart('pie-grafik-penyakit', {
+            chart: {
+                    type: 'pie'
+                },
+                title: {
+                    text: '5 penyakit terbanyak di bulan Januari 2022'
+                },
+                tooltip: {
+                    pointFormat: '{series.name}: <b>{point.y:1f} pasien</b>'
+                },
+                accessibility: {
+                    point: {
+                        valueSuffix: '%'
+                    }
+                },
+                plotOptions: {
+                    pie: {
+                        allowPointSelect: true,
+                        cursor: 'pointer',
+                        dataLabels: {
+                            enabled: true,
+                            format: '<b>{point.name}</b><br>{point.y:1f} kasus ({point.percentage:.1f} %)',
+                        },
+                        showInLegend: true
+                    }
+                },
+                series: [{
+                    name: 'Jumlah',
+                    colorByPoint: true,
+                    keys: ['name', 'y', 'selected', 'sliced'],
+                    data: [
+                        ['{{$diagCount21[1][0]['nama_diagnosa']}}', {{$diagCount21[1][0]['freq']}}, true, true],
+                        ['{{$diagCount21[1][1]['nama_diagnosa']}}', {{$diagCount21[1][1]['freq']}}, false],
+                        ['{{$diagCount21[1][2]['nama_diagnosa']}}', {{$diagCount21[1][2]['freq']}}, false],
+                        ['{{$diagCount21[1][3]['nama_diagnosa']}}', {{$diagCount21[1][3]['freq']}}, false],
+                        ['{{$diagCount21[1][4]['nama_diagnosa']}}', {{$diagCount21[1][4]['freq']}}, false],
+                    ],
+                }]
+            });
 
         var years = [2024, 2025, 2020, 2021, 2022, 2023];
+        var months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
         
 
         years.forEach(function (year) {

@@ -20,7 +20,7 @@
                     <form method="POST" action="{{ route('add_bio') }}" enctype="multipart/form-data">
                         @csrf
                         <h2>Isi Biodata</h2>
-                        <input type="text" name="id_user" value="{{ $user->id }}" hidden>
+                        
                         <div class="row">
                             <div class="col-md-6 col-12">
                                 <div class="info-list">
