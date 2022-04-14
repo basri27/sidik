@@ -20,7 +20,7 @@
                     <form method="POST" action="{{ route('add_bio') }}" enctype="multipart/form-data">
                         @csrf
                         <h2>Isi Biodata</h2>
-                        
+                        <input type="text" name="id_user" value="{{ $user->id }}" hidden>
                         <div class="row">
                             <div class="col-md-6 col-12">
                                 <div class="info-list">
@@ -85,11 +85,11 @@
                                     </div>            
                                 </div>
                             </div>
-                            <div class="col-md-6 col-12">
+                            <div class="col-md-6 col-12" id="fak">
                                 <div class="info-list">
                                     <div class="form-group">
                                         <label class="font-weight-bold text-primary">Fakultas:</label>
-                                        <select class="form-control" data-width="100%" name="fakultas" id="fakultas_id" required>
+                                        <select class="form-control" data-width="100%" name="fakultas" id="fakultas_id">
                                             @foreach ($fakultas as $fak)
                                             <option value="{{ $fak->id }}">{{ $fak->nama_fakultas }}</option>
                                             @endforeach
@@ -97,16 +97,22 @@
                                     </div>            
                                 </div>
                             </div>
-                            <div class="col-md-6 col-12">
+                            <div class="col-md-6 col-12" id="pro">
                                 <div class="info-list">
                                     <div class="form-group">
                                         <label class="font-weight-bold text-primary">Program studi:</label>
-                                        <select class="form-control" data-width="100%" name="prodi" id="prodi_id" required>
-                                            @foreach ($prodi as $pro)
-                                            <option value="{{ $pro->id }}">{{ $pro->nama_prodi }}</option>
-                                            @endforeach
+                                        <select class="form-control" data-width="100%" name="prodi" id="prodi_id">
+                                            <option value="1">Pilih Program Studi</option>
                                         </select>
                                     </div>            
+                                </div>
+                            </div>
+                            <div style="display: none;" class="col-md-6 col-12" id="bpjs">
+                                <div class="info-list">
+                                    <div class="form-group">
+                                        <label class="font-weight-bold text-primary">No: BPJS</label>
+                                        <input class="form-control" type="text" name="no_bpjs">
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-md-6 col-12">
@@ -133,6 +139,28 @@
             $('#ktg').select2()
             $('#fakultas_id').select2()
             $('#prodi_id').select2()
+            $('#fakultas_id').on('change', function() {
+                var fakultasID = $(this).val();
+                if(fakultasID) {
+                    $.ajax({
+                        url: '/getProdi/'+fakultasID,
+                        type: "GET",
+                        data: {"_token":"{{ csrf_token() }}"},
+                        dataType: "json",
+                        success: function(data)
+                        {
+                            if(data){
+                                $('#prodi_id').empty();
+                                $.each(data, function(key, prodi){
+                                    $('select[name="prodi"]').append('<option value="'+ prodi.id +'">' + prodi.nama_prodi + '</option>');
+                                });
+                            } else {
+                                $('#prodi_id').empty();
+                            }
+                        }
+                    });
+                }
+            });
         });
         function category(select)
         {
@@ -140,26 +168,28 @@
             var p = document.getElementById('prodi_id');
 
             if(select.value == '4') {
-                f.disabled = true;
-                f.value = '1';
-                p.disabled = true;
-                p.value = '1';
+                $('#fak').hide();
+                $('#pro').hide();
+                $('#bpjs').hide()
             }
-            else if (select.value == '2') {
-                p.disabled = true;
-                p.value = '1';
-                f.disabled = false
+            else if (select.value == '2' || select.value == '1') {
+                $('#pro').hide();
+                $('#fak').show();
+                $('#bpjs').hide()
             }
-            else {
-                f.disabled = false;
-                p.disabled = false;
+            else if (select.value == '3'){
+                $('#fak').show();
+                $('#pro').show();
+                $('#bpjs').hide()
+            }
+            else if (select.value == '5'){
+                $('#fak').hide()
+                $('#pro').hide()
+                $('#bpjs').show()
             }
         }
     </script>
     <script src="{{ asset('/vendor/jquery/regist.min.js') }}"></script>
     <script src="{{ asset('/js/register.js') }}"></script>
-
-    
-    
 </body>
 </html>

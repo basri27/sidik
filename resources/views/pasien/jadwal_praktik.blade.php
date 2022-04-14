@@ -11,36 +11,27 @@
 @endsection
 
 @section('menu')
-    <li class="nav-item active">
-        <a class="nav-link" href="{{ route('profil_pasien', Auth::user()->id) }}">
-            <i class="fas fa-user"></i>
-            <span>Profil</span>
-        </a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" href="#">
-            <i class="fas fa-calendar-alt"></i>
-            <span>Jadwal Praktik</span>
-        </a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" href="#">
-            <i class="fas fa-history"></i>
-            <span>Riwayat Berobat</span>
-        </a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" href="#">
-            <i class="fas fa-id-card"></i>
-            <span>Kartu Berobat</span>
-        </a>
-    </li>
+    @include('layouts.nav_pasien')
 @endsection
 
 @section('subhead', 'Profil Pasien')
 
 @section('foto')
-    <img class="img-profile rounded-circle" src="{{ asset('foto_profil/pasien/' . $pasien->foto_pasien) }}">
+    <?php 
+        $p = \App\Models\Pasien::where('user_id', $pasien->id)->first();
+        $kp = \App\Models\KeluargaPasien::where('user_id', $pasien->id)->first();
+        if ($p != null) {
+            $dosen = \App\Models\Dosen::where('pasien_id', $p->id)->first();
+            $kary = \App\Models\Karyawan::where('pasien_id', $p->id)->first();
+            $mhs = \App\Models\Mahasiswa::where('pasien_id', $p->id)->first();
+            $bpjs = \App\Models\Bpjs::where('pasien_id', $p->id)->first();
+        }
+    ?>
+    @if ($p != null)
+    <img class="img-profile rounded-circle" src="{{ asset('foto_profil/pasien/' . $p->foto_pasien) }}">
+    @else
+    <img class="img-profile rounded-circle" src="{{ asset('foto_profil/keluarga_pasien/' . $kp->foto_kel_pasien) }}">
+    @endif
 @endsection
 
 @section('content')
@@ -48,31 +39,47 @@
     <div class="card shadow mb-4">
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-bordered table-striped text-dark" style="text-align: center; font-size: 70%; color: white;">
-                    
+                <table class="table table-bordered table-striped" style="text-align: center; font-size: 70%; color: white;">
                     <thead>
                         <tr class="bg-dark">
-                            @foreach($jadwal_praktek as $j)<th>{{ $j->hari }}</th>@endforeach
+                            @foreach ($jadwals as $jadwal)
+                            <th scope="col sm-1">{{ $jadwal->hari_jadwal }}</th>
+                            @endforeach
                         </tr>
                     </thead>
-                    <tbody style="color: black">                        
+                        <tr class="bg-info">
+                            @foreach ($jadwals as $jadwal)
+                                <th>
+                                    @foreach ($tenkes as $tks)
+                                        {{ ($tks->id == $jadwal->tenkes1) ?  $tks->nama_tenkes : '' }}
+                                    @endforeach
+                                </th>
+                            @endforeach
+                        </tr>
+                    <tbody style="color: black">
                         <tr>
-                        @foreach($jadwal_praktek as $jp)
-                            <td>
-                                {{ $jp->tenkesehatan->nama_tenkes}}<br>({{ $jp->pagi }})
-                            </td>                        
-                        @endforeach</tr>
+                            @foreach ($jadwals as $jadwal)
+                            {{-- <td>{{ \Carbon\Carbon::parse($jadwal->pagi_s)->format('H:i') }} - {{ \Carbon\Carbon::parse($jadwal->pagi_n)->format('H:i') }}</td> --}}
+                            <td>{{ $jadwal->waktu1 }}</td>
+                            @endforeach
+                        </tr>
+                        <tr class="bg-info" style="color: white">
+                            @foreach ($jadwals as $jadwal)
+                                <th>
+                                    @foreach ($tenkes as $tks)
+                                    {{ ($tks->id == $jadwal->tenkes2) ?  $tks->nama_tenkes : '' }}
+                                    @endforeach
+                                </th>
+                            @endforeach
+                        </tr>
                         <tr>
-                            @foreach($jadwal_praktek as $jp)
-                            <td>
-                                {{ $jp->nakes_2}}<br>({{ $jp->siang }})
-                            </td>                        
+                            @foreach ($jadwals as $jadwal)
+                            <td>{{ $jadwal->waktu2 }}</td>
                             @endforeach
                         </tr>
                     </tbody>
-                    
-                    
                 </table>
+
             </div>
         </div>
     </div>

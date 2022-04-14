@@ -56,6 +56,8 @@
         .modal-dialog {
             max-width: 75%;
         }
+
+        
     </style>
 @endsection
 
@@ -176,14 +178,21 @@
                         </div>
                         <div class="row">
                             <div id="pie-grafik" class="col-6"></div>
-                            <div id="pie-grafik-penyakit" class="col-6"></div>
+                            <div id="barChart" class="col-6"></div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+        <div class="col-lg-12">
+            <div class="card shadow mb-4">
+                <div class="card-body">
+                    <div id="pie-grafik-penyakit" class="col-6"></div>
+                </div>
+            </div>
+        </div>
     </div>
-    <body onload="diag()">
+    <!-- <body onload="diag()">
     <div class="row">
         <div class="col-lg-12">
             <div class="card shadow mb-4">
@@ -379,7 +388,7 @@
             </div>
         </div>
     </div>
-    </body>
+    </body> -->
 </div>
 @foreach($rekammedik as $rk)
     <div id="info-rekam-medik{{$rk->id}}" class="modal fade" role="dialog">
@@ -711,7 +720,9 @@
     <script src="{{ asset('js/high-chart/highchart.js') }}"></script>
     <script src="{{ asset('js/high-chart/exporting.js') }}"></script>
     <script src="{{ asset('js/high-chart/export-data.js') }}"></script>
+    <script src="https://code.highcharts.com/modules/accessibility.js"></script>
     <script type="text/javascript">
+
         function diag() {
             $('#diag20').hide()
             $('#diag21').hide()
@@ -765,6 +776,17 @@
             2022: <?php echo json_encode($umum22) ?>,
             2023: <?php echo json_encode($umum23) ?>,
         }
+
+        var data_name = []
+        var data_freq = []
+        var data_temp =  <?php echo(json_encode($diagCount21[1])); ?>;
+        if(data_temp != null){
+            for (let i = 0; i < data_temp.length; i++) {
+                data_name[i] = data_temp[i]['nama_diagnosa']
+                data_freq[i] = data_temp[i]['freq']
+            }
+        }
+
         
         var chart = Highcharts.chart('container', {
             chart: {
@@ -850,6 +872,47 @@
                     }]
                 }]
             });
+        var barChart = Highcharts.chart('barChart', {
+            chart: {
+                type: 'bar'
+            },
+            title: {
+                text: 'Grafik Jumlah Penyakit yang Banyak Diderita Pasien Bulan Januari 2022'
+            },
+            xAxis: {
+                categories: data_name,
+                title: {
+                    text: 'Nama Penyakit'
+                }
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: 'Jumlah Penyakit',
+                    align: 'high'
+                },
+                labels: {
+                    overflow: 'justify'
+                }
+            },
+            tooltip: {
+                valueSuffix: ' kasus'
+            },
+            plotOptions: {
+                bar: {
+                    dataLabels: {
+                        enabled: true
+                    }
+                }
+            },
+            credits: {
+                enabled: false
+            },
+            series: [{
+                name: 'Jumlah',
+                data: data_freq
+            }]
+        });
         var pieChartPenyakit = Highcharts.chart('pie-grafik-penyakit', {
             chart: {
                     type: 'pie'
@@ -880,13 +943,7 @@
                     name: 'Jumlah',
                     colorByPoint: true,
                     keys: ['name', 'y', 'selected', 'sliced'],
-                    data: [
-                        ['{{$diagCount21[1][0]['nama_diagnosa']}}', {{$diagCount21[1][0]['freq']}}, true, true],
-                        ['{{$diagCount21[1][1]['nama_diagnosa']}}', {{$diagCount21[1][1]['freq']}}, false],
-                        ['{{$diagCount21[1][2]['nama_diagnosa']}}', {{$diagCount21[1][2]['freq']}}, false],
-                        ['{{$diagCount21[1][3]['nama_diagnosa']}}', {{$diagCount21[1][3]['freq']}}, false],
-                        ['{{$diagCount21[1][4]['nama_diagnosa']}}', {{$diagCount21[1][4]['freq']}}, false],
-                    ],
+                    data: data,
                 }]
             });
 

@@ -452,7 +452,7 @@ class AdminController extends Controller
         foreach($data23 as $r) {
             $y2023[] = $r;
         }
-        
+
         return view('admin.rekap_rekam_medik', compact('rekammedik', 'dosen', 'kary', 'mhs', 'bpjs', 'diagCount20', 'diagCount21', 'diagCount22', 'diagCount23', 'diagCount24', 'diagCount25', 'y2024', 'y2025', 'y2020', 'y2021', 'y2022', 'y2023', 'mhs24', 'mhs25', 'mhs20', 'mhs21', 'mhs22', 'mhs23', 'dosen24', 'dosen25', 'dosen20', 'dosen21', 'dosen22', 'dosen23', 'kary24', 'kary25', 'kary20', 'kary21', 'kary22', 'kary23', 'umum24', 'umum25', 'umum20', 'umum21', 'umum22', 'umum23', 'm20'));
     }
     public function filterRekamMedikPasien(Request $request)
@@ -516,7 +516,7 @@ class AdminController extends Controller
         foreach($data23 as $r) {
             $y2023[] = $r;
         }
-        
+                
         return view('admin.rekap_rekam_medik', compact('rekammedik', 'y2024', 'y2025', 'y2020', 'y2021', 'y2022', 'y2023', 'mhs24', 'mhs25', 'mhs20', 'mhs21', 'mhs22', 'mhs23', 'dosen24', 'dosen25', 'dosen20', 'dosen21', 'dosen22', 'dosen23', 'kary24', 'kary25', 'kary20', 'kary21', 'kary22', 'kary23', 'umum24', 'umum25', 'umum20', 'umum21', 'umum22', 'umum23'));
     }
     public function filterRekamMedik()

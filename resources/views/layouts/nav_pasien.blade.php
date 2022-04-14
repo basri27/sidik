@@ -23,7 +23,7 @@
         </a>
     </li>
     <?php $p = \App\Models\Pasien::where('user_id', $pasien->id)->first(); ?>
-    @if ($pasien->pasien->category_id == 1 || $pasien->pasien->category_id == 2)
+    @if ($p->category_id == 1 || $p->category_id == 2)
     <li class="nav-item">
         <a class="nav-link" href="{{ route('keluarga_pasien', $pasien->id) }}">
             <i class="fas fa-users"></i>

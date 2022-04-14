@@ -8,21 +8,25 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Requests\UpdatePasswordRequest;
 use Carbon\Carbon;
 use App\Models\Pasien;
+use App\Models\Dosen;
+use App\Models\Mahasiswa;
+use App\Models\Karyawan;
+use App\Models\Bpjs;
 use App\Models\User;
 use App\Models\Category;
 use App\Models\Fakulta;
 use App\Models\Prodi;
-use App\Models\Jadwal;
-use App\Models\JadwalPraktek;
+use App\Models\JadwalPraktek as Jadwal;
+use App\Models\Tenkesehatan;
 use App\Models\KeluargaPasien;
 use App\Models\RekamMedik;
 
 class PasienController extends Controller
 {
-    // public function __construct()
-    // {
-    //     $this->middleware('auth');
-    // }
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
 
     public function viewBio()
     {
@@ -37,57 +41,82 @@ class PasienController extends Controller
         $image = Request()->foto_pasien;
         $imageName = $request->input('id_user') . '_pasien' . '.' . $image->extension();
         $image->move(public_path('foto_profil/pasien'), $imageName);
+        $pasien = Pasien::create([
+            'user_id' => $request->input('id_user'),
+            'category_id' => $request->input('kategori'),
+            'nama_pasien' => $request->input('nama'),
+            'tempat_lhr_pasien' => $request->input('tempat_lhr'),
+            'tgl_lhr_pasien' => $request->input('tgl_lhr'),
+            'no_hp_pasien' => $request->input('nohp'),
+            'alamat_pasien' => $request->input('alamat'),
+            'jk_pasien' => $request->input('jk'),
+            'foto_pasien' => $imageName,
+            'status_pasien' => 'aktif'
+        ]);
+
+        if ($request->input('kategori') == 1) {
+                Dosen::create([
+                    'pasien_id' => $pasien->id,
+                    'fakulta_id' => $request->input('fakultas'),
+                ]);
+            }
+            elseif ($request->input('kategori') == 2) {
+                Karyawan::create([
+                    'pasien_id' => $pasien->id,
+                    'fakulta_id' => $request->input('fakultas'),
+                ]);
+            }
+            elseif ($request->input('kategori') == 3) {
+                Mahasiswa::create([
+                    'pasien_id' => $pasien->id,
+                    'fakulta_id' => $request->input('fakultas'),
+                    'prodi_id' => $request->input('prodi'),
+                ]);
+            }
+            elseif ($request->input('kategori') == 5) {
+                Bpjs::create([
+                    'pasien_id' => $pasien->id,
+                    'no_bpjs' => $request->input('no_bpjs')
+                ]);
+        }
     
-        if(Request()->fakulta_id <> ""){
-            if(Request()->prodi_id <> ""){
-                Pasien::create([
-                'user_id' => $request->input('id_user'),
-                'category_id' => $request->input('kategori'),
-                'fakulta_id' => $request->input('fakulta_id'),
-                'prodi_id' => $request->input('prodi_id'),
-                'nama_pasien' => $request->input('nama'),
-                'tempat_lhr_pasien' => $request->input('tempat_lhr'),
-                'tgl_lhr_pasien' => $request->input('tgl_lhr'),
-                'no_hp_pasien' => $request->input('nohp'),
-                'alamat_pasien' => $request->input('alamat'),
-                'jk_pasien' => $request->input('jk'),
-                'foto_pasien' => $imageName,
-                'status_pasien' => 'aktif'
-                ]);
-            }
-            else {
-                Pasien::create([
-                'user_id' => $request->input('id_user'),
-                'category_id' => $request->input('kategori'),
-                'fakulta_id' => $request->input('fakulta_id'),
-                'prodi_id' => '1',
-                'nama_pasien' => $request->input('nama'),
-                'tempat_lhr_pasien' => $request->input('tempat_lhr'),
-                'tgl_lhr_pasien' => $request->input('tgl_lhr'),
-                'no_hp_pasien' => $request->input('nohp'),
-                'alamat_pasien' => $request->input('alamat'),
-                'jk_pasien' => $request->input('jk'),
-                'foto_pasien' => $imageName,
-                'status_pasien' => 'aktif'
-                ]);
-            }
-        }
-        else {
-            Pasien::create([
-                'user_id' => $request->input('id_user'),
-                'category_id' => $request->input('kategori'),
-                'fakulta_id' => '1',
-                'prodi_id' => '1',
-                'nama_pasien' => $request->input('nama'),
-                'tempat_lhr_pasien' => $request->input('tempat_lhr'),
-                'tgl_lhr_pasien' => $request->input('tgl_lhr'),
-                'no_hp_pasien' => $request->input('nohp'),
-                'alamat_pasien' => $request->input('alamat'),
-                'jk_pasien' => $request->input('jk'),
-                'foto_pasien' => $imageName,
-                'status_pasien' => 'aktif'
-            ]);
-        }
+        // if(Request()->fakulta_id <> ""){
+        //     if(Request()->prodi_id <> ""){
+        //         Pasien::create([
+        //         'user_id' => $request->input('id_user'),
+        //         'category_id' => $request->input('kategori'),
+        //         'fakulta_id' => $request->input('fakulta_id'),
+        //         'prodi_id' => $request->input('prodi_id'),
+        //         'nama_pasien' => $request->input('nama'),
+        //         'tempat_lhr_pasien' => $request->input('tempat_lhr'),
+        //         'tgl_lhr_pasien' => $request->input('tgl_lhr'),
+        //         'no_hp_pasien' => $request->input('nohp'),
+        //         'alamat_pasien' => $request->input('alamat'),
+        //         'jk_pasien' => $request->input('jk'),
+        //         'foto_pasien' => $imageName,
+        //         'status_pasien' => 'aktif'
+        //         ]);
+        //     }
+        //     else {
+        //         Pasien::create([
+        //         'user_id' => $request->input('id_user'),
+        //         'category_id' => $request->input('kategori'),
+        //         'fakulta_id' => $request->input('fakulta_id'),
+        //         'prodi_id' => '1',
+        //         'nama_pasien' => $request->input('nama'),
+        //         'tempat_lhr_pasien' => $request->input('tempat_lhr'),
+        //         'tgl_lhr_pasien' => $request->input('tgl_lhr'),
+        //         'no_hp_pasien' => $request->input('nohp'),
+        //         'alamat_pasien' => $request->input('alamat'),
+        //         'jk_pasien' => $request->input('jk'),
+        //         'foto_pasien' => $imageName,
+        //         'status_pasien' => 'aktif'
+        //         ]);
+        //     }
+        // }
+        // else {
+        //     
+        // }
 
         return redirect()->route('profil_pasien', $request->input('id_user'));
     }
@@ -281,10 +310,11 @@ class PasienController extends Controller
     }
     public function jadwalPraktik($id)
     {
-        $pasien = Pasien::where('user_id', $id)->first();
-        $jadwal_praktek = JadwalPraktek::get();
+        $pasien = User::where('id', $id)->first();
+        $jadwals = Jadwal::with('tenkesehatan')->get();
+        $tenkes = TenKesehatan::all();
 
-        return view('pasien.jadwal_praktik', compact('pasien', 'jadwal_praktek'));
+        return view('pasien.jadwal_praktik', compact('pasien', 'jadwals', 'tenkes'));
     }
     public function kartuBerobat($id)
     {
