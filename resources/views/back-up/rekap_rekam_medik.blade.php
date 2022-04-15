@@ -1,4 +1,4 @@
-{{-- @dd($constraintOfMonth, $listOfMonths, $listOfMonths[$yearParam], $listOfMonths[2022][$monthParam], $listOfMonths[2022][3]); --}}
+{{-- @dd($mhs, $mhs[2022], $mhs[2022][$monthParam-1], $mhs[$yearParam][3]); --}}
 
 
 @extends('layouts.back')
@@ -191,7 +191,7 @@
                 </a>
                 <div class="collapse show" id="collapseCardHighChart">
                     <div class="card-body">
-                        <div class="year buttons">
+                        <div class="buttons">
                             @forEach($listOfYears as $year)
                             <button id="{{ $year }}"
                                 @if ($year == $yearParam)
@@ -208,11 +208,11 @@
         <div class="col-lg-12">
             <div class="card shadow mb-4">
                 <a href="#collapseCardData" class="d-block card-header py-3" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="collapseCardExample">
-                    <h6 class="m-0 font-weight-bold text-primary">Diagram kategori dan Diagnosa Pasien per Bulan</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">Diagram kategori pasien per tahun</h6>
                 </a>
                 <div class="collapse show" id="collapseCardData">
                     <div class="card-body">
-                        <div class="month buttons">
+                        <div class="buttons">
                             @forEach($listOfMonths[$yearParam] as $month)
                             {{-- @if($yearParam == $thisYear && $month == (Carbon\Carbon::createFromFormat('!m', $thisMonth + 1)->format('F')))
                                 @break
@@ -446,6 +446,10 @@
 
 <script src="https://code.highcharts.com/modules/accessibility.js" type="text/javascript"></script>
     <script >
+        
+
+        
+
         const listOfYears = <?php echo(json_encode($listOfYears)); ?>;
         const listOfMonths = <?php echo(json_encode($listOfMonths)); ?>;
         
@@ -453,27 +457,41 @@
         var getAllData = <?php echo(json_encode($getAllData)); ?>;
         var getFinishedData = <?php echo(json_encode($getFinishedData)); ?>;
         var getFinishedDataYearly = <?php echo(json_encode($getFinishedDataYearly)); ?>;
+        var listOfMhs = <?php echo(json_encode($mhsAll)); ?>;
+        var listOfDosen = <?php echo(json_encode($dosenAll)); ?>;
+        var listOfKary = <?php echo(json_encode($karyAll)); ?>;
 
+        var getListOfYears = <?php echo(json_encode($getListOfYears)); ?>;
+
+
+        var thisYear =  <?php echo(json_encode($thisYear)); ?>;
         var yearParam = <?php echo(json_encode($yearParam)); ?>;
         var monthParam = <?php echo(json_encode($monthParam)); ?> - 1;
-        var thisYear = <?php echo(json_encode($thisYear)); ?>;
         var constraintOfMonth = <?php echo(json_encode($constraintOfMonth)); ?>;
 
         var mhs = <?php echo(json_encode($mhs)); ?>;
+        var mhsThisYear = mhs[2022];
+        var monthly = <?php echo(json_encode($monthly)); ?>;
         var dosen = <?php echo(json_encode($dosen)); ?>;
         var kary = <?php echo(json_encode($kary)); ?>;
         var umum = <?php echo(json_encode($umum)); ?>;
-
-        var monthly = <?php echo(json_encode($monthly)); ?>;
 
 
         var data_name = [];
         var data_freq = [];
         var data_temp =  <?php echo(json_encode($monthly)); ?>;
+        var data_name_freq = [];
         if(data_temp != null){
             for (let i = 0; i < data_temp.length; i++) {
                 data_name[i] = data_temp[i]['nama_diagnosa'];
                 data_freq[i] = data_temp[i]['freq'];
+
+                if(i == 0){
+                    data_name_freq[i] = [data_name[i], data_freq[i], true, true];
+                }
+                else {
+                    data_name_freq[i] = [data_name[i], data_freq[i], false];
+                }
             }
         }
 
@@ -525,7 +543,7 @@
                     type: 'pie'
                 },
                 title: {
-                    text: 'Kategori pasien ' + listOfMonths[yearParam][monthParam] + ' ' + yearParam
+                    text: 'Jumlah kategori pasien di bulan ' + listOfMonths[yearParam][monthParam] + ' ' + yearParam
                 },
                 tooltip: {
                     pointFormat: '{series.name}: <b>{point.y:1f} pasien</b>'
@@ -623,11 +641,6 @@
         });
 
 
-        
-
-        
-
-
         //function untuk click listener button bulan
         function button_of_months(year){
                 var index_of_months = -1;
@@ -648,20 +661,12 @@
                         }
                     }
 
-                    if(year == yearParam && month == monthParam){
-                        var data_name_bar_this_month = data_name;
-                        var data_freq_bar_this_month = data_freq;
-                    }
-
                     var btn_month = document.getElementById(month);
                     
                     btn_month.addEventListener('click', function () {
-                    
-                        // if(year == thisYear){
-                        //     document.getElementById(listOfMonths[year][11]).innerText = 'December';
-                        // }
 
-                        document.querySelectorAll('.month button.active').forEach(function (active) {
+
+                        document.querySelectorAll('.buttons button.active').forEach(function (active) {
                             active.className = '';
                         });
 
@@ -699,76 +704,21 @@
                     });
                 });
             }
-            
-
-        //set visibility button berdasarkan bulan ditahun tertentu
-        function set_visibility_of_month_button(year) {
-            //temp_id untuk menyimpan elemet button yang di hide
-            // var temp_id = -1;
-            // var new_id = [];
-            if(year == thisYear){
-                //set new id berdasarkan tahun sekarang
-                // new_id = listOfMonths[year][constraintOfMonth[year] - 1];
-                for(let i = 0; i < 12; i++){
-                    $('#'+listOfMonths[year][i]).show()
-                    if(i > constraintOfMonth[year] - 1){
-                        $('#'+listOfMonths[year][i]).hide();
-                    }
-                    // if(i == 11){
-                    //     $('#'+listOfMonths[year][i]).show();
-                    //     document.getElementById(listOfMonths[year][i]).innerText = document.getElementById(listOfMonths[year][constraintOfMonth[year] - 1]).innerText;
-                    //     //simpan element bulan terakhir ditahun sekarang ke variabel temp_id
-                    //     document.getElementById(new_id).setAttribute("id", temp_id );
-                    //     //set bulan terakhir ke new_id
-                    //     document.getElementById(listOfMonths[year][i]).setAttribute("id", new_id);
-                        
-                    // }
-                }
-                
-            }
-            else{
-
-                //set new id berdasarkan tahun sekarang
-                // new_id = listOfMonths[thisYear][constraintOfMonth[thisYear] - 1];
-                
-                // document.getElementById(new_id).setAttribute("id", listOfMonths[year][11]);
-                // document.getElementById(temp_id).setAttribute("id", new_id);
-
-                // document.getElementById(new_id).setAttribute("id", );
-                        //set bulan terakhir ke new_id
-                for(let i = 0; i < 12; i++){
-                    $('#'+listOfMonths[year][i]).show()
-                    
-                
-                    // document.getElementById(listOfMonths[year][i]).id = listOfMonths[year][i];
-                    
-                    // document.getElementById(listOfMonths[i]).accessibility = 'true';
-                    // document.getElementById(listOfMonths[year][i]).setAttribute("id", listOfMonths[year][i]);
-                }
-
-               
-                // document.getElementById(listOfMonths[year][11]).innerText = 'December';
-
-            }
-
-            
-            button_of_months(year);
-            
-        }
-
-        
 
         
 
         listOfYears.forEach(function (year) {
 
+            // const index_of_year = year;
             // variable untuk menampilkan column chart tahunan rekam medik yang status nya selesai
             var dataChart = getFinishedData[year];
 
-            // variable untuk generate 5 daftar penyakit terbanyak bulanan january
+            // variable untuk generate 5 daftar penyakit terbanyak bulanan
             var data_temp_bar = getAllData[year][0];
             var data_name_bar = [];
             var data_freq_bar = [];
+
+            button_of_months(year)
 
             if(data_temp_bar != null){
                 for (let i = 0; i < data_temp_bar.length; i++) {
@@ -784,11 +734,11 @@
 
             btn.addEventListener('click', function () {
 
-                document.querySelectorAll('button.active').forEach(function (active) {
+                button_of_months(year)
+
+                document.querySelectorAll('.buttons button.active').forEach(function (active) {
                     active.className = '';
                 });
-
-                document.getElementById(listOfMonths[year][0]).className = 'active';
 
                 btn.className = 'active';
 
@@ -833,30 +783,7 @@
                         data: data_freq_bar
                     }]
                 });
-
-                
-                
-                set_visibility_of_month_button(year);
-                
             });
         });
-
-        
-        
-        set_visibility_of_month_button(yearParam);
-
-        
-        // // if(yearParam == thisYear){
-        //     document.querySelectorAll('.month button.active').forEach(function (active) {
-        //         active.className = '';
-        //     });
-
-        //     // var year = yearParam;
-
-        //     // var new_id = listOfMonths[year][constraintOfMonth[year] - 1];
-
-        //     document.getElementById(monthParam - 1).className = 'active';
-        // // }
-
     </script>
 @endsection

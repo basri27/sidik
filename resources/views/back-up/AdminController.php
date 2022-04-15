@@ -22,7 +22,6 @@ use App\Models\Diagnosa;
 use App\Models\Mahasiswa;
 use App\Models\Dosen;
 use App\Models\Karyawan;
-use App\Models\Umum;
 use App\Models\Bpjs;
 use App\Models\KeluargaPasien;
 use Carbon\Carbon;
@@ -71,7 +70,7 @@ class AdminController extends Controller
     public function adm_update(Request $request, $user_id)
     {
         $admins = Admin::where('user_id', $user_id)->first();
-
+        
         if(Request()->foto_admin <> "") {
             $image = Request()->foto_admin;
             $imageName = $user_id . '_admin' . '.' . $image->extension();
@@ -100,7 +99,7 @@ class AdminController extends Controller
             ]);
         }
 
-        return redirect()->route('adm_profil', $admins->user_id)->with(['success' => 'Profil berhasil diperbarui!']);
+        return redirect()->route('adm_profil', $admins->user_id)->with(['success' => 'Profil atau foto profil berhasil diperbarui!']);
     }
 
     public function admResetFoto($user_id)
@@ -376,25 +375,30 @@ class AdminController extends Controller
         $getFinishedData = []; // ambil semua data rekam medis yang status nya "SELESAI"
         $rekammedik = RekamMedik::where('status_rekam_medik', 'selesai')->get();
         $diagnosa = Diagnosa::all();
-        $dosenAll = Dosen::all();
-        $karyAll = Karyawan::all();
-        $mhsAll = Mahasiswa::all();
         $bpjs = Bpjs::all();
         $dosen = [];
         $mhs = [];
         $kary = [];
         $umum = [];
         $yearly = [];
-        $constraintOfMonth = []; 
+        $getListOfYears = [];
+        $listOfMonths = [];
+
         
+
+        $constraintOfMonth = 0; 
+        
+
         foreach($listOfYears as $year) {
-            $constraintOfMonth[$year] = 12; 
-            if($year == $thisYear) {
-                $constraintOfMonth[$year] = $thisMonth;
-            }
+            $constraintOfMonth = 12;
+            // if($year == $thisYear) {
+            //     $constraintOfMonth = $thisMonth;
+            // }
+
+            // $getListOfYears[$year] = $year;
 
             //generate data berdasarakan index Year dan Month
-            for($month = 1; $month <= 12; $month++) {
+            for($month = 1; $month <= $constraintOfMonth; $month++) {
                 $listOfMonths[$year][$month - 1] = Carbon::createFromFormat('!m', $month)->format('F');
                 $getAllData[$year][$month - 1] = RekamMedik::fromQuery('SELECT nama_diagnosa, diagnosa_id, COUNT(diagnosa_id) AS freq FROM rekam_mediks as rk JOIN diagnosas as d ON rk.diagnosa_id = d.id WHERE YEAR (rekammedik_created_at) = ' . $year . ' AND MONTH (rekammedik_created_at) = ' . $month . ' GROUP BY diagnosa_id ORDER BY freq DESC LIMIT 5');
                 $getFinishedData[$year][$month-1] = RekamMedik::whereYear('rekammedik_created_at', $year)->whereMonth('rekammedik_created_at', $month)->where('status_rekam_medik', 'selesai')->count();
@@ -403,16 +407,129 @@ class AdminController extends Controller
                 $mhs[$year][$month - 1] = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Mahasiswa')->whereYear('rekammedik_created_at', $year)->whereMonth('rekammedik_created_at', $month)->count();
                 $kary[$year][$month - 1] = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Karyawan')->whereYear('rekammedik_created_at', $year)->whereMonth('rekammedik_created_at', $month)->count();
                 $umum[$year][$month - 1] = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Umum')->whereYear('rekammedik_created_at', $year)->whereMonth('rekammedik_created_at', $month)->count();
-            }
+            }           
+            
         }
+
 
         foreach($getFinishedData[$yearParam] as $i){
             $getFinishedDataYearly[] = $i;
         }
 
+       
         $monthly = $getAllData[$yearParam][$monthParam - 1];
-    
-        return view('admin.rekap_rekam_medik', compact('thisYear', 'constraintOfMonth', 'getFinishedDataYearly', 'yearParam', 'monthParam', 'listOfYears', 'listOfMonths', 'getAllData', 'getFinishedData', 'rekammedik', 'diagnosa', 'bpjs', 'dosen', 'mhs','kary', 'umum', 'dosenAll', 'mhsAll', 'karyAll', 'monthly'));
+        
+        
+        
+        
+        
+            // $diagCount20[$i] = RekamMedik::fromQuery('SELECT nama_diagnosa, diagnosa_id, COUNT(diagnosa_id) AS freq FROM rekam_mediks as rk JOIN diagnosas as d ON rk.diagnosa_id = d.id WHERE YEAR (rekammedik_created_at) = 2020 AND MONTH (rekammedik_created_at) = ' . $i . ' GROUP BY diagnosa_id ORDER BY freq DESC LIMIT 5');
+            // $diagCount21[$i] = RekamMedik::fromQuery('SELECT nama_diagnosa, diagnosa_id, COUNT(diagnosa_id) AS freq FROM rekam_mediks as rk JOIN diagnosas as d ON rk.diagnosa_id = d.id WHERE YEAR (rekammedik_created_at) = 2021 AND MONTH (rekammedik_created_at) = ' . $i . ' GROUP BY diagnosa_id ORDER BY freq DESC LIMIT 5');
+            // $diagCount22[$i] = RekamMedik::fromQuery('SELECT nama_diagnosa, diagnosa_id, COUNT(diagnosa_id) AS freq FROM rekam_mediks as rk JOIN diagnosas as d ON rk.diagnosa_id = d.id WHERE YEAR (rekammedik_created_at) = 2022 AND MONTH (rekammedik_created_at) = ' . $i . ' GROUP BY diagnosa_id ORDER BY freq DESC LIMIT 5');
+            // $diagCount23[$i] = RekamMedik::fromQuery('SELECT nama_diagnosa, diagnosa_id, COUNT(diagnosa_id) AS freq FROM rekam_mediks as rk JOIN diagnosas as d ON rk.diagnosa_id = d.id WHERE YEAR (rekammedik_created_at) = 2023 AND MONTH (rekammedik_created_at) = ' . $i . ' GROUP BY diagnosa_id ORDER BY freq DESC LIMIT 5');
+            // $diagCount24[$i] = RekamMedik::fromQuery('SELECT nama_diagnosa, diagnosa_id, COUNT(diagnosa_id) AS freq FROM rekam_mediks as rk JOIN diagnosas as d ON rk.diagnosa_id = d.id WHERE YEAR (rekammedik_created_at) = 2024 AND MONTH (rekammedik_created_at) = ' . $i . ' GROUP BY diagnosa_id ORDER BY freq DESC LIMIT 5');
+            // $diagCount25[$i] = RekamMedik::fromQuery('SELECT nama_diagnosa, diagnosa_id, COUNT(diagnosa_id) AS freq FROM rekam_mediks as rk JOIN diagnosas as d ON rk.diagnosa_id = d.id WHERE YEAR (rekammedik_created_at) = 2025 AND MONTH (rekammedik_created_at) = ' . $i . ' GROUP BY diagnosa_id ORDER BY freq DESC LIMIT 5');
+            // $m20[$i] = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Mahasiswa')->whereYear('rekammedik_created_at', 2020)->whereMonth('rekammedik_created_at', $i)->count();
+            // $data24[$i] = RekamMedik::whereYear('rekammedik_created_at', 2024)->whereMonth('rekammedik_created_at', $i)->where('status_rekam_medik', 'selesai')->count();
+            // $data25[$i] = RekamMedik::whereYear('rekammedik_created_at', 2025)->whereMonth('rekammedik_created_at', $i)->where('status_rekam_medik', 'selesai')->count();
+            // $data20[$i] = RekamMedik::whereYear('rekammedik_created_at', 2020)->whereMonth('rekammedik_created_at', $i)->where('status_rekam_medik', 'selesai')->count();
+            // $data21[$i] = RekamMedik::whereYear('rekammedik_created_at', 2021)->whereMonth('rekammedik_created_at', $i)->where('status_rekam_medik', 'selesai')->count();
+            // $data22[$i] = RekamMedik::whereYear('rekammedik_created_at', 2022)->whereMonth('rekammedik_created_at', $i)->where('status_rekam_medik', 'selesai')->count();
+            // $data23[$i] = RekamMedik::whereYear('rekammedik_created_at', 2023)->whereMonth('rekammedik_created_at', $i)->where('status_rekam_medik', 'selesai')->count();
+        
+
+        $dosenAll = Dosen::all();
+        $karyAll = Karyawan::all();
+        $mhsAll = Mahasiswa::all();
+        
+        // $i = 0;
+        // foreach($diagnosa as $r) {
+        //     $i += 1;
+        //     $diag[$i] = RekamMedik::where('diagnosa_id', $r->id)->orderBy('diagnosa_id', 'DESC')->count();
+        //     $namediag[$i] = RekamMedik::where('diagnosa_id', $r->id)->first();
+        // }
+
+        // foreach($diag as $dg) {
+        //     if($dg != 0) {
+        //         $dgn[] = $dg;
+        //     }
+        // }
+
+        // foreach($namediag as $r) {
+        //     if($r != null) {
+        //         $listdiag[] = $r->diagnosa->nama_diagnosa; 
+        //     }
+        // }
+        
+
+        // for($i = 1; $i <= 12; $i++) {
+        //     $diagCount20[$i] = RekamMedik::fromQuery('SELECT nama_diagnosa, diagnosa_id, COUNT(diagnosa_id) AS freq FROM rekam_mediks as rk JOIN diagnosas as d ON rk.diagnosa_id = d.id WHERE YEAR (rekammedik_created_at) = 2020 AND MONTH (rekammedik_created_at) = ' . $i . ' GROUP BY diagnosa_id ORDER BY freq DESC LIMIT 5');
+        //     $diagCount21[$i] = RekamMedik::fromQuery('SELECT nama_diagnosa, diagnosa_id, COUNT(diagnosa_id) AS freq FROM rekam_mediks as rk JOIN diagnosas as d ON rk.diagnosa_id = d.id WHERE YEAR (rekammedik_created_at) = 2021 AND MONTH (rekammedik_created_at) = ' . $i . ' GROUP BY diagnosa_id ORDER BY freq DESC LIMIT 5');
+        //     $diagCount22[$i] = RekamMedik::fromQuery('SELECT nama_diagnosa, diagnosa_id, COUNT(diagnosa_id) AS freq FROM rekam_mediks as rk JOIN diagnosas as d ON rk.diagnosa_id = d.id WHERE YEAR (rekammedik_created_at) = 2022 AND MONTH (rekammedik_created_at) = ' . $i . ' GROUP BY diagnosa_id ORDER BY freq DESC LIMIT 5');
+        //     $diagCount23[$i] = RekamMedik::fromQuery('SELECT nama_diagnosa, diagnosa_id, COUNT(diagnosa_id) AS freq FROM rekam_mediks as rk JOIN diagnosas as d ON rk.diagnosa_id = d.id WHERE YEAR (rekammedik_created_at) = 2023 AND MONTH (rekammedik_created_at) = ' . $i . ' GROUP BY diagnosa_id ORDER BY freq DESC LIMIT 5');
+        //     $diagCount24[$i] = RekamMedik::fromQuery('SELECT nama_diagnosa, diagnosa_id, COUNT(diagnosa_id) AS freq FROM rekam_mediks as rk JOIN diagnosas as d ON rk.diagnosa_id = d.id WHERE YEAR (rekammedik_created_at) = 2024 AND MONTH (rekammedik_created_at) = ' . $i . ' GROUP BY diagnosa_id ORDER BY freq DESC LIMIT 5');
+        //     $diagCount25[$i] = RekamMedik::fromQuery('SELECT nama_diagnosa, diagnosa_id, COUNT(diagnosa_id) AS freq FROM rekam_mediks as rk JOIN diagnosas as d ON rk.diagnosa_id = d.id WHERE YEAR (rekammedik_created_at) = 2025 AND MONTH (rekammedik_created_at) = ' . $i . ' GROUP BY diagnosa_id ORDER BY freq DESC LIMIT 5');
+        //     $m20[$i] = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Mahasiswa')->whereYear('rekammedik_created_at', 2020)->whereMonth('rekammedik_created_at', $i)->count();
+        //     $data24[$i] = RekamMedik::whereYear('rekammedik_created_at', 2024)->whereMonth('rekammedik_created_at', $i)->where('status_rekam_medik', 'selesai')->count();
+        //     $data25[$i] = RekamMedik::whereYear('rekammedik_created_at', 2025)->whereMonth('rekammedik_created_at', $i)->where('status_rekam_medik', 'selesai')->count();
+        //     $data20[$i] = RekamMedik::whereYear('rekammedik_created_at', 2020)->whereMonth('rekammedik_created_at', $i)->where('status_rekam_medik', 'selesai')->count();
+        //     $data21[$i] = RekamMedik::whereYear('rekammedik_created_at', 2021)->whereMonth('rekammedik_created_at', $i)->where('status_rekam_medik', 'selesai')->count();
+        //     $data22[$i] = RekamMedik::whereYear('rekammedik_created_at', 2022)->whereMonth('rekammedik_created_at', $i)->where('status_rekam_medik', 'selesai')->count();
+        //     $data23[$i] = RekamMedik::whereYear('rekammedik_created_at', 2023)->whereMonth('rekammedik_created_at', $i)->where('status_rekam_medik', 'selesai')->count();
+        // }
+
+        // $dosen24 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Dosen')->whereYear('rekammedik_created_at', 2024)->count();
+        // $dosen25 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Dosen')->whereYear('rekammedik_created_at', 2025)->count();
+        // $dosen20 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Dosen')->whereYear('rekammedik_created_at', 2020)->count();
+        // $dosen21 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Dosen')->whereYear('rekammedik_created_at', 2021)->count();
+        // $dosen22 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Dosen')->whereYear('rekammedik_created_at', 2022)->count();
+        // $dosen23 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Dosen')->whereYear('rekammedik_created_at', 2023)->count();
+
+        // $mhs24 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Mahasiswa')->whereYear('rekammedik_created_at', 2024)->count();
+        // $mhs25 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Mahasiswa')->whereYear('rekammedik_created_at', 2025)->count();
+        // $mhs20 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Mahasiswa')->whereYear('rekammedik_created_at', 2020)->count();
+        // $mhs21 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Mahasiswa')->whereYear('rekammedik_created_at', 2021)->count();
+        // $mhs22 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Mahasiswa')->whereYear('rekammedik_created_at', 2022)->count();
+        // $mhs23 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Mahasiswa')->whereYear('rekammedik_created_at', 2023)->count();
+
+        // $kary24 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Karyawan')->whereYear('rekammedik_created_at', 2024)->count();
+        // $kary25 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Karyawan')->whereYear('rekammedik_created_at', 2025)->count();
+        // $kary20 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Karyawan')->whereYear('rekammedik_created_at', 2020)->count();
+        // $kary21 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Karyawan')->whereYear('rekammedik_created_at', 2021)->count();
+        // $kary22 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Karyawan')->whereYear('rekammedik_created_at', 2022)->count();
+        // $kary23 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Karyawan')->whereYear('rekammedik_created_at', 2023)->count();
+
+        // $umum24 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Umum')->whereYear('rekammedik_created_at', 2024)->count();
+        // $umum25 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Umum')->whereYear('rekammedik_created_at', 2025)->count();
+        // $umum20 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Umum')->whereYear('rekammedik_created_at', 2020)->count();
+        // $umum21 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Umum')->whereYear('rekammedik_created_at', 2021)->count();
+        // $umum22 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Umum')->whereYear('rekammedik_created_at', 2022)->count();
+        // $umum23 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Umum')->whereYear('rekammedik_created_at', 2023)->count();
+        
+        // foreach($data24 as $r) {
+        //     $y2024[] = $r;
+        // }
+        // foreach($data25 as $r) {
+        //     $y2025[] = $r;
+        // }
+        // foreach($data20 as $r) {
+        //     $y2020[] = $r;
+        // }
+        // foreach($data21 as $r) {
+        //     $y2021[] = $r;
+        // }
+        // foreach($data22 as $r) {
+        //     $y2022[] = $r;
+        // }
+        // foreach($data23 as $r) {
+        //     $y2023[] = $r;
+        // }
+        
+        
+        
+        // return view('admin.rekap_rekam_medik', compact( 'monthly', 'rekammedik', 'dosen', 'kary', 'mhs', 'bpjs', 'diagCount20', 'diagCount21', 'diagCount22', 'diagCount23', 'diagCount24', 'diagCount25', 'y2024', 'y2025', 'y2020', 'y2021', 'y2022', 'y2023', 'mhs24', 'mhs25', 'mhs20', 'mhs21', 'mhs22', 'mhs23', 'dosen24', 'dosen25', 'dosen20', 'dosen21', 'dosen22', 'dosen23', 'kary24', 'kary25', 'kary20', 'kary21', 'kary22', 'kary23', 'umum24', 'umum25', 'umum20', 'umum21', 'umum22', 'umum23', 'm20'));
+        
+        return view('admin.rekap_rekam_medik', compact('getListOfYears', 'getFinishedDataYearly', 'constraintOfMonth', 'yearParam', 'monthParam', 'listOfYears', 'listOfMonths', 'thisYear', 'thisMonth', 'getAllData', 'getFinishedData', 'rekammedik', 'diagnosa', 'bpjs', 'dosen', 'mhs','kary', 'umum', 'dosenAll', 'mhsAll', 'karyAll', 'monthly'));
 
     }
 
@@ -424,125 +541,72 @@ class AdminController extends Controller
         return redirect()->route('get_freq_diagnoses', [$year, $month]);
     }
 
+
+    
     public function filterRekamMedikPasien(Request $request)
     {
-        $year = Carbon::now()->year;
-        $month = Carbon::now()->month;
-        $listOfYears = RekamMedik::fromQuery('SELECT DISTINCT(YEAR(rekammedik_created_at)) as year FROM rekam_mediks')->sort()->pluck('year');
-        $listOfMonths = [];
-        $thisYear = Carbon::now()->year;
-        $thisMonth = Carbon::now()->month;
-
-        //Pengganti data {'diagCount20', 'diagCount21', 'diagCount22', 'diagCount23', 'diagCount24', 'diagCount25'}
-        $getAllData = []; // ambil semua data 5 terbanyak setiap bulan pada tiap tiap tahun
-        //Pengganti data {'y2024', 'y2025', 'y2020', 'y2021', 'y2022', 'y2023'}
-        $getFinishedData = []; // ambil semua data rekam medis yang status nya "SELESAI"
         $rekammedik = RekamMedik::where('status_rekam_medik', 'selesai')->whereBetween('rekammedik_created_at', [$request->input('date-start'), $request->input('date-end')])
             ->orWhereDate('rekammedik_created_at', $request->input('date-end'))->get();
-        $diagnosa = Diagnosa::all();
-        $dosenAll = Dosen::all();
-        $karyAll = Karyawan::all();
-        $mhsAll = Mahasiswa::all();
-        $bpjs = Bpjs::all();
-        $dosen = [];
-        $mhs = [];
-        $kary = [];
-        $umum = [];
-        $yearly = [];
-        $constraintOfMonth = []; 
+
+        for($i = 1; $i <= 12; $i++) {
+            $data24[$i] = RekamMedik::whereYear('rekammedik_created_at', 2024)->whereMonth('rekammedik_created_at', $i)->where('status_rekam_medik', 'selesai')->count();
+            $data25[$i] = RekamMedik::whereYear('rekammedik_created_at', 2025)->whereMonth('rekammedik_created_at', $i)->where('status_rekam_medik', 'selesai')->count();
+            $data20[$i] = RekamMedik::whereYear('rekammedik_created_at', 2020)->whereMonth('rekammedik_created_at', $i)->where('status_rekam_medik', 'selesai')->count();
+            $data21[$i] = RekamMedik::whereYear('rekammedik_created_at', 2021)->whereMonth('rekammedik_created_at', $i)->where('status_rekam_medik', 'selesai')->count();
+            $data22[$i] = RekamMedik::whereYear('rekammedik_created_at', 2022)->whereMonth('rekammedik_created_at', $i)->where('status_rekam_medik', 'selesai')->count();
+            $data23[$i] = RekamMedik::whereYear('rekammedik_created_at', 2023)->whereMonth('rekammedik_created_at', $i)->where('status_rekam_medik', 'selesai')->count();
+        }
+
+        $civitas24 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Dosen')->orWhere('nama_kategori', 'Karyawan')->whereYear('rekammedik_created_at', 2024)->count();
+        $dosen24 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Dosen')->whereYear('rekammedik_created_at', 2024)->count();
+        $dosen25 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Dosen')->whereYear('rekammedik_created_at', 2025)->count();
+        $dosen20 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Dosen')->whereYear('rekammedik_created_at', 2020)->count();
+        $dosen21 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Dosen')->whereYear('rekammedik_created_at', 2021)->count();
+        $dosen22 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Dosen')->whereYear('rekammedik_created_at', 2022)->count();
+        $dosen23 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Dosen')->whereYear('rekammedik_created_at', 2023)->count();
+
+        $mhs24 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Mahasiswa')->whereYear('rekammedik_created_at', 2024)->count();
+        $mhs25 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Mahasiswa')->whereYear('rekammedik_created_at', 2025)->count();
+        $mhs20 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Mahasiswa')->whereYear('rekammedik_created_at', 2020)->count();
+        $mhs21 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Mahasiswa')->whereYear('rekammedik_created_at', 2021)->count();
+        $mhs22 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Mahasiswa')->whereYear('rekammedik_created_at', 2022)->count();
+        $mhs23 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Mahasiswa')->whereYear('rekammedik_created_at', 2023)->count();
+
+        $kary24 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Karyawan')->whereYear('rekammedik_created_at', 2024)->count();
+        $kary25 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Karyawan')->whereYear('rekammedik_created_at', 2025)->count();
+        $kary20 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Karyawan')->whereYear('rekammedik_created_at', 2020)->count();
+        $kary21 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Karyawan')->whereYear('rekammedik_created_at', 2021)->count();
+        $kary22 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Karyawan')->whereYear('rekammedik_created_at', 2022)->count();
+        $kary23 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Karyawan')->whereYear('rekammedik_created_at', 2023)->count();
+
+        $umum24 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Umum')->whereYear('rekammedik_created_at', 2024)->count();
+        $umum25 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Umum')->whereYear('rekammedik_created_at', 2025)->count();
+        $umum20 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Umum')->whereYear('rekammedik_created_at', 2020)->count();
+        $umum21 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Umum')->whereYear('rekammedik_created_at', 2021)->count();
+        $umum22 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Umum')->whereYear('rekammedik_created_at', 2022)->count();
+        $umum23 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Umum')->whereYear('rekammedik_created_at', 2023)->count();
         
-        foreach($listOfYears as $year) {
-            $constraintOfMonth[$year] = 12; 
-            if($year == $thisYear) {
-                $constraintOfMonth[$year] = $thisMonth;
-            }
-
-            //generate data berdasarakan index Year dan Month
-            for($month = 1; $month <= 12; $month++) {
-                $listOfMonths[$year][$month - 1] = Carbon::createFromFormat('!m', $month)->format('F');
-                $getAllData[$year][$month - 1] = RekamMedik::fromQuery('SELECT nama_diagnosa, diagnosa_id, COUNT(diagnosa_id) AS freq FROM rekam_mediks as rk JOIN diagnosas as d ON rk.diagnosa_id = d.id WHERE YEAR (rekammedik_created_at) = ' . $year . ' AND MONTH (rekammedik_created_at) = ' . $month . ' GROUP BY diagnosa_id ORDER BY freq DESC LIMIT 5');
-                $getFinishedData[$year][$month-1] = RekamMedik::whereYear('rekammedik_created_at', $year)->whereMonth('rekammedik_created_at', $month)->where('status_rekam_medik', 'selesai')->count();
-            
-                $dosen[$year][$month - 1] = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Dosen')->whereYear('rekammedik_created_at', $year)->whereMonth('rekammedik_created_at', $month)->count();
-                $mhs[$year][$month - 1] = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Mahasiswa')->whereYear('rekammedik_created_at', $year)->whereMonth('rekammedik_created_at', $month)->count();
-                $kary[$year][$month - 1] = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Karyawan')->whereYear('rekammedik_created_at', $year)->whereMonth('rekammedik_created_at', $month)->count();
-                $umum[$year][$month - 1] = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Umum')->whereYear('rekammedik_created_at', $year)->whereMonth('rekammedik_created_at', $month)->count();
-            }
+        foreach($data24 as $r) {
+            $y2024[] = $r;
         }
-
-        foreach($getFinishedData[$yearParam] as $i){
-            $getFinishedDataYearly[] = $i;
+        foreach($data25 as $r) {
+            $y2025[] = $r;
         }
-
-        $monthly = $getAllData[$yearParam][$monthParam - 1];
-    
-        return view('admin.rekap_rekam_medik', compact('thisYear', 'constraintOfMonth', 'getFinishedDataYearly', 'yearParam', 'monthParam', 'listOfYears', 'listOfMonths', 'getAllData', 'getFinishedData', 'rekammedik', 'diagnosa', 'bpjs', 'dosen', 'mhs','kary', 'umum', 'dosenAll', 'mhsAll', 'karyAll', 'monthly'));
+        foreach($data20 as $r) {
+            $y2020[] = $r;
+        }
+        foreach($data21 as $r) {
+            $y2021[] = $r;
+        }
+        foreach($data22 as $r) {
+            $y2022[] = $r;
+        }
+        foreach($data23 as $r) {
+            $y2023[] = $r;
+        }
+        
+        return view('admin.rekap_rekam_medik', compact('rekammedik', 'y2024', 'y2025', 'y2020', 'y2021', 'y2022', 'y2023', 'mhs24', 'mhs25', 'mhs20', 'mhs21', 'mhs22', 'mhs23', 'dosen24', 'dosen25', 'dosen20', 'dosen21', 'dosen22', 'dosen23', 'kary24', 'kary25', 'kary20', 'kary21', 'kary22', 'kary23', 'umum24', 'umum25', 'umum20', 'umum21', 'umum22', 'umum23'));
     }
-    
-    // public function filterRekamMedikPasien(Request $request)
-    // {
-    //     $rekammedik = RekamMedik::where('status_rekam_medik', 'selesai')->whereBetween('rekammedik_created_at', [$request->input('date-start'), $request->input('date-end')])
-    //         ->orWhereDate('rekammedik_created_at', $request->input('date-end'))->get();
-
-    //     for($i = 1; $i <= 12; $i++) {
-    //         $data24[$i] = RekamMedik::whereYear('rekammedik_created_at', 2024)->whereMonth('rekammedik_created_at', $i)->where('status_rekam_medik', 'selesai')->count();
-    //         $data25[$i] = RekamMedik::whereYear('rekammedik_created_at', 2025)->whereMonth('rekammedik_created_at', $i)->where('status_rekam_medik', 'selesai')->count();
-    //         $data20[$i] = RekamMedik::whereYear('rekammedik_created_at', 2020)->whereMonth('rekammedik_created_at', $i)->where('status_rekam_medik', 'selesai')->count();
-    //         $data21[$i] = RekamMedik::whereYear('rekammedik_created_at', 2021)->whereMonth('rekammedik_created_at', $i)->where('status_rekam_medik', 'selesai')->count();
-    //         $data22[$i] = RekamMedik::whereYear('rekammedik_created_at', 2022)->whereMonth('rekammedik_created_at', $i)->where('status_rekam_medik', 'selesai')->count();
-    //         $data23[$i] = RekamMedik::whereYear('rekammedik_created_at', 2023)->whereMonth('rekammedik_created_at', $i)->where('status_rekam_medik', 'selesai')->count();
-    //     }
-
-    //     $civitas24 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Dosen')->orWhere('nama_kategori', 'Karyawan')->whereYear('rekammedik_created_at', 2024)->count();
-    //     $dosen24 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Dosen')->whereYear('rekammedik_created_at', 2024)->count();
-    //     $dosen25 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Dosen')->whereYear('rekammedik_created_at', 2025)->count();
-    //     $dosen20 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Dosen')->whereYear('rekammedik_created_at', 2020)->count();
-    //     $dosen21 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Dosen')->whereYear('rekammedik_created_at', 2021)->count();
-    //     $dosen22 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Dosen')->whereYear('rekammedik_created_at', 2022)->count();
-    //     $dosen23 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Dosen')->whereYear('rekammedik_created_at', 2023)->count();
-
-    //     $mhs24 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Mahasiswa')->whereYear('rekammedik_created_at', 2024)->count();
-    //     $mhs25 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Mahasiswa')->whereYear('rekammedik_created_at', 2025)->count();
-    //     $mhs20 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Mahasiswa')->whereYear('rekammedik_created_at', 2020)->count();
-    //     $mhs21 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Mahasiswa')->whereYear('rekammedik_created_at', 2021)->count();
-    //     $mhs22 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Mahasiswa')->whereYear('rekammedik_created_at', 2022)->count();
-    //     $mhs23 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Mahasiswa')->whereYear('rekammedik_created_at', 2023)->count();
-
-    //     $kary24 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Karyawan')->whereYear('rekammedik_created_at', 2024)->count();
-    //     $kary25 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Karyawan')->whereYear('rekammedik_created_at', 2025)->count();
-    //     $kary20 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Karyawan')->whereYear('rekammedik_created_at', 2020)->count();
-    //     $kary21 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Karyawan')->whereYear('rekammedik_created_at', 2021)->count();
-    //     $kary22 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Karyawan')->whereYear('rekammedik_created_at', 2022)->count();
-    //     $kary23 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Karyawan')->whereYear('rekammedik_created_at', 2023)->count();
-
-    //     $umum24 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Umum')->whereYear('rekammedik_created_at', 2024)->count();
-    //     $umum25 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Umum')->whereYear('rekammedik_created_at', 2025)->count();
-    //     $umum20 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Umum')->whereYear('rekammedik_created_at', 2020)->count();
-    //     $umum21 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Umum')->whereYear('rekammedik_created_at', 2021)->count();
-    //     $umum22 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Umum')->whereYear('rekammedik_created_at', 2022)->count();
-    //     $umum23 = DB::table('rekam_mediks as rk')->join('pasiens as p', 'p.id', 'rk.pasien_id')->join('categories as c', 'c.id', 'p.category_id')->where('nama_kategori', 'Umum')->whereYear('rekammedik_created_at', 2023)->count();
-        
-    //     foreach($data24 as $r) {
-    //         $y2024[] = $r;
-    //     }
-    //     foreach($data25 as $r) {
-    //         $y2025[] = $r;
-    //     }
-    //     foreach($data20 as $r) {
-    //         $y2020[] = $r;
-    //     }
-    //     foreach($data21 as $r) {
-    //         $y2021[] = $r;
-    //     }
-    //     foreach($data22 as $r) {
-    //         $y2022[] = $r;
-    //     }
-    //     foreach($data23 as $r) {
-    //         $y2023[] = $r;
-    //     }
-        
-    //     return view('admin.rekap_rekam_medik', compact('rekammedik', 'y2024', 'y2025', 'y2020', 'y2021', 'y2022', 'y2023', 'mhs24', 'mhs25', 'mhs20', 'mhs21', 'mhs22', 'mhs23', 'dosen24', 'dosen25', 'dosen20', 'dosen21', 'dosen22', 'dosen23', 'kary24', 'kary25', 'kary20', 'kary21', 'kary22', 'kary23', 'umum24', 'umum25', 'umum20', 'umum21', 'umum22', 'umum23'));
-    // }
     public function filterRekamMedik()
     {
         $columns = [

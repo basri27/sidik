@@ -101,8 +101,8 @@
                                 <tr>
                                     <td><b>{{ \Carbon\Carbon::parse(\Carbon\Carbon::now())->format('d-m-Y') }}</b></td>
                                     <td>
-                                        <b>Suhu: <br><input class="form-control-sm col-8" type="number" min="25" max="40" step="0.01" name="suhu"> <small>&#8451;</small> <br>
-                                        Tensi: <br><input class="form-control-sm col-4" type="number" name="tensi1">&nbsp;/&nbsp;<input class="form-control-sm col-4" type="number" name="tensi2"> <small>mmHg</small><br>
+                                        <b>Suhu: <br><input class="form-control-sm col-8" type="number" min="0" max="50" step="0.01" name="suhu"> <small>&#8451;</small> <br>
+                                        Tensi: <br><input class="form-control-sm col-4" type="number" min="0" max="300" name="tensi1">&nbsp;/&nbsp;<input class="form-control-sm col-4" type="number" min="0" max="300" name="tensi2"> <small>mmHg</small><br>
                                         Pemeriksaan: <br><textarea class="form-control-sm col-12" placeholder="Keluhan dan lain-lain" disabled></textarea> <br>
                                         Diagnosa: <br>
                                         <select class="form-control-sm col-12" disabled>
@@ -116,7 +116,7 @@
                                         <textarea class="form-control-sm col-12" placeholder="Keterangan" disabled></textarea>
                                     </td>
                                     <td>
-                                        <select class="form-control-sm col-12" name="nakes_id">
+                                        <select class="form-control-sm col-12" name="nakes_id" required>
                                             <option>Pilih Tenaga Kesehatan</option>
                                             @foreach($tenkes as $t)
                                             <option value="{{ $t->id }}">{{ $t->nama_tenkes }}</option>

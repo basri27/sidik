@@ -84,8 +84,9 @@
                                         {{ ($m->pasien_id == $p->id) ? $m->fakulta->nama_fakultas." - ".$m->prodi->nama_prodi : '' }}
                                     @endforeach
                                 @elseif ($p->category_id == 5)
-                                <br>
-                                ({{ $bpjs->no_bpjs }})
+                                    @foreach($bpjs as $b)
+                                        ({{ ($b->pasien_id == $p->id) ? $b->no_bpjs : '' }})
+                                    @endforeach
                                 @endif
                             </td>
                             <td>{{ $p->jk_pasien }}</td>

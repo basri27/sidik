@@ -30,7 +30,6 @@ class PasienController extends Controller
 
     public function viewBio()
     {
-        
         $kategori = Category::all();
         $fakultas = Fakulta::all();
         $prodi = Prodi::all();
@@ -79,46 +78,8 @@ class PasienController extends Controller
                     'no_bpjs' => $request->input('no_bpjs')
                 ]);
         }
-    
-        // if(Request()->fakulta_id <> ""){
-        //     if(Request()->prodi_id <> ""){
-        //         Pasien::create([
-        //         'user_id' => $request->input('id_user'),
-        //         'category_id' => $request->input('kategori'),
-        //         'fakulta_id' => $request->input('fakulta_id'),
-        //         'prodi_id' => $request->input('prodi_id'),
-        //         'nama_pasien' => $request->input('nama'),
-        //         'tempat_lhr_pasien' => $request->input('tempat_lhr'),
-        //         'tgl_lhr_pasien' => $request->input('tgl_lhr'),
-        //         'no_hp_pasien' => $request->input('nohp'),
-        //         'alamat_pasien' => $request->input('alamat'),
-        //         'jk_pasien' => $request->input('jk'),
-        //         'foto_pasien' => $imageName,
-        //         'status_pasien' => 'aktif'
-        //         ]);
-        //     }
-        //     else {
-        //         Pasien::create([
-        //         'user_id' => $request->input('id_user'),
-        //         'category_id' => $request->input('kategori'),
-        //         'fakulta_id' => $request->input('fakulta_id'),
-        //         'prodi_id' => '1',
-        //         'nama_pasien' => $request->input('nama'),
-        //         'tempat_lhr_pasien' => $request->input('tempat_lhr'),
-        //         'tgl_lhr_pasien' => $request->input('tgl_lhr'),
-        //         'no_hp_pasien' => $request->input('nohp'),
-        //         'alamat_pasien' => $request->input('alamat'),
-        //         'jk_pasien' => $request->input('jk'),
-        //         'foto_pasien' => $imageName,
-        //         'status_pasien' => 'aktif'
-        //         ]);
-        //     }
-        // }
-        // else {
-        //     
-        // }
 
-        return redirect()->route('profil_pasien', $request->input('id_user'));
+        return redirect()->route('profil_pasien', $request->input('id_user'))->with(['success' => 'Pendaftaran berhasil!']);
     }
     public function profilPasien($id)
     {

@@ -58,6 +58,7 @@ Route::patch('admin/jadwalpraktek/update/{id}', [AdminController::class, 'adm_ja
 #Rekap rekam medik
 Route::get('admin/rekaprekammedik', [AdminController::class, 'adm_rekap_rekam_medik'])->name('adm_rekap_rekam_medik');
 Route::post('filterrekammedik', [AdminController::class, 'filterRekamMedik'])->name('filterRekamMedik');
+Route::get('admin/rekaprekammedik/{year}/{month}', [AdminController::class, 'get_freq_diagnoses'])->name('get_freq_diagnoses');
 
 #Manajemen data 
 Route::get('admin/manajemen/data/pasien', [AdminController::class, 'adm_man_datapasien'])->name('adm_man_datapasien');

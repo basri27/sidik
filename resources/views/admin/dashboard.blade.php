@@ -69,7 +69,7 @@
         <div class="row">
             <div class="col-xl-3 col-md-6 mb-4">
                 <div class="card border-left-primary shadow h-100 py-2">
-                    <div class="card-body">
+                    <a href="{{ route('adm_man_datapasien') }}" class="card-body">
                         <div class="row no-gutters align-items-center">
                             <div class="col mr-2">
                                 <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Jumlah Pasien</div>
@@ -79,12 +79,12 @@
                                 <i class="fas fa-user-md fa-2x text-gray-500"></i>
                             </div>
                         </div>
-                    </div>
+                    </a>
                 </div>
             </div>
             <div class="col-xl-3 col-md-6 mb-4">
                 <div class="card border-left-success shadow h-100 py-2">
-                    <div class="card-body">
+                    <a href="{{ route('adm_man_datanakes') }}" class="card-body">
                         <div class="row no-gutters align-items-center">
                             <div class="col mr-2">
                                 <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Jumlah Tenaga Kesehatan</div>
@@ -94,12 +94,12 @@
                                 <i class="fas fa-user-nurse fa-2x text-gray-500"></i>
                             </div>
                         </div>
-                    </div>
+                    </a>
                 </div>
             </div>
             <div class="col-xl-3 col-md-6 mb-4">
                 <div class="card border-left-warning shadow h-100 py-2">
-                    <div class="card-body">
+                    <a href="{{ route('adm_man_datarekammedik') }}" class="card-body">
                         <div class="row no-gutters align-items-center">
                             <div class="col mr-2">
                                 <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Jumlah Data Rekam Medik</div>
@@ -109,12 +109,12 @@
                                 <i class="fas fa-notes-medical fa-2x text-gray-500"></i>
                             </div>
                         </div>
-                    </div>
+                    </a>
                 </div>
             </div>
             <div class="col-xl-3 col-md-6 mb-4">
                 <div class="card border-left-success shadow h-100 py-2">
-                    <div class="card-body">
+                    <a href="{{ route('adm_man_dataapoteker') }}" class="card-body">
                         <div class="row no-gutters align-items-center">
                             <div class="col mr-2">
                                 <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Jumlah Apoteker</div>
@@ -124,7 +124,7 @@
                                 <i class="fas fa-capsules fa-2x text-gray-500"></i>
                             </div>
                         </div>
-                    </div>
+                    </a>
                 </div>
             </div>
         </div>

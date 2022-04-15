@@ -55,9 +55,10 @@
                         <i class="fas fa-notes-medical text-white"></i>
                     </div>
                 </div>
+                <?php $p = \App\Models\Pasien::where('id', $notif->rekam_medik->pasien->id)->first(); ?>
                 <div>
                     <div class="small text-gray-500">{{ \Carbon\Carbon::parse($notif->notif_created_at)->format('d F y') }} | {{ \Carbon\Carbon::parse($notif->notif_created_at)->toTimeString() }}</div>
-                    <span class="font-weight-bold">{{ $notif->isi }}</span>
+                    <span class="font-weight-bold">{{ $notif->isi }}<br>Index: {{ $p->id }}<br>Nama: {{ $p->nama_pasien }}</span>
                 </div>
             </a>
             @endforeach
@@ -102,18 +103,14 @@
                 </div>
                 <div>
                     <div class="small text-gray-500">{{ \Carbon\Carbon::parse($notif->notif_created_at)->format('d F y') }} | {{ \Carbon\Carbon::parse($notif->notif_created_at)->toTimeString() }}</div>
-                    <span class="font-weight-bold">{{ $notif->isi }}</span>
                 </div>
             </a>
             @endforeach
             `;
-            if(data.notif.user_id == nakes_id) {
-                notification.html(newNotif);
-                notificationCount += 1;
-                notificationCountElem.attr('data-count', notificationCount);
-                notificationWrap.find('.badge-counter').text(notificationCount);
-                alert("Pasien ingin berobat");
-            }
+    
+            
+                if(!alert('Resep obat pasien diterima!')){window.location.reload();}
+        
         });
     </script>
 @endsection
@@ -199,9 +196,9 @@
             @endif
         </div>
     </div>
-    <script type="text/javascript">
+    <!-- <script type="text/javascript">
     setTimeout(function(){
        location.reload();
     },30000);
-    </script>
+    </script> -->
 @endsection

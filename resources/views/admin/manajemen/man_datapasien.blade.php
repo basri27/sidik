@@ -64,45 +64,44 @@
                             <th>Alamat</th>
                             <th>No. HP</th>
                             <th>Username</th>
-                            <th></th>
-                            <th></th>
+                            <th>Edit</th>
+                            <th>Hapus</th>
                         </tr>
                     </tfoot>
                     <tbody>
-                        @foreach ($pasiens as $pasien)
+                        @foreach ($pasiens as $p)
                         <tr>
-                            
-                            <td>{{ $pasien->id }}</td>
-                            <td>{{ $pasien->nama_pasien }}</td>
-                            <td>{{ $pasien->tempat_lhr_pasien }}, {{ \Carbon\Carbon::parse($pasien->tgl_lhr_pasien)->format('d F Y') }}</td>
+                            <td>{{ $p->id }}</td>
+                            <td>{{ $p->nama_pasien }}</td>
+                            <td>{{ $p->tempat_lhr_pasien }}, {{ \Carbon\Carbon::parse($p->tgl_lhr_pasien)->format('d F Y') }}</td>
                             <td>
-                                {{ $pasien->category->nama_kategori }}
-                                @if ($pasien->category_id == 1)
+                                {{ $p->category->nama_kategori }}
+                                @if ($p->category_id == 1)
                                     @foreach($dosen as $d)
-                                        {{ ($d->pasien_id == $pasien->id) ? $d->fakulta->nama_fakultas : '' }}
+                                        {{ ($d->pasien_id == $p->id) ? $d->fakulta->nama_fakultas : '' }}
                                     @endforeach
-                                @elseif ($pasien->category_id == 2)
+                                @elseif ($p->category_id == 2)
                                     @foreach($kary as $k)
-                                        {{ ($k->pasien_id == $pasien->id) ? $k->fakulta->nama_fakultas : '' }}
+                                        {{ ($k->pasien_id == $p->id) ? $k->fakulta->nama_fakultas : '' }}
                                     @endforeach
-                                @elseif ($pasien->category_id == 3)
+                                @elseif ($p->category_id == 3)
                                     @foreach($mhs as $m)
-                                        {{ ($m->pasien_id == $pasien->id) ? $m->fakulta->nama_fakultas." - ".$m->prodi->nama_prodi : '' }}
+                                        {{ ($m->pasien_id == $p->id) ? $m->fakulta->nama_fakultas." - ".$m->prodi->nama_prodi : '' }}
                                     @endforeach
-                                @elseif ($pasien->category_id == 5)
-                                <br>
-                                ({{ $bpjs->no_bpjs }})
+                                @elseif ($p->category_id == 5)
+                                    @foreach($bpjs as $b)
+                                        ({{ ($b->pasien_id == $p->id) ? $b->no_bpjs : '' }})
+                                    @endforeach
                                 @endif
                             </td>
-                            <td>{{ $pasien->alamat_pasien }}</td>
-                            <td>{{ $pasien->no_hp_pasien }}</td>
-                            <td class="font-weight-bold text-primary">{{ $pasien->user->username }}</td>
+                            <td>{{ $p->alamat_pasien }}</td>
+                            <td>{{ $p->no_hp_pasien }}</td>
+                            <td class="font-weight-bold text-primary">{{ $p->user->username }}</td>
                             <td>
-                                <!-- <a href="#editPasien{{$pasien->id}}" class="btn btn-sm btn-success col-12" data-toggle="modal">Edit</a>   -->
-                                <a href="{{ route('adm_man_datapasien_edit', $pasien->id) }}" class="btn btn-sm btn-success">Edit</a>
+                                <a href="{{ route('adm_man_datapasien_edit', $p->id) }}" class="btn btn-sm btn-success">Edit</a>
                             </td>
                             <td>
-                                <a href="#deletePasien{{$pasien->id}}" class="btn btn-sm btn-danger col-12" data-toggle="modal">Hapus</a>
+                                <a href="#deletePasien{{$p->id}}" class="btn btn-sm btn-danger" data-toggle="modal">Hapus</a>
                             </td>
                         </tr>
                         @endforeach
@@ -245,135 +244,6 @@
     </div>
 </div>
 @foreach($pasiens as $pasien)
-<div id="editPasien{{$pasien->id}}" class="modal fade" role="dialog">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header bg-light">
-                <h4 class="modal-title font-weight-bold float-left">Edit Data Pasien</h4>
-            </div>
-            <form action="{{ route('adm_man_datapasien_update', $pasien->id) }}" method="post">
-                @method('PATCH')
-                @csrf
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-6 col-12">
-                            <div class="info-list">
-                                <div class="form-group">
-                                    <label class="font-weight-bold text-primary">Nama</label>
-                                    <input type="text" name="nama" class="form-control" value="{{ $pasien->nama_pasien }}" required>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6 col-12">
-                            <div class="info-list">
-                                <div class="form-group">
-                                    <label class="font-weight-bold text-primary">Tempat lahir</label>
-                                    <input type="text" name="tempat_lhr" class="form-control" value="{{ $pasien->tempat_lhr_pasien }}" required>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6 col-12">
-                            <div class="info-list">
-                                <div class="form-group">
-                                    <label class="font-weight-bold text-primary">Tanggal lahir</label>
-                                    <input type="date" name="tgl_lhr" class="form-control" value="{{ $pasien->tgl_lhr_pasien }}" required>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6 col-12">
-                            <div class="info-list">
-                                <div class="form-group">
-                                    <label class="font-weight-bold text-primary">No. Hp</label>
-                                    <input type="text" name="no_hp" class="form-control" value="{{ $pasien->no_hp_pasien }}" required>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6 col-12">
-                            <div class="info-list">
-                                <div class="form-group">
-                                    <label class="font-weight-bold text-primary">Alamat</label>
-                                    <input type="text" name="alamat" class="form-control" value="{{ $pasien->alamat_pasien }}" required>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6 col-12">
-                            <div class="info-list">
-                                <div class="form-group">
-                                    <label class="font-weight-bold text-primary">Jenis Kelamin</label>
-                                    <select class="form-control" name="jk" id="jk" required>
-                                        <option value="{{ $pasien->jk_pasien }}" selected>{{ $pasien->jk_pasien }}</option>
-                                        @if($pasien->jk_pasien == "Perempuan")
-                                        <option value="Laki-laki">Laki-laki</option>
-                                        @elseif($pasien->jk_pasien == "Laki-laki")
-                                        <option value="Perempuan">Perempuan</option>
-                                        @else
-                                        <option value="Laki-laki">Laki-laki</option>
-                                        <option value="Perempuan">Perempuan</option>
-                                        @endif
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6 col-12">
-                            <div class="info-list">
-                                <div class="form-group">
-                                    <label class="font-weight-bold text-primary">Kategori</label>
-                                    <select data-width="100%" class="form-control" name="category_id" id="edit-kategori" onchange="ektg(this)" required>
-                                        <option value="{{ $pasien->category_id }}">{{ $pasien->category->nama_kategori }}</option>
-                                        @foreach ($category as $cat)
-                                        <option value="{{ $cat->id }}">{{ $cat->nama_kategori }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                    
-                        <div class="col-md-6 col-12">
-                            <div class="info-list">
-                                <div class="form-group" id="efklt">
-                                    <label class="font-weight-bold text-primary" id="label_ef">Fakultas</label>
-                                    <select data-width="100%" class="form-control" name="fakulta_id" id="edit-fakultas" required>
-                                        @if ($pasien->category_id == 1)
-                                            @foreach($dosen as $d)
-                                                ($d->pasien_id == $pasien->id) ?
-                                                    <option value="{{ $d->fakulta_id }}">{{ $d->fakulta->nama_fakultas }}</option>
-                                                : ''
-                                            @endforeach
-                                        @endif
-
-                                        @if ($pasien->category_id == 3)
-                                            @foreach($mhs as $m)
-                                                ($m->pasien_id == $pasien->id) ?
-                                                    <option value="{{ $m->fakulta_id }}">{{ $m->fakulta->nama_fakultas }}</option>
-                                                : ''
-                                            @endforeach
-                                        @endif
-                                        @foreach ($fakultas as $fak)
-                                        <option value="{{ $fak->id }}">{{ $fak->nama_fakultas }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6 col-12">
-                            <div class="info-list">
-                                <div class="form-group">
-                                    <label class="font-weight-bold text-primary" id="label_p">Program Studi</label>
-                                    <select data-width="100%" class="form-control" name="prodi_id" id="edit-prodi{{ $pasien->id }}" required>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-success">Simpan</button>
-                    <button type="button" class="btn btn-dark" data-dismiss="modal">Batal</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
 <div id="deletePasien{{$pasien->id}}" class="modal fade" role="dialog">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -475,9 +345,6 @@
         // $('#kategori').select2()
         $('#fakulta_id').select2()
         $('#prodi_id').select2()
-        $('#edit-kategori').select2()
-        $('#edit-fakultas').select2()
-        $('#edit-prodi').select2()
         $('#fakulta_id').on('change', function() {
             var fakultasID = $(this).val();
             if(fakultasID) {
@@ -495,28 +362,6 @@
                             });
                         } else {
                             $('#prodi_id').empty();
-                        }
-                    }
-                });
-            }
-        });
-        $('#edit-fakultas').on('change', function() {
-            var fakultasID = $(this).val();
-            if(fakultasID) {
-                $.ajax({
-                    url: '/getProdi/'+fakultasID,
-                    type: "GET",
-                    data: {"_token":"{{ csrf_token() }}"},
-                    dataType: "json",
-                    success: function(data)
-                    {
-                        if(data){
-                            $('#edit-prodi').empty();
-                            $.each(data, function(key, prodi){
-                                $('select[name="prodi_id"]').append('<option value="'+ prodi.id +'">' + prodi.nama_prodi + '</option>');
-                            });
-                        } else {
-                            $('#edit-prodi').empty();
                         }
                     }
                 });
@@ -553,31 +398,6 @@
             $('#fklt').hide();
             $('#prd').hide();
             $('#no-bpjs').show();
-        }
-    }
-    function ektg(select) {
-        var ef = document.getElementById('edit-fakultas');
-        var ep = document.getElementById('edit-prodi');
-        var lef = document.getElementById('label_ef');
-
-        if(select.value == '4') {
-            // lef.innerHTML = "Fakultas";
-            // ef.disabled = true;
-            // ef.value = '1';
-            // ep.disabled = true;
-            // ep.value = '1';
-            $('#efklt').hide()
-        }
-        else if (select.value == '2') {
-            lef.innerHTML = "Bagian";
-            ef.disabled = false;
-            ep.disabled = true;
-            ep.value = '1';
-        }
-        else {
-            ef.disabled = false;
-            ep.disabled = false;
-            lef.innerHTML = "Fakultas";
         }
     }
 </script>

@@ -33,13 +33,6 @@
             <div class="about-row row">
                 <div class="image-col col-md-2">
                     <img src="{{ asset('/foto_profil/admin/' . $admin->foto_admin) }}" alt=""><br><br>
-                    @if($admin->foto_admin != 'default.jpg')
-                    <form method="POST" action={{ route('adm_reset_foto', $admin->user_id) }}>
-                    @method('PATCH')
-                    @csrf
-                        <button type="submit" class="btn btn-sm btn-warning" href="#"><i class="fas fa-trash"></i>&ensp;Hapus foto</button>
-                    </form>
-                    @endif
                 </div>
                 <div class="detail-col col-md-8">
                     <h2 class="font-weight-bold">{{ $admin->nama_admin }}</h2>
